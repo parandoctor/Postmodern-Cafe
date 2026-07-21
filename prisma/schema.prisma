@@ -1,0 +1,205 @@
+// ============================================================
+// Rainbow-box Database Schema
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ---- User ----
+model User {
+  id        String    @id @default(cuid())
+  name      String?
+  email     String?   @unique
+  password  String?
+  image     String?
+  bio       String?
+  emailVerified DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  accounts     Account[]
+  sessions     Session[]
+  files        File[]
+  categories   Category[]
+  favorites    Favorite[]
+  recycleItems RecycleBin[]
+  uploadRecords UploadRecord[]
+  operationLogs OperationLog[]
+  tags          Tag[]
+}
+
+// ---- Account (for future OAuth support) ----
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+// ---- Session ----
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+// ---- Category (七彩分类) ----
+model Category {
+  id          String   @id @default(cuid())
+  name        String
+  color       String   @default("blue") // red, orange, yellow, green, cyan, blue, purple
+  icon        String   @default("folder")
+  description String?
+  sortOrder   Int      @default(0)
+  userId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  files File[]
+
+  @@unique([name, userId])
+  @@index([userId, sortOrder])
+}
+
+// ---- File ----
+model File {
+  id            String    @id @default(cuid())
+  name          String
+  originalName  String
+  extension     String
+  mimeType      String
+  size          Int       // bytes
+  path          String
+  thumbnailPath String?
+  hash          String?   // SHA-256 for deduplication
+  width         Int?      // for images
+  height        Int?      // for images
+  duration      Float?    // for audio/video
+  categoryId    String?
+  userId        String
+  isFavorite    Boolean   @default(false)
+  isDeleted     Boolean   @default(false)
+  deletedAt     DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category     Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  favorites    Favorite[]
+  recycleItems RecycleBin[]
+  uploadRecords UploadRecord[]
+
+  @@index([userId, isDeleted])
+  @@index([userId, categoryId])
+  @@index([userId, isFavorite])
+  @@index([userId, createdAt])
+  @@index([userId, name])
+  @@index([hash])
+}
+
+// ---- Favorite ----
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  fileId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  file File @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, fileId])
+  @@index([userId])
+}
+
+// ---- Recycle Bin ----
+model RecycleBin {
+  id          String   @id @default(cuid())
+  fileId      String   @unique
+  userId      String
+  originalPath String
+  deletedAt   DateTime @default(now())
+  expiresAt   DateTime // auto-delete after 30 days
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  file File @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+// ---- Tag ----
+model Tag {
+  id        String   @id @default(cuid())
+  name      String
+  color     String?  @default("#6366f1")
+  userId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([name, userId])
+  @@index([userId])
+}
+
+// ---- Upload Record ----
+model UploadRecord {
+  id        String   @id @default(cuid())
+  fileId    String
+  userId    String
+  fileName  String
+  fileSize  Int
+  mimeType  String
+  status    String   @default("completed") // uploading, processing, completed, error
+  error     String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  file File @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([fileId])
+}
+
+// ---- Operation Log ----
+model OperationLog {
+  id         String   @id @default(cuid())
+  userId     String
+  operation  String   // UPLOAD, DOWNLOAD, DELETE, RESTORE, RENAME, MOVE, etc.
+  targetType String   // file, category, user
+  targetId   String
+  detail     String?
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([operation])
+  @@index([createdAt])
+}
