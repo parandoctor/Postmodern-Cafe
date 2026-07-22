@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { UserPlus, Mail, Lock, User, Eye, EyeOff, Sparkles } from "lucide-react";
+import { UserPlus, Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -34,12 +34,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6">
-      {/* Background */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-background" />
-      <div className="pointer-events-none absolute -top-40 right-0 h-[600px] w-[600px] rounded-full bg-primary/5 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-40 left-0 h-[500px] w-[500px] rounded-full bg-purple-500/5 blur-3xl" />
-
+    <div className="relative flex min-h-screen flex-col items-center justify-center px-6 bg-background">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -49,23 +44,17 @@ export default function RegisterPage() {
         {/* Logo */}
         <div className="mb-8 text-center">
           <Link href="/" className="inline-flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-blue-600 shadow-lg shadow-primary/20">
-              <span className="text-lg font-bold text-white">R</span>
+            <div className="flex h-10 w-10 items-center justify-center border border-border bg-background">
+              <span className="text-lg font-bold">R</span>
             </div>
-            <span className="text-2xl font-semibold">
-              <span className="rainbow-text">收纳盒</span>
-            </span>
+            <span className="text-2xl font-semibold">收纳盒</span>
           </Link>
         </div>
 
         {/* Card */}
-        <div className="rounded-2xl border border-border/50 bg-card/80 p-8 backdrop-blur-xl shadow-xl">
+        <div className="border border-border bg-background p-8">
           {/* Header */}
           <div className="mb-8 text-center">
-            <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-              <Sparkles className="h-3 w-3" />
-              开始使用
-            </div>
             <h1 className="text-2xl font-bold tracking-tight">创建账户</h1>
             <p className="mt-1 text-sm text-muted-foreground">
               注册后即可开始管理你的文件
@@ -77,7 +66,7 @@ export default function RegisterPage() {
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-4 rounded-xl bg-destructive/10 p-3 text-sm text-destructive"
+              className="mb-4 border border-destructive/50 bg-destructive/5 p-3 text-sm text-destructive"
             >
               {error}
             </motion.div>
@@ -93,7 +82,7 @@ export default function RegisterPage() {
                   id="name"
                   type="text"
                   placeholder="你的昵称"
-                  className="pl-10"
+                  className="pl-10 rounded-none"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
@@ -112,7 +101,7 @@ export default function RegisterPage() {
                   id="email"
                   type="email"
                   placeholder="your@email.com"
-                  className="pl-10"
+                  className="pl-10 rounded-none"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -129,7 +118,7 @@ export default function RegisterPage() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="至少6位，包含字母和数字"
-                  className="pl-10 pr-10"
+                  className="pl-10 pr-10 rounded-none"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -156,12 +145,13 @@ export default function RegisterPage() {
 
             <Button
               type="submit"
-              className="w-full gap-2"
+              className="w-full gap-2 rounded-none"
               size="lg"
               disabled={loading}
+              variant="outline"
             >
               {loading ? (
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-background border-t-transparent" />
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-foreground border-t-transparent" />
               ) : (
                 <UserPlus className="h-4 w-4" />
               )}
@@ -172,12 +162,12 @@ export default function RegisterPage() {
           {/* Footer */}
           <div className="mt-6 text-center text-sm text-muted-foreground">
             已有账户？{" "}
-            <a
+            <Link
               href="/login"
-              className="font-medium text-primary hover:underline"
+              className="font-medium underline underline-offset-4 hover:text-foreground"
             >
               立即登录
-            </a>
+            </Link>
           </div>
         </div>
       </motion.div>

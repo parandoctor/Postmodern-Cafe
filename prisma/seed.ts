@@ -40,7 +40,7 @@ async function main() {
     { name: "学习资料", color: "orange", icon: "book",        description: "教程、笔记、电子书",         sortOrder: 2 },
     { name: "图片素材", color: "yellow", icon: "image",       description: "照片、设计稿、截图",         sortOrder: 3 },
     { name: "个人文件", color: "green",  icon: "user",        description: "简历、证件、合同",           sortOrder: 4 },
-    { name: "代码仓库", color: "cyan",   icon: "code",        description: "项目代码、脚本、配置文件",   sortOrder: 5 },
+    { name: "代码仓库", color: "blue",   icon: "code",        description: "项目代码、脚本、配置文件",   sortOrder: 5 },
     { name: "媒体娱乐", color: "blue",   icon: "music",       description: "音乐、视频、游戏",           sortOrder: 6 },
     { name: "其他归档", color: "purple", icon: "archive",     description: "其他需要归档的文件",         sortOrder: 7 },
   ];

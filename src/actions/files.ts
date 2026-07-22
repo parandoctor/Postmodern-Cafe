@@ -276,6 +276,105 @@ export async function moveFiles(
 }
 
 /**
+ * Copy a file
+ */
+export async function copyFile(
+  fileId: string,
+): Promise<ApiResponse<FileItem>> {
+  try {
+    const userId = await requireAuth();
+
+    const file = await prisma.file.findFirst({
+      where: { id: fileId, userId, isDeleted: false },
+    });
+    if (!file) throw new AppError("文件不存在", 404);
+
+    const ext = file.extension;
+    const baseName = file.name.replace(new RegExp(`\\.${ext}$`, "i"), "");
+    const newName = `${baseName} - 副本.${ext}`;
+    const newFileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+
+    const fs = await import("fs/promises");
+    const path = await import("path");
+    const dateStr = new Date().toISOString().slice(0, 10);
+    const uploadDir = process.env.UPLOAD_DIR ?? "public/uploads";
+    const dirPath = path.resolve(process.cwd(), uploadDir, "files", dateStr);
+    await fs.mkdir(dirPath, { recursive: true });
+
+    const srcPath = path.resolve(process.cwd(), "public", file.path);
+    const destPath = path.join(dirPath, newFileName);
+    const newFilePath = `/uploads/files/${dateStr}/${newFileName}`;
+
+    try {
+      await fs.copyFile(srcPath, destPath);
+    } catch {
+      throw new AppError("复制文件失败，源文件可能已损坏", 500);
+    }
+
+    const created = await prisma.file.create({
+      data: {
+        name: newName,
+        originalName: newName,
+        extension: ext,
+        mimeType: file.mimeType,
+        size: file.size,
+        path: newFilePath,
+        categoryId: file.categoryId,
+        userId,
+      },
+      include: { category: true },
+    });
+
+    await logOperation({
+      userId,
+      operation: "COPY",
+      targetType: "file",
+      targetId: created.id,
+      detail: `复制文件：${file.name} → ${newName}`,
+    });
+
+    return {
+      success: true,
+      data: {
+        id: created.id,
+        name: created.name,
+        originalName: created.originalName,
+        extension: created.extension,
+        mimeType: created.mimeType,
+        size: created.size,
+        path: created.path,
+        thumbnailPath: created.thumbnailPath,
+        categoryId: created.categoryId,
+        category: created.category
+          ? {
+              id: created.category.id,
+              name: created.category.name,
+              color: created.category.color as RainbowColor,
+              icon: created.category.icon,
+              description: created.category.description,
+              sortOrder: created.category.sortOrder,
+              fileCount: 0,
+              createdAt: created.category.createdAt,
+              updatedAt: created.category.updatedAt,
+            }
+          : null,
+        isFavorite: created.isFavorite,
+        isDeleted: created.isDeleted,
+        deletedAt: created.deletedAt,
+        createdAt: created.createdAt,
+        updatedAt: created.updatedAt,
+      },
+      message: "文件已复制",
+    };
+  } catch (error) {
+    if (error instanceof AppError) return { success: false, error: error.message };
+    if ((error as Error).message === "UNAUTHORIZED") return { success: false, error: "请先登录" };
+    console.error("[copyFile]", error);
+    return { success: false, error: "复制文件失败" };
+  }
+}
+
+/**
  * Soft delete files (move to recycle bin)
  */
 export async function deleteFiles(

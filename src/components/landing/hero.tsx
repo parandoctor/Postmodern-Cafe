@@ -5,41 +5,24 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { useRef, useMemo, useCallback } from "react";
 import * as THREE from "three";
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles, Shield, Zap, Palette } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useTheme } from "next-themes";
-import { useMousePosition } from "@/hooks";
 
-// ---- Three.js Particle System ----
+// ---- Three.js Particle System (Black particles) ----
 function Particles({ count = 2000 }) {
   const meshRef = useRef<THREE.Points>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
 
-  const [positions, colors, sizes] = useMemo(() => {
+  const positions = useMemo(() => {
     const pos = new Float32Array(count * 3);
-    const col = new Float32Array(count * 3);
-    const siz = new Float32Array(count);
-    const color1 = new THREE.Color(isDark ? "#60a5fa" : "#3b82f6");
-    const color2 = new THREE.Color(isDark ? "#a78bfa" : "#8b5cf6");
-
     for (let i = 0; i < count; i++) {
       pos[i * 3] = (Math.random() - 0.5) * 30;
       pos[i * 3 + 1] = (Math.random() - 0.5) * 20;
       pos[i * 3 + 2] = (Math.random() - 0.5) * 30;
-
-      const c = color1.clone().lerp(color2, Math.random());
-      col[i * 3] = c.r;
-      col[i * 3 + 1] = c.g;
-      col[i * 3 + 2] = c.b;
-
-      siz[i] = Math.random() * 3 + 1;
     }
-    return [pos, col, siz];
-  }, [count, isDark]);
+    return pos;
+  }, [count]);
 
-  // Mouse tracking for attraction
   const handlePointerMove = useCallback((e: { clientX: number; clientY: number }) => {
     mouseRef.current.x = (e.clientX / window.innerWidth) * 2 - 1;
     mouseRef.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
@@ -59,12 +42,10 @@ function Particles({ count = 2000 }) {
 
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
-      // Slow floating motion
       posAttr[i3]! += Math.sin(state.clock.elapsedTime * 0.3 + i) * 0.001;
       posAttr[i3 + 1]! += Math.cos(state.clock.elapsedTime * 0.2 + i * 0.5) * 0.001;
       posAttr[i3 + 2]! += Math.sin(state.clock.elapsedTime * 0.15 + i * 0.3) * 0.001;
 
-      // Mouse attraction
       const dx = mouseRef.current.x * 15 - posAttr[i3]!;
       const dy = mouseRef.current.y * 10 - posAttr[i3 + 1]!;
       posAttr[i3]! += dx * 0.0002;
@@ -72,10 +53,6 @@ function Particles({ count = 2000 }) {
     }
     attr.needsUpdate = true;
   });
-
-  const posBufferAttr = useMemo(() => new THREE.BufferAttribute(positions, 3), [positions]);
-  const colBufferAttr = useMemo(() => new THREE.BufferAttribute(colors, 3), [colors]);
-  const sizBufferAttr = useMemo(() => new THREE.BufferAttribute(sizes, 1), [sizes]);
 
   return (
     <points ref={meshRef}>
@@ -87,29 +64,14 @@ function Particles({ count = 2000 }) {
           array={positions}
           itemSize={3}
         />
-        <bufferAttribute
-          attach="attributes-color"
-          args={[colors, 3]}
-          count={count}
-          array={colors}
-          itemSize={3}
-        />
-        <bufferAttribute
-          attach="attributes-size"
-          args={[sizes, 1]}
-          count={count}
-          array={sizes}
-          itemSize={1}
-        />
       </bufferGeometry>
       <pointsMaterial
-        size={0.08}
-        vertexColors
+        size={0.06}
+        color="#000000"
         transparent
-        opacity={0.8}
+        opacity={0.5}
         sizeAttenuation
         depthWrite={false}
-        blending={THREE.AdditiveBlending}
       />
     </points>
   );
@@ -136,18 +98,13 @@ function ParticleBackground() {
 
 // ---- Main Hero Component ----
 export function Hero() {
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
-
   return (
     <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6">
       {/* Particle Background */}
       <ParticleBackground />
 
-      {/* Gradient overlays */}
+      {/* Fade overlay */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/0 via-background/0 to-background" />
-      <div className="pointer-events-none absolute top-0 left-1/4 h-[600px] w-[600px] rounded-full bg-primary/5 blur-3xl" />
-      <div className="pointer-events-none absolute bottom-0 right-1/4 h-[500px] w-[500px] rounded-full bg-purple-500/5 blur-3xl" />
 
       <div className="relative z-10 mx-auto max-w-5xl text-center">
         {/* Badge */}
@@ -155,10 +112,9 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-8 inline-flex items-center gap-2 rounded-full border border-border/50 bg-background/50 px-4 py-1.5 text-sm text-muted-foreground backdrop-blur-sm"
+          className="mb-8 inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-1.5 text-sm text-foreground"
         >
-          <Sparkles className="h-4 w-4 text-primary" />
-          <span>全新一代智能收纳平台</span>
+          <span>简约·高效·有序</span>
         </motion.div>
 
         {/* Main Title */}
@@ -170,7 +126,7 @@ export function Hero() {
         >
           让文件管理
           <br />
-          <span className="rainbow-text">像彩虹一样有序</span>
+          <span className="rainbow-text">更加高效快捷</span>
         </motion.h1>
 
         {/* Subtitle */}
@@ -180,9 +136,7 @@ export function Hero() {
           transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           className="mx-auto mt-6 max-w-2xl text-balance text-lg text-muted-foreground sm:text-xl"
         >
-          现代化个人文件管理与分类收纳平台。
-          以七彩分类重新定义文件管理方式，
-          让每一份文件都有它的归属。
+          极简风格 · 黑白配色 · 分类清晰
         </motion.p>
 
         {/* CTA Buttons */}
@@ -192,14 +146,14 @@ export function Hero() {
           transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
           className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
         >
-          <Button size="xl" className="group gap-2 shadow-xl shadow-primary/20" asChild>
+          <Button size="xl" className="group gap-2 shadow-xl" asChild>
             <a href="/register">
               立即开始
               <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </a>
           </Button>
           <Button variant="outline" size="xl" asChild>
-            <a href="#features">了解更多</a>
+            <a href="#categories">分类浏览</a>
           </Button>
         </motion.div>
 
@@ -211,13 +165,13 @@ export function Hero() {
           className="mt-16 flex flex-wrap items-center justify-center gap-8"
         >
           {[
-            { icon: Zap, label: "极速上传", desc: "断点续传" },
-            { icon: Shield, label: "安全可靠", desc: "加密存储" },
-            { icon: Palette, label: "七彩分类", desc: "视觉管理" },
+            { label: "极速上传", desc: "拖拽即可" },
+            { label: "安全可靠", desc: "本地存储" },
+            { label: "分类管理", desc: "一目了然" },
           ].map((item) => (
             <div key={item.label} className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-                <item.icon className="h-5 w-5 text-primary" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-foreground/10">
+                <span className="h-5 w-5 block bg-foreground/40" style={{ mask: "url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"10\"/></svg>') center/contain no-repeat", WebkitMask: "url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"10\"/></svg>') center/contain no-repeat"}} />
               </div>
               <div className="text-left">
                 <div className="text-sm font-medium">{item.label}</div>
@@ -241,7 +195,7 @@ export function Hero() {
             <motion.div
               animate={{ y: [0, 8, 0] }}
               transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-              className="mx-auto h-2 w-1.5 rounded-full bg-primary/50"
+              className="mx-auto h-2 w-1.5 rounded-full bg-foreground/50"
             />
           </div>
         </div>

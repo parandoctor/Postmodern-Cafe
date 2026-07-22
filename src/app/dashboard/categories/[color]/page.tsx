@@ -1,12 +1,13 @@
 "use client";
 
 import * as React from "react";
+import { useParams, useRouter } from "next/navigation";
 import {
   Upload, File, Star, Grid3X3, List, Download,
   Trash2, Heart, Eye, FileText, Search,
   X, Check, RefreshCw, Image, Video,
   Music, Archive, Code, MoreHorizontal, Copy,
-  Pencil, FolderOpen,
+  Pencil, ArrowLeft, FolderOpen, ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { UploadZone } from "@/components/files/upload-zone";
@@ -19,7 +20,7 @@ import {
 } from "@/actions/files";
 import { getCategories } from "@/actions/categories";
 import type { FileItem } from "@/types";
-import { RAINBOW_COLORS } from "@/types";
+import { RAINBOW_COLORS, type RainbowColor } from "@/types";
 
 const FILE_ICON_MAP: Record<string, React.ElementType> = {
   image: Image, video: Video, audio: Music, pdf: FileText,
@@ -28,9 +29,14 @@ const FILE_ICON_MAP: Record<string, React.ElementType> = {
   file: File,
 };
 
-export default function FilesPage() {
+export default function CategoryFilesPage() {
+  const params = useParams();
+  const router = useRouter();
+  const color = params.color as RainbowColor;
+  const colorInfo = RAINBOW_COLORS[color];
+
   const { files, selectedFiles, viewMode, setFiles, setViewMode, toggleSelect, clearSelection } = useFileStore();
-  const { categories, setCategories, activeCategoryId, setActiveCategory } = useCategoryStore();
+  const { categories, setCategories, setActiveCategory } = useCategoryStore();
   const [isLoading, setIsLoading] = React.useState(true);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [previewFile, setPreviewFile] = React.useState<FileItem | null>(null);
@@ -48,10 +54,18 @@ export default function FilesPage() {
   // Move category state
   const [moveMenuFileId, setMoveMenuFileId] = React.useState<string | null>(null);
 
+  // Get the category that matches this color
+  const matchedCategory = categories.find((c) => c.color === color);
+  const categoryId = matchedCategory?.id ?? null;
+
   const loadData = React.useCallback(async () => {
     try {
       const [filesRes, catsRes] = await Promise.all([
-        getFiles({ search: searchQuery || undefined, categoryId: activeCategoryId || undefined }),
+        getFiles({
+          search: searchQuery || undefined,
+          categoryId: categoryId ?? undefined,
+          pageSize: 100,
+        }),
         getCategories(),
       ]);
       if (filesRes.success && filesRes.data) setFiles(filesRes.data.items);
@@ -62,9 +76,14 @@ export default function FilesPage() {
       setIsLoading(false);
       setIsRefreshing(false);
     }
-  }, [searchQuery, activeCategoryId, setFiles, setCategories]);
+  }, [searchQuery, categoryId, setFiles, setCategories]);
 
-  React.useEffect(() => { loadData(); }, [loadData]);
+  React.useEffect(() => {
+    if (categoryId) {
+      setActiveCategory(categoryId);
+      loadData();
+    }
+  }, [categoryId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Close more menu on outside click
   React.useEffect(() => {
@@ -81,7 +100,7 @@ export default function FilesPage() {
   const handleUpload = async (file: File): Promise<boolean> => {
     const formData = new FormData();
     formData.append("file", file);
-    if (activeCategoryId) formData.append("categoryId", activeCategoryId);
+    if (categoryId) formData.append("categoryId", categoryId);
     try {
       const res = await uploadFile(formData);
       if (res.success) {
@@ -165,6 +184,18 @@ export default function FilesPage() {
 
   const selectedArray = Array.from(selectedFiles);
 
+  if (!colorInfo) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
+        <FolderOpen className="h-12 w-12 mb-4 opacity-30" />
+        <p className="text-sm">未知颜色分类</p>
+        <button onClick={() => router.push("/dashboard/categories")} className="text-xs mt-2 text-foreground hover:underline">
+          返回分类管理
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
       {/* Message toast */}
@@ -174,7 +205,34 @@ export default function FilesPage() {
         </div>
       )}
 
-      {/* Header + Toolbar */}
+      {/* Breadcrumb header */}
+      <div className="flex items-center gap-3">
+        <button
+          onClick={() => router.push("/dashboard/categories")}
+          className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          分类管理
+        </button>
+        <ChevronRight className="h-4 w-4 text-muted-foreground" />
+        <div className="flex items-center gap-2">
+          <div
+            className="h-5 w-5 rounded"
+            style={{ backgroundColor: colorInfo.hex }}
+          />
+          <h1 className="font-semibold">
+            {matchedCategory?.name ?? `${colorInfo.label}色`}
+          </h1>
+          {matchedCategory?.description && (
+            <span className="text-xs text-muted-foreground">— {matchedCategory.description}</span>
+          )}
+          <span className="text-xs text-muted-foreground ml-1">
+            · {files.length} 个文件
+          </span>
+        </div>
+      </div>
+
+      {/* Toolbar */}
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-3 flex-1 min-w-0">
           {/* Search */}
@@ -188,18 +246,6 @@ export default function FilesPage() {
               className="h-9 w-full rounded-lg border border-input bg-background pl-9 pr-4 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
             />
           </div>
-
-          {/* Category filter */}
-          <select
-            value={activeCategoryId ?? ""}
-            onChange={(e) => setActiveCategory(e.target.value || null)}
-            className="h-9 rounded-lg border border-input bg-background px-3 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
-          >
-            <option value="">全部分类</option>
-            {categories.map((cat) => (
-              <option key={cat.id} value={cat.id}>{cat.name}</option>
-            ))}
-          </select>
 
           {/* Selected actions */}
           {selectedFiles.size > 0 && (
@@ -256,7 +302,7 @@ export default function FilesPage() {
       </div>
 
       {/* Upload zone */}
-      <UploadZone onUpload={handleUpload} onComplete={handleUploadComplete} categoryId={activeCategoryId ?? undefined} />
+      <UploadZone onUpload={handleUpload} onComplete={handleUploadComplete} categoryId={categoryId ?? undefined} />
 
       {/* Files content */}
       {isLoading ? (
@@ -268,8 +314,8 @@ export default function FilesPage() {
       ) : files.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
           <Upload className="h-10 w-10 mb-4 opacity-30" />
-          <p className="text-sm">还没有文件</p>
-          <p className="text-xs mt-1 opacity-70">拖拽文件到上方区域或点击上传按钮</p>
+          <p className="text-sm">该分类下还没有文件</p>
+          <p className="text-xs mt-1 opacity-70">拖拽文件到上方区域开始上传</p>
         </div>
       ) : viewMode === "grid" ? (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -277,6 +323,8 @@ export default function FilesPage() {
             const iconType = getFileTypeIcon(file.extension);
             const IconComponent = (FILE_ICON_MAP[iconType] || File) as React.ComponentType<{ className?: string }>;
             const isSelected = selectedFiles.has(file.id);
+            const showMore = moreMenuFileId === file.id;
+            const showMove = moveMenuFileId === file.id;
             return (
               <div
                 key={file.id}
@@ -331,21 +379,8 @@ export default function FilesPage() {
                   </>
                 )}
 
-                {/* Category badge */}
-                {file.category && (
-                  <span
-                    className="mt-2 inline-block rounded px-1.5 py-0.5 text-xs"
-                    style={{
-                      backgroundColor: `${RAINBOW_COLORS[file.category.color]?.hex ?? "#888"}18`,
-                      color: RAINBOW_COLORS[file.category.color]?.hex ?? "#888",
-                    }}
-                  >
-                    {file.category.name}
-                  </span>
-                )}
-
                 {/* Actions */}
-                <div className="mt-3 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="mt-3 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity relative">
                   <button onClick={() => setPreviewFile(file)} className="p-1.5 rounded-md hover:bg-secondary text-muted-foreground" title="预览">
                     <Eye className="h-4 w-4" />
                   </button>
@@ -359,15 +394,15 @@ export default function FilesPage() {
                     <Trash2 className="h-4 w-4" />
                   </button>
                   {/* More menu */}
-                  <div className="relative ml-auto" ref={moreMenuFileId === file.id ? moreMenuRef : undefined}>
+                  <div className="relative ml-auto" ref={showMore ? moreMenuRef : undefined}>
                     <button
-                      onClick={(e) => { e.stopPropagation(); setMoreMenuFileId(moreMenuFileId === file.id ? null : file.id); }}
+                      onClick={(e) => { e.stopPropagation(); setMoreMenuFileId(showMore ? null : file.id); }}
                       className="p-1.5 rounded-md hover:bg-secondary text-muted-foreground"
                       title="更多"
                     >
                       <MoreHorizontal className="h-4 w-4" />
                     </button>
-                    {moreMenuFileId === file.id && (
+                    {showMore && (
                       <div
                         ref={moreMenuRef}
                         className="absolute right-0 top-full mt-1 z-50 min-w-36 rounded-lg border border-border bg-card py-1 shadow-lg"
@@ -387,12 +422,12 @@ export default function FilesPage() {
                         </button>
                         <div className="relative">
                           <button
-                            onClick={() => setMoveMenuFileId(moveMenuFileId === file.id ? null : file.id)}
+                            onClick={() => setMoveMenuFileId(showMove ? null : file.id)}
                             className="flex w-full items-center gap-2 px-3 py-1.5 text-sm hover:bg-secondary transition-colors"
                           >
                             <FolderOpen className="h-3.5 w-3.5" /> 移动到...
                           </button>
-                          {moveMenuFileId === file.id && (
+                          {showMove && (
                             <div className="absolute left-full top-0 ml-1 min-w-28 rounded-lg border border-border bg-card py-1 shadow-lg">
                               <button
                                 onClick={() => handleMove(file.id, null)}
@@ -400,7 +435,7 @@ export default function FilesPage() {
                               >
                                 未分类
                               </button>
-                              {categories.filter((c) => c.id !== activeCategoryId).map((cat) => (
+                              {categories.filter((c) => c.id !== categoryId).map((cat) => (
                                 <button
                                   key={cat.id}
                                   onClick={() => handleMove(file.id, cat.id)}
@@ -432,15 +467,16 @@ export default function FilesPage() {
                 <th className="px-4 py-2.5 text-left text-xs font-medium text-muted-foreground">名称</th>
                 <th className="px-4 py-2.5 text-left text-xs font-medium text-muted-foreground w-20">大小</th>
                 <th className="px-4 py-2.5 text-left text-xs font-medium text-muted-foreground w-16">类型</th>
-                <th className="px-4 py-2.5 text-left text-xs font-medium text-muted-foreground w-24">分类</th>
                 <th className="px-4 py-2.5 text-left text-xs font-medium text-muted-foreground w-28">修改时间</th>
-                <th className="px-4 py-2.5 text-right text-xs font-medium text-muted-foreground w-28">操作</th>
+                <th className="px-4 py-2.5 text-right text-xs font-medium text-muted-foreground w-36">操作</th>
               </tr>
             </thead>
             <tbody>
               {files.map((file) => {
                 const iconType = getFileTypeIcon(file.extension);
                 const IconComponent = (FILE_ICON_MAP[iconType] || File) as React.ComponentType<{ className?: string }>;
+                const showMore = moreMenuFileId === file.id;
+                const showMove = moveMenuFileId === file.id;
                 return (
                   <tr key={file.id} className="border-b border-border/50 hover:bg-secondary/30 transition-colors">
                     <td className="px-4 py-2.5">
@@ -470,21 +506,6 @@ export default function FilesPage() {
                     <td className="px-4 py-2.5">
                       <span className="text-xs text-muted-foreground uppercase">{file.extension}</span>
                     </td>
-                    <td className="px-4 py-2.5">
-                      {file.category ? (
-                        <span
-                          className="inline-block rounded px-1.5 py-0.5 text-xs"
-                          style={{
-                            backgroundColor: `${RAINBOW_COLORS[file.category.color]?.hex ?? "#888"}18`,
-                            color: RAINBOW_COLORS[file.category.color]?.hex ?? "#888",
-                          }}
-                        >
-                          {file.category.name}
-                        </span>
-                      ) : (
-                        <span className="text-xs text-muted-foreground">-</span>
-                      )}
-                    </td>
                     <td className="px-4 py-2.5 text-sm text-muted-foreground">{formatRelativeTime(file.updatedAt)}</td>
                     <td className="px-4 py-2.5 text-right">
                       <div className="flex items-center justify-end gap-0.5">
@@ -500,16 +521,15 @@ export default function FilesPage() {
                         <button onClick={() => handleDelete([file.id])} className="p-1 rounded hover:bg-destructive/10 text-muted-foreground hover:text-destructive" title="删除">
                           <Trash2 className="h-4 w-4" />
                         </button>
-                        {/* More menu */}
-                        <div className="relative" ref={moreMenuFileId === file.id ? moreMenuRef : undefined}>
+                        <div className="relative" ref={showMore ? moreMenuRef : undefined}>
                           <button
-                            onClick={(e) => { e.stopPropagation(); setMoreMenuFileId(moreMenuFileId === file.id ? null : file.id); }}
+                            onClick={(e) => { e.stopPropagation(); setMoreMenuFileId(showMore ? null : file.id); }}
                             className="p-1 rounded hover:bg-secondary text-muted-foreground"
                             title="更多"
                           >
                             <MoreHorizontal className="h-4 w-4" />
                           </button>
-                          {moreMenuFileId === file.id && (
+                          {showMore && (
                             <div
                               ref={moreMenuRef}
                               className="absolute right-0 top-full mt-1 z-50 min-w-36 rounded-lg border border-border bg-card py-1 shadow-lg"
@@ -528,12 +548,12 @@ export default function FilesPage() {
                               </button>
                               <div className="relative">
                                 <button
-                                  onClick={() => setMoveMenuFileId(moveMenuFileId === file.id ? null : file.id)}
+                                  onClick={() => setMoveMenuFileId(showMove ? null : file.id)}
                                   className="flex w-full items-center gap-2 px-3 py-1.5 text-sm hover:bg-secondary transition-colors"
                                 >
                                   <FolderOpen className="h-3.5 w-3.5" /> 移动到...
                                 </button>
-                                {moveMenuFileId === file.id && (
+                                {showMove && (
                                   <div className="absolute left-full top-0 ml-1 min-w-28 rounded-lg border border-border bg-card py-1 shadow-lg">
                                     <button
                                       onClick={() => handleMove(file.id, null)}
@@ -541,7 +561,7 @@ export default function FilesPage() {
                                     >
                                       未分类
                                     </button>
-                                    {categories.filter((c) => c.id !== activeCategoryId).map((cat) => (
+                                    {categories.filter((c) => c.id !== categoryId).map((cat) => (
                                       <button
                                         key={cat.id}
                                         onClick={() => handleMove(file.id, cat.id)}

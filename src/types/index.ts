@@ -14,16 +14,16 @@ export interface UserProfile {
 }
 
 // ---- Category (七彩配色) ----
-export type RainbowColor = "red" | "orange" | "yellow" | "green" | "cyan" | "blue" | "purple";
+export type RainbowColor = "red" | "orange" | "yellow" | "green" | "blue" | "darkblue" | "purple";
 
 export const RAINBOW_COLORS: Record<RainbowColor, { hex: string; label: string; gradient: string }> = {
-  red:    { hex: "#EF4444", label: "红", gradient: "from-red-500/20 to-red-600/10" },
-  orange: { hex: "#F97316", label: "橙", gradient: "from-orange-500/20 to-orange-600/10" },
-  yellow: { hex: "#EAB308", label: "黄", gradient: "from-yellow-500/20 to-yellow-600/10" },
-  green:  { hex: "#22C55E", label: "绿", gradient: "from-green-500/20 to-green-600/10" },
-  cyan:   { hex: "#06B6D4", label: "青", gradient: "from-cyan-500/20 to-cyan-600/10" },
-  blue:   { hex: "#3B82F6", label: "蓝", gradient: "from-blue-500/20 to-blue-600/10" },
-  purple: { hex: "#A855F7", label: "紫", gradient: "from-purple-500/20 to-purple-600/10" },
+  red:      { hex: "#DC2626", label: "红", gradient: "from-red-500/20 to-red-600/10" },
+  orange:   { hex: "#EA580C", label: "橙", gradient: "from-orange-500/20 to-orange-600/10" },
+  yellow:   { hex: "#CA8A04", label: "黄", gradient: "from-yellow-500/20 to-yellow-600/10" },
+  green:    { hex: "#BDB76B", label: "绿", gradient: "from-green-500/20 to-green-600/10" },
+  blue:     { hex: "#87CEFA", label: "蓝", gradient: "from-blue-500/20 to-blue-600/10" },
+  darkblue: { hex: "#1E3A8A", label: "深蓝", gradient: "from-blue-800/20 to-blue-900/10" },
+  purple:   { hex: "#7C3AED", label: "紫", gradient: "from-purple-500/20 to-purple-600/10" },
 };
 
 export interface Category {

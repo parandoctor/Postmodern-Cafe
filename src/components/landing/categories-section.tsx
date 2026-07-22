@@ -2,129 +2,115 @@
 
 import * as React from "react";
 import { motion } from "framer-motion";
-import {
-  Folder,
-  Image,
-  FileText,
-  Music,
-  Video,
-  Archive,
-  Code,
-  File,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
 import type { RainbowColor } from "@/types";
-import { RAINBOW_COLORS } from "@/types";
 
-const categoryItems: Array<{
-  color: RainbowColor;
-  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
+const categories: Array<{
+  color: string;
+  bgColor: string;
   label: string;
   description: string;
 }> = [
-  { color: "red", icon: Image, label: "图片", description: "JPEG, PNG, GIF, WebP..." },
-  { color: "orange", icon: Video, label: "视频", description: "MP4, WebM, MOV..." },
-  { color: "yellow", icon: Music, label: "音频", description: "MP3, WAV, FLAC..." },
-  { color: "green", icon: FileText, label: "文档", description: "PDF, Word, Excel..." },
-  { color: "cyan", icon: Code, label: "代码", description: "JS, TS, Python, Java..." },
-  { color: "blue", icon: Archive, label: "压缩包", description: "ZIP, RAR, 7z..." },
-  { color: "purple", icon: Folder, label: "其他", description: "任意格式文件..." },
+  { color: "red",      bgColor: "#DC2626", label: "红", description: "重要文件 · 紧急事项" },
+  { color: "orange",   bgColor: "#EA580C", label: "橙", description: "创意灵感 · 设计素材" },
+  { color: "yellow",   bgColor: "#CA8A04", label: "黄", description: "学习笔记 · 知识库" },
+  { color: "green",    bgColor: "#BDB76B", label: "绿", description: "个人文档 · 证件资料" },
+  { color: "blue",     bgColor: "#87CEFA", label: "蓝", description: "工作文件 · 项目管理" },
+  { color: "darkblue", bgColor: "#1E3A8A", label: "深蓝", description: "归档备份 · 历史记录" },
+  { color: "purple",   bgColor: "#7C3AED", label: "紫", description: "娱乐媒体 · 个人收藏" },
 ];
 
-function CategoryCard({
-  color,
-  icon: Icon,
+function CategoryPanel({
+  bgColor,
   label,
   description,
   index,
 }: {
-  color: RainbowColor;
-  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
+  bgColor: string;
   label: string;
   description: string;
   index: number;
 }) {
-  const colorInfo = RAINBOW_COLORS[color];
-
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.5, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }}
-      className="group relative"
+    <section
+      className="relative flex h-screen w-full snap-start items-center justify-center overflow-hidden"
+      style={{ backgroundColor: bgColor }}
     >
+      {/* Subtle pattern overlay */}
       <div
-        className={cn(
-          "relative overflow-hidden rounded-2xl border p-6 transition-all duration-500",
-          "hover:shadow-xl hover:-translate-y-1",
-        )}
+        className="pointer-events-none absolute inset-0 opacity-[0.04]"
         style={{
-          borderColor: `${colorInfo.hex}30`,
-          backgroundColor: `${colorInfo.hex}08`,
+          backgroundImage: `radial-gradient(circle at 25% 25%, #ffffff 1px, transparent 1px)`,
+          backgroundSize: "40px 40px",
         }}
+      />
+
+      <motion.div
+        initial={{ opacity: 0, y: 60 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="relative z-10 px-8 text-center text-white"
       >
-        {/* Hover glow */}
-        <div
-          className="absolute -inset-20 opacity-0 transition-opacity duration-500 group-hover:opacity-20"
-          style={{
-            background: `radial-gradient(circle at center, ${colorInfo.hex}, transparent 70%)`,
-          }}
-        />
-
-        {/* Icon */}
-        <div
-          className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl transition-all duration-500 group-hover:scale-110 group-hover:shadow-lg"
-          style={{
-            backgroundColor: `${colorInfo.hex}20`,
-            boxShadow: `0 0 0 0 ${colorInfo.hex}00`,
-          }}
+        <motion.span
+          initial={{ opacity: 0, scale: 0.8 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mb-6 inline-block text-[12rem] font-black leading-none tracking-tight sm:text-[16rem] md:text-[20rem]"
+          style={{ opacity: 0.15 }}
         >
-          <Icon className="h-7 w-7 transition-transform duration-500 group-hover:scale-110" style={{ color: colorInfo.hex }} />
-        </div>
+          {label}
+        </motion.span>
 
-        {/* Content */}
-        <h3 className="text-lg font-semibold">{label}</h3>
-        <p className="mt-1 text-sm text-muted-foreground">{description}</p>
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mx-auto mt-4 max-w-lg text-lg font-light tracking-wide text-white/80 sm:text-xl"
+        >
+          {description}
+        </motion.p>
 
-        {/* Color bar */}
-        <div
-          className="mt-4 h-1.5 w-12 rounded-full transition-all duration-500 group-hover:w-full"
-          style={{ backgroundColor: colorInfo.hex }}
-        />
+        {/* Bottom index */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          className="absolute bottom-12 left-1/2 -translate-x-1/2"
+        >
+          <span className="text-sm font-light text-white/40">
+            {String(index + 1).padStart(2, "0")} / 07
+          </span>
+        </motion.div>
+      </motion.div>
+
+      {/* Side color label */}
+      <div className="pointer-events-none absolute right-8 top-1/2 -translate-y-1/2 hidden md:block">
+        <span
+          className="text-[8rem] font-black leading-none tracking-tighter text-white/10"
+          style={{ writingMode: "vertical-rl" }}
+        >
+          {label}
+        </span>
       </div>
-    </motion.div>
+    </section>
   );
 }
 
 export function CategoriesSection() {
   return (
-    <section id="categories" className="relative py-24 lg:py-32">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        {/* Section header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="mx-auto max-w-2xl text-center"
-        >
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            七彩<span className="rainbow-text">分类</span>体系
-          </h2>
-          <p className="mt-4 text-muted-foreground">
-            每个颜色对应一种文件类型，统一的视觉规范让文件管理一目了然。
-            红橙黄绿青蓝紫，让文件像彩虹一样有序。
-          </p>
-        </motion.div>
-
-        {/* Category grid */}
-        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-7">
-          {categoryItems.map((item, index) => (
-            <CategoryCard key={item.color} {...item} index={index} />
-          ))}
-        </div>
-      </div>
-    </section>
+    <div className="h-screen snap-y snap-mandatory overflow-y-scroll">
+      {categories.map((cat, index) => (
+        <CategoryPanel
+          key={cat.color}
+          bgColor={cat.bgColor}
+          label={cat.label}
+          description={cat.description}
+          index={index}
+        />
+      ))}
+    </div>
   );
 }

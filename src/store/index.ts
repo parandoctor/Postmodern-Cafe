@@ -1,20 +1,33 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import type { FileItem, Category, UploadProgress, UserProfile } from "@/types";
 
 // ---- UI Store ----
 interface UIState {
   sidebarOpen: boolean;
   theme: "light" | "dark" | "system";
+  wallpaper: string | null;
   setSidebarOpen: (open: boolean) => void;
   toggleSidebar: () => void;
+  setWallpaper: (wallpaper: string | null) => void;
 }
 
-export const useUIStore = create<UIState>()((set) => ({
-  sidebarOpen: true,
-  theme: "system",
-  setSidebarOpen: (open) => set({ sidebarOpen: open }),
-  toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
-}));
+export const useUIStore = create<UIState>()(
+  persist(
+    (set) => ({
+      sidebarOpen: true,
+      theme: "system",
+      wallpaper: null,
+      setSidebarOpen: (open) => set({ sidebarOpen: open }),
+      toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
+      setWallpaper: (wallpaper) => set({ wallpaper }),
+    }),
+    {
+      name: "rainbow-box-ui",
+      partialize: (state) => ({ wallpaper: state.wallpaper, sidebarOpen: state.sidebarOpen }),
+    },
+  ),
+);
 
 // ---- Upload Store ----
 interface UploadState {

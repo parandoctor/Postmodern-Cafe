@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, LogIn, UserPlus } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Button } from "@/components/ui/button";
@@ -32,7 +32,7 @@ export function Navbar() {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
         scrolled
-          ? "bg-background/80 backdrop-blur-2xl border-b border-border/50 shadow-sm"
+          ? "bg-background border-b border-border shadow-sm"
           : "bg-transparent",
       )}
     >
@@ -42,11 +42,11 @@ export function Navbar() {
           href="/"
           className="group flex items-center gap-2.5"
         >
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-blue-600 shadow-lg shadow-primary/20">
-            <span className="text-sm font-bold text-white">R</span>
+          <div className="flex h-8 w-8 items-center justify-center border border-border bg-background">
+            <span className="text-sm font-bold">R</span>
           </div>
           <span className="text-lg font-semibold tracking-tight">
-            <span className="rainbow-text">收纳盒</span>
+            收纳盒
           </span>
         </Link>
 
@@ -56,24 +56,18 @@ export function Navbar() {
             <a
               key={link.href}
               href={link.href}
-              className="rounded-full px-4 py-2 text-sm text-muted-foreground transition-all duration-300 hover:bg-secondary hover:text-foreground"
+              className="rounded-none px-4 py-2 text-sm text-muted-foreground transition-all duration-300 hover:bg-secondary hover:text-foreground"
             >
               {link.label}
             </a>
           ))}
           <div className="ml-4 flex items-center gap-2">
             <ThemeToggle />
-            <Button variant="ghost" size="sm" asChild>
-              <a href="/login">
-                <LogIn className="mr-1.5 h-4 w-4" />
-                登录
-              </a>
+            <Button variant="outline" size="sm" asChild>
+              <a href="/login">登录</a>
             </Button>
             <Button size="sm" asChild>
-              <a href="/register">
-                <UserPlus className="mr-1.5 h-4 w-4" />
-                注册
-              </a>
+              <a href="/register">注册</a>
             </Button>
           </div>
         </div>
@@ -100,7 +94,7 @@ export function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="border-b border-border/50 bg-background/95 backdrop-blur-2xl md:hidden"
+            className="border-b border-border bg-background md:hidden"
           >
             <div className="space-y-1 px-6 py-4">
               {navLinks.map((link) => (
@@ -108,7 +102,7 @@ export function Navbar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className="block rounded-xl px-4 py-3 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                  className="block px-4 py-3 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
                 >
                   {link.label}
                 </a>
