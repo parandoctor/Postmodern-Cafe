@@ -4,7 +4,7 @@ import * as React from "react";
 import { Heart, FileText, Trash2, Download, Eye, Image, Video, Music, Archive, Code, File } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FilePreview } from "@/components/files/file-preview";
-import { formatFileSize, formatRelativeTime, getFileTypeIcon, cn } from "@/lib/utils";
+import { formatFileSize, formatRelativeTime, getFileTypeIcon, cn, getContrastColor } from "@/lib/utils";
 import { getFavorites, toggleFavorite, deleteFiles } from "@/actions/files";
 import type { FileItem } from "@/types";
 import { RAINBOW_COLORS } from "@/types";
@@ -91,17 +91,20 @@ export default function FavoritesPage() {
                 <p className="mt-0.5 text-xs text-muted-foreground">
                   {formatFileSize(file.size)} · {formatRelativeTime(file.updatedAt)}
                 </p>
-                {file.category && (
-                  <span
-                    className="mt-2 inline-block rounded px-1.5 py-0.5 text-xs"
-                    style={{
-                      backgroundColor: `${RAINBOW_COLORS[file.category.color]?.hex ?? "#888"}18`,
-                      color: RAINBOW_COLORS[file.category.color]?.hex ?? "#888",
-                    }}
-                  >
-                    {file.category.name}
-                  </span>
-                )}
+                {file.category && (() => {
+                  const hex = RAINBOW_COLORS[file.category.color]?.hex ?? "#888";
+                  return (
+                    <span
+                      className="mt-2 inline-block rounded px-1.5 py-0.5 text-xs font-medium"
+                      style={{
+                        backgroundColor: `${hex}1a`,
+                        color: getContrastColor(hex),
+                      }}
+                    >
+                      {file.category.name}
+                    </span>
+                  );
+                })()}
                 <div className="mt-3 flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button onClick={() => setPreviewFile(file)} className="p-1.5 rounded hover:bg-secondary text-muted-foreground" title="预览">
                     <Eye className="h-3.5 w-3.5" />

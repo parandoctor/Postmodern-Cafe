@@ -14,15 +14,21 @@ import {
   ChevronRight,
   Image,
   X,
+  Check,
+  CalendarDays,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
-import { CursorTrail } from "@/components/ui/cursor-trail";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { logoutUser } from "@/actions/auth";
 import { useUIStore } from "@/store";
+import { SidebarTodo } from "@/components/layout/sidebar-todo";
+import { SidebarNotes } from "@/components/layout/sidebar-notes";
+import { SidebarMusic } from "@/components/layout/sidebar-music";
+import { CalendarWidget } from "@/components/layout/calendar-widget";
+import { TimerWidget } from "@/components/layout/timer-widget";
 
 const sidebarItems = [
   { label: "概览", href: "/dashboard", icon: LayoutDashboard },
@@ -33,19 +39,10 @@ const sidebarItems = [
   { label: "回收站", href: "/dashboard/recycle", icon: Trash2 },
 ];
 
-const PRESET_WALLPAPERS = [
-  { label: "晨光", color: "#f5a623", url: "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#f5a623"/><stop offset="100%" style="stop-color:#f7dc6f"/></linearGradient></defs><rect width="800" height="600" fill="url(#g)"/></svg>') },
-  { label: "海洋", color: "#2196F3", url: "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#2196F3"/><stop offset="100%" style="stop-color:#64B5F6"/></linearGradient></defs><rect width="800" height="600" fill="url(#g)"/></svg>') },
-  { label: "森林", color: "#2E7D32", url: "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#2E7D32"/><stop offset="100%" style="stop-color:#66BB6A"/></linearGradient></defs><rect width="800" height="600" fill="url(#g)"/></svg>') },
-  { label: "暗夜", color: "#1a1a2e", url: "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#1a1a2e"/><stop offset="100%" style="stop-color:#16213e"/></linearGradient></defs><rect width="800" height="600" fill="url(#g)"/></svg>') },
-  { label: "薄暮", color: "#8B5CF6", url: "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#8B5CF6"/><stop offset="100%" style="stop-color:#EC4899"/></linearGradient></defs><rect width="800" height="600" fill="url(#g)"/></svg>') },
-  { label: "极光", color: "#06D6A0", url: "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#06D6A0"/><stop offset="100%" style="stop-color:#118AB2"/></linearGradient></defs><rect width="800" height="600" fill="url(#g)"/></svg>') },
-];
-
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { sidebarOpen, toggleSidebar, wallpaper, setWallpaper } = useUIStore();
+  const { sidebarOpen, toggleSidebar, rightOpen, setRightOpen, toggleRight, wallpaper, setWallpaper } = useUIStore();
   const [wallpaperOpen, setWallpaperOpen] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -67,57 +64,72 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex min-h-screen bg-background">
-      {/* Sidebar */}
+      {/* Sidebar - Notion 风格 */}
       <aside
         className={cn(
-          "fixed left-0 top-0 z-40 flex h-full flex-col border-r border-border bg-card transition-all duration-200",
-          sidebarOpen ? "w-60" : "w-16",
+          "fixed left-0 top-0 z-40 flex h-full flex-col border-r border-black/10 bg-card transition-all duration-200 dark:border-white/10",
+          sidebarOpen ? "w-[280px]" : "w-16",
         )}
       >
         {/* Logo */}
-        <div className="flex h-16 items-center border-b border-border px-4">
+        <div className="flex h-14 shrink-0 items-center border-b border-black/10 px-4 dark:border-white/10">
           {sidebarOpen ? (
             <a href="/dashboard" className="flex items-center gap-2.5">
-              <div className="flex h-7 w-7 items-center justify-center rounded bg-foreground">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-foreground shadow-notion">
                 <span className="text-xs font-bold text-background">R</span>
               </div>
-              <span className="font-semibold text-sm">收纳盒</span>
+              <span className="text-sm font-semibold tracking-tight">收纳盒</span>
             </a>
           ) : (
-            <a href="/dashboard" className="mx-auto flex h-7 w-7 items-center justify-center rounded bg-foreground">
+            <a href="/dashboard" className="mx-auto flex h-7 w-7 items-center justify-center rounded-lg bg-foreground">
               <span className="text-xs font-bold text-background">R</span>
             </a>
           )}
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 space-y-0.5 overflow-y-auto p-2">
-          {sidebarItems.map((item) => {
-            const isActive = pathname === item.href ||
-              (item.href !== "/dashboard" && pathname.startsWith(item.href));
-            return (
-              <a
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                  isActive
-                    ? "bg-secondary text-foreground"
-                    : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground",
-                )}
-              >
-                <item.icon className="h-4 w-4 shrink-0" />
-                {sidebarOpen && <span>{item.label}</span>}
-              </a>
-            );
-          })}
-        </nav>
+        {/* 滚动区域：导航 + 小部件 */}
+        <div className="flex-1 space-y-3 overflow-y-auto p-2">
+          {sidebarOpen && (
+            <p className="px-3 pt-1 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+              工作区
+            </p>
+          )}
+          <nav className="space-y-0.5">
+            {sidebarItems.map((item) => {
+              const isActive = pathname === item.href ||
+                (item.href !== "/dashboard" && pathname.startsWith(item.href));
+              return (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
+                    isActive
+                      ? "bg-black/5 font-medium text-foreground dark:bg-white/10"
+                      : "text-muted-foreground hover:bg-black/5 hover:text-foreground dark:hover:bg-white/10",
+                  )}
+                >
+                  <item.icon className="h-4 w-4 shrink-0" />
+                  {sidebarOpen && <span>{item.label}</span>}
+                </a>
+              );
+            })}
+          </nav>
+
+          {sidebarOpen && (
+            <div className="space-y-1 border-t border-black/10 pt-2 dark:border-white/10">
+              <SidebarTodo />
+              <SidebarNotes />
+              <SidebarMusic />
+            </div>
+          )}
+        </div>
 
         {/* Bottom */}
-        <div className="border-t border-border p-2">
+        <div className="shrink-0 border-t border-black/10 p-2 dark:border-white/10">
           <button
             onClick={toggleSidebar}
-            className="flex w-full items-center rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-secondary transition-colors"
+            className="flex w-full items-center rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-black/5 hover:text-foreground dark:hover:bg-white/10 transition-colors"
           >
             {sidebarOpen ? (
               <>
@@ -135,7 +147,8 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       <div
         className={cn(
           "flex flex-1 flex-col transition-all duration-200",
-          sidebarOpen ? "ml-60" : "ml-16",
+          sidebarOpen ? "ml-[280px]" : "ml-16",
+          rightOpen ? "lg:mr-[300px]" : "lg:mr-0",
         )}
         style={
           wallpaper
@@ -160,6 +173,23 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="flex items-center gap-1">
+            <button
+              onClick={toggleRight}
+              className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors lg:hidden"
+              title="侧边面板"
+            >
+              <CalendarDays className="h-4 w-4" />
+            </button>
+            <button
+              onClick={toggleRight}
+              className={cn(
+                "hidden h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors lg:flex",
+                rightOpen && "bg-secondary text-foreground",
+              )}
+              title={rightOpen ? "收起面板" : "展开面板"}
+            >
+              <CalendarDays className="h-4 w-4" />
+            </button>
             <button
               onClick={() => setWallpaperOpen(true)}
               className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
@@ -212,7 +242,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         open={wallpaperOpen}
         onClose={() => setWallpaperOpen(false)}
         title="更换背景壁纸"
-        description="选择一张图片作为后台壁纸"
+        description="仅提供默认浅色与自定义壁纸"
         maxWidth="max-w-md"
       >
         <div className="space-y-4">
@@ -223,33 +253,42 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             onChange={handleWallpaperUpload}
             className="hidden"
           />
+
+          {/* 默认浅色 */}
           <button
-            onClick={() => fileInputRef.current?.click()}
-            className="w-full flex items-center justify-center gap-2 rounded-lg border border-border bg-background px-4 py-2.5 text-sm hover:bg-secondary transition-colors"
+            onClick={() => {
+              setWallpaper(null);
+              setWallpaperOpen(false);
+            }}
+            className="flex w-full items-center gap-3 rounded-lg border border-black/10 bg-background px-4 py-3 text-sm hover:bg-black/5 dark:border-white/10 dark:hover:bg-white/10 transition-colors"
           >
-            <Image className="h-4 w-4" /> 从本地选择图片
+            <span
+              className={cn(
+                "flex h-10 w-10 items-center justify-center rounded-lg",
+                !wallpaper ? "bg-foreground text-background" : "bg-black/5 dark:bg-white/10",
+              )}
+            >
+              <Check className="h-4 w-4" />
+            </span>
+            <span className="text-left">
+              <span className="block font-medium">默认浅色</span>
+              <span className="block text-xs text-muted-foreground">简洁的纯色背景</span>
+            </span>
           </button>
 
-          <div>
-            <p className="mb-2 text-xs font-medium text-muted-foreground">预设壁纸</p>
-            <div className="grid grid-cols-3 gap-2">
-              {PRESET_WALLPAPERS.map((wp, i) => (
-                <button
-                  key={i}
-                  onClick={() => {
-                    setWallpaper(wp.url);
-                    setWallpaperOpen(false);
-                  }}
-                  className="group relative aspect-video overflow-hidden rounded-lg border border-border transition-all hover:scale-105"
-                  style={{ backgroundColor: wp.color }}
-                >
-                  <span className="absolute inset-0 flex items-center justify-center text-white/80 text-xs font-medium">
-                    {wp.label}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
+          {/* 自定义壁纸 */}
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="flex w-full items-center gap-3 rounded-lg border border-black/10 bg-background px-4 py-3 text-sm hover:bg-black/5 dark:border-white/10 dark:hover:bg-white/10 transition-colors"
+          >
+            <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-black/5 dark:bg-white/10">
+              <Image className="h-4 w-4" />
+            </span>
+            <span className="text-left">
+              <span className="block font-medium">自定义壁纸</span>
+              <span className="block text-xs text-muted-foreground">从本地选择一张图片</span>
+            </span>
+          </button>
 
           {wallpaper && (
             <button
@@ -265,8 +304,28 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         </div>
       </Dialog>
 
-      {/* Cursor stardust trail */}
-      <CursorTrail />
+      {/* Right panel: 日历 + 计时器 */}
+      <aside
+        className={cn(
+          "fixed right-0 top-0 z-40 hidden h-full w-[300px] flex-col border-l border-black/10 bg-card transition-all duration-200 lg:flex dark:border-white/10",
+          rightOpen ? "translate-x-0" : "translate-x-full",
+        )}
+      >
+        <div className="flex h-14 shrink-0 items-center justify-between border-b border-black/10 px-4 dark:border-white/10">
+          <span className="text-sm font-semibold tracking-tight">面板</span>
+          <button
+            onClick={() => setRightOpen(false)}
+            className="rounded-md p-1.5 text-muted-foreground hover:bg-black/5 hover:text-foreground dark:hover:bg-white/10 transition-colors"
+            title="收起面板"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        <div className="flex-1 space-y-4 overflow-y-auto p-3">
+          <CalendarWidget />
+          <TimerWidget />
+        </div>
+      </aside>
     </div>
   );
 }

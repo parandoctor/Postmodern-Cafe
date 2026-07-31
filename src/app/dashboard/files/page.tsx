@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { UploadZone } from "@/components/files/upload-zone";
 import { FilePreview } from "@/components/files/file-preview";
 import { useFileStore, useCategoryStore } from "@/store";
-import { formatFileSize, formatRelativeTime, getFileTypeIcon, cn } from "@/lib/utils";
+import { formatFileSize, formatRelativeTime, getFileTypeIcon, cn, getContrastColor } from "@/lib/utils";
 import {
   getFiles, uploadFile, deleteFiles,
   toggleFavorite, renameFile, copyFile, moveFiles,
@@ -332,17 +332,20 @@ export default function FilesPage() {
                 )}
 
                 {/* Category badge */}
-                {file.category && (
-                  <span
-                    className="mt-2 inline-block rounded px-1.5 py-0.5 text-xs"
-                    style={{
-                      backgroundColor: `${RAINBOW_COLORS[file.category.color]?.hex ?? "#888"}18`,
-                      color: RAINBOW_COLORS[file.category.color]?.hex ?? "#888",
-                    }}
-                  >
-                    {file.category.name}
-                  </span>
-                )}
+                {file.category && (() => {
+                  const hex = RAINBOW_COLORS[file.category.color]?.hex ?? "#888";
+                  return (
+                    <span
+                      className="mt-2 inline-block rounded px-1.5 py-0.5 text-xs font-medium"
+                      style={{
+                        backgroundColor: `${hex}1a`,
+                        color: getContrastColor(hex),
+                      }}
+                    >
+                      {file.category.name}
+                    </span>
+                  );
+                })()}
 
                 {/* Actions */}
                 <div className="mt-3 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -471,17 +474,20 @@ export default function FilesPage() {
                       <span className="text-xs text-muted-foreground uppercase">{file.extension}</span>
                     </td>
                     <td className="px-4 py-2.5">
-                      {file.category ? (
-                        <span
-                          className="inline-block rounded px-1.5 py-0.5 text-xs"
-                          style={{
-                            backgroundColor: `${RAINBOW_COLORS[file.category.color]?.hex ?? "#888"}18`,
-                            color: RAINBOW_COLORS[file.category.color]?.hex ?? "#888",
-                          }}
-                        >
-                          {file.category.name}
-                        </span>
-                      ) : (
+                      {file.category ? (() => {
+                        const hex = RAINBOW_COLORS[file.category.color]?.hex ?? "#888";
+                        return (
+                          <span
+                            className="inline-block rounded px-1.5 py-0.5 text-xs font-medium"
+                            style={{
+                              backgroundColor: `${hex}1a`,
+                              color: getContrastColor(hex),
+                            }}
+                          >
+                            {file.category.name}
+                          </span>
+                        );
+                      })() : (
                         <span className="text-xs text-muted-foreground">-</span>
                       )}
                     </td>

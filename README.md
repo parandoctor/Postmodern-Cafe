@@ -1,23 +1,23 @@
-# 🗂️ 收纳盒 (Rainbow-box) `v1.0.2`
+# 🗂️ 收纳盒 (Rainbow-box) `v1.1.0`
 
-> 现代化个人文件管理与分类收纳平台 —— 以七彩分类重新定义文件管理方式，让每一份文件都有它的归属。
+> 现代化个人文件管理与分类收纳平台 —— 以黑白灰阶分类重新定义文件管理方式，让每一份文件都有它的归属。
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.0.2-blue" alt="Version" />
+  <img src="https://img.shields.io/badge/version-1.1.0-blue" alt="Version" />
   <img src="https://img.shields.io/badge/Next.js-15.1-black?logo=next.js" alt="Next.js" />
   <img src="https://img.shields.io/badge/React-19.0-61DAFB?logo=react" alt="React" />
   <img src="https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Prisma-6.6-2D3748?logo=prisma" alt="Prisma" />
-  <img src="https://img.shields.io/badge/Tailwind-3.4-06B6D4?logo=tailwindcss" alt="Tailwind" /
+  <img src="https://img.shields.io/badge/Tailwind-3.4-06B6D4?logo=tailwindcss" alt="Tailwind" />
 </p>
 
 ---
 
 ## 📖 项目简介
 
-**收纳盒 (Rainbow-box)** 是一个基于 Next.js 的现代化个人文件管理与分类收纳平台。它以"红、橙、黄、绿、蓝、深蓝、紫"七种颜色作为分类体系，让文件管理变得直观、优雅且高效。支持拖拽上传、在线预览、智能搜索、收藏、回收站等丰富的功能，并拥有精美的 Three.js 粒子动画首页和暗黑/明亮双主题切换。
+**收纳盒 (Rainbow-box)** 是一个基于 Next.js 的现代化个人文件管理与分类收纳平台。它采用"白、浅灰、中灰、灰、深灰、墨、黑"七级黑白灰阶作为分类体系，以 Notion 风格统一后台界面，让文件管理变得直观、优雅且高效。支持拖拽上传、在线预览、智能搜索、收藏、回收站等丰富的功能，并提供每日待办、随手记、音乐盒、日历与计时器等效率面板，以及暗黑/明亮双主题切换。
 
-当前版本 **v1.0.2** 在前序版本基础上进行了多项稳定性改进与体验优化。
+当前版本 **v1.1.0** 完成了后台 UI 整体重做：取消七种彩色分类，统一为黑白灰阶 + Notion 风格侧边栏与立体感卡片。
 
 ---
 
@@ -28,7 +28,7 @@
 | 功能 | 说明 |
 |------|------|
 | **拖拽上传** | 支持拖拽、点击、批量上传多种方式，大文件分块上传与断点续传，实时进度反馈，失败自动重试 |
-| **七彩分类** | 红、橙、黄、绿、蓝、深蓝、紫七种配色分类，统一视觉规范，让文件管理清晰直观 |
+| **黑白分类** | 白、浅灰、中灰、灰、深灰、墨、黑七级灰阶分类，统一视觉规范，让文件管理清晰直观 |
 | **在线预览** | 图片、视频、音频、PDF、Office 文档、Markdown 等常见格式无需下载，直接在线预览 |
 | **智能搜索** | 按文件名关键词快速检索，支持按分类、文件类型、日期范围多维筛选，分页懒加载流畅不卡顿 |
 | **收藏 & 最近** | 一键收藏常用文件，自动记录最近访问与最近修改，高频文件触手可及 |
@@ -46,7 +46,8 @@
 
 ### 🎭 用户体验
 
-- **Three.js 粒子动画**首页背景，2000 颗粒子随鼠标交互响应
+- **Notion 风格后台**：侧边栏、卡片、弹窗统一黑白灰阶设计，多层阴影营造立体感
+- **效率面板**：左侧每日待办、随手记、音乐盒（本地音乐上传播放）；右侧日历与计时器
 - **暗黑 / 明亮**双主题，可跟随系统或手动切换
 - **Framer Motion** 驱动的流畅页面过渡与交互动画
 - 响应式自适应布局，桌面端与移动端体验一致
@@ -143,9 +144,15 @@ Rainbow-box/
 │   │   │   ├── navbar.tsx             #     导航栏
 │   │   │   ├── hero.tsx               #     Three.js 粒子 Hero
 │   │   │   ├── features-section.tsx   #     功能特性展示
-│   │   │   ├── categories-section.tsx #     七彩分类展示
+│   │   │   ├── categories-section.tsx #     黑白分类展示
 │   │   │   └── footer.tsx             #     页脚
-│   │   ├── layout/                    #   布局组件（仪表盘侧栏）
+│   │   ├── layout/                    #   布局组件
+│   │   │   ├── dashboard-layout.tsx   #     仪表盘布局（Notion 侧边栏 + 右面板）
+│   │   │   ├── sidebar-todo.tsx       #     每日待办
+│   │   │   ├── sidebar-notes.tsx      #     随手记
+│   │   │   ├── sidebar-music.tsx      #     音乐盒（本地音乐）
+│   │   │   ├── calendar-widget.tsx    #     日历
+│   │   │   └── timer-widget.tsx       #     计时器
 │   │   └── ui/                        #   通用 UI 组件
 │   │       ├── button.tsx             #     按钮
 │   │       ├── input.tsx              #     输入框
@@ -153,8 +160,7 @@ Rainbow-box/
 │   │       ├── avatar.tsx             #     头像
 │   │       ├── label.tsx              #     标签
 │   │       ├── theme-provider.tsx     #     主题 Provider
-│   │       ├── theme-toggle.tsx       #     主题切换按钮
-│   │       └── cursor-trail.tsx       #     光标拖尾效果
+│   │       └── theme-toggle.tsx       #     主题切换按钮
 │   │
 │   ├── hooks/                         # 🔹 自定义 Hooks
 │   │   └── index.ts                   #   通用 Hooks 导出
@@ -162,14 +168,16 @@ Rainbow-box/
 │   ├── lib/                           # 🔹 工具库
 │   │   ├── api-response.ts            #   API 统一响应封装
 │   │   ├── auth.ts                    #   认证逻辑（Session、bcrypt）
+│   │   ├── idb.ts                     #   IndexedDB 封装（音乐曲库持久化）
 │   │   ├── prisma.ts                  #   Prisma 单例客户端
 │   │   ├── security.ts                #   安全工具（限流、哈希）
-│   │   ├── utils.ts                   #   通用工具函数（cn 等）
+│   │   ├── utils.ts                   #   通用工具函数（cn、getContrastColor 等）
 │   │   └── validations.ts             #   Zod Schema 校验定义
 │   │
 │   ├── services/                      # 🔹 业务服务层
 │   ├── store/                         # 🔹 Zustand 全局状态
-│   │   └── index.ts                   #   Store 定义
+│   │   ├── index.ts                   #   Store 定义（UI / 文件 / 分类）
+│   │   └── widgets.ts                 #   Widget Store（待办 / 随手记 / 音乐）
 │   ├── styles/                        # 🔹 额外样式表
 │   └── types/                         # 🔹 TypeScript 类型定义
 │       └── index.ts                   #   核心类型 & 接口

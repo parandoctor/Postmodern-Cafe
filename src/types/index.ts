@@ -13,17 +13,17 @@ export interface UserProfile {
   updatedAt: Date;
 }
 
-// ---- Category (七彩配色) ----
+// ---- Category (黑白灰阶配色) ----
 export type RainbowColor = "red" | "orange" | "yellow" | "green" | "blue" | "darkblue" | "purple";
 
 export const RAINBOW_COLORS: Record<RainbowColor, { hex: string; label: string; gradient: string }> = {
-  red:      { hex: "#DC2626", label: "红", gradient: "from-red-500/20 to-red-600/10" },
-  orange:   { hex: "#EA580C", label: "橙", gradient: "from-orange-500/20 to-orange-600/10" },
-  yellow:   { hex: "#CA8A04", label: "黄", gradient: "from-yellow-500/20 to-yellow-600/10" },
-  green:    { hex: "#BDB76B", label: "绿", gradient: "from-green-500/20 to-green-600/10" },
-  blue:     { hex: "#87CEFA", label: "蓝", gradient: "from-blue-500/20 to-blue-600/10" },
-  darkblue: { hex: "#1E3A8A", label: "深蓝", gradient: "from-blue-800/20 to-blue-900/10" },
-  purple:   { hex: "#7C3AED", label: "紫", gradient: "from-purple-500/20 to-purple-600/10" },
+  red:      { hex: "#f5f5f5", label: "白",     gradient: "from-neutral-100/40 to-neutral-200/20" },
+  orange:   { hex: "#e0e0e0", label: "浅灰",   gradient: "from-neutral-200/40 to-neutral-300/20" },
+  yellow:   { hex: "#c7c7c7", label: "中灰",   gradient: "from-neutral-300/40 to-neutral-400/20" },
+  green:    { hex: "#9e9e9e", label: "灰",     gradient: "from-neutral-400/40 to-neutral-500/20" },
+  blue:     { hex: "#6b6b6b", label: "深灰",   gradient: "from-neutral-500/40 to-neutral-600/20" },
+  darkblue: { hex: "#3b3b3b", label: "墨",     gradient: "from-neutral-700/40 to-neutral-800/20" },
+  purple:   { hex: "#141414", label: "黑",     gradient: "from-neutral-900/50 to-black/30" },
 };
 
 export interface Category {
