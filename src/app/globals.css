@@ -5,47 +5,47 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 0 0% 0%;
+    --foreground: 0 0% 9%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 0%;
+    --card-foreground: 0 0% 9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 0%;
-    --primary: 0 0% 0%;
+    --popover-foreground: 0 0% 9%;
+    --primary: 0 0% 9%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 0%;
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
-    --accent: 0 0% 96%;
-    --accent-foreground: 0 0% 0%;
-    --destructive: 0 0% 50%;
+    --secondary: 24 10% 96%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 24 10% 96%;
+    --muted-foreground: 24 6% 42%;
+    --accent: 24 10% 96%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 0% 45%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 88%;
-    --input: 0 0% 88%;
-    --ring: 0 0% 0%;
+    --border: 24 8% 88%;
+    --input: 24 8% 86%;
+    --ring: 0 0% 9%;
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 0 0% 0%;
-    --foreground: 0 0% 100%;
-    --card: 0 0% 4%;
-    --card-foreground: 0 0% 100%;
-    --popover: 0 0% 4%;
-    --popover-foreground: 0 0% 100%;
-    --primary: 0 0% 100%;
-    --primary-foreground: 0 0% 0%;
-    --secondary: 0 0% 10%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 0 0% 10%;
-    --muted-foreground: 0 0% 60%;
-    --accent: 0 0% 10%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 0% 40%;
+    --background: 0 0% 5%;
+    --foreground: 0 0% 95%;
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 95%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 0 0% 95%;
+    --primary-foreground: 0 0% 5%;
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 95%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 62%;
+    --accent: 0 0% 12%;
+    --accent-foreground: 0 0% 95%;
+    --destructive: 0 0% 55%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 15%;
-    --input: 0 0% 15%;
-    --ring: 0 0% 100%;
+    --border: 0 0% 17%;
+    --input: 0 0% 17%;
+    --ring: 0 0% 95%;
   }
 }
 
@@ -61,12 +61,15 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family:
+      Inter,
       -apple-system,
       BlinkMacSystemFont,
       "Helvetica Neue",
       Arial,
       "Noto Sans SC",
+      "PingFang SC",
       sans-serif;
+    font-feature-settings: "lnum", "locl";
   }
 }
 
@@ -74,6 +77,40 @@
 ::selection {
   background-color: hsl(0 0% 0% / 0.12);
   color: hsl(var(--foreground));
+}
+
+/* ---- Notion 风格工具类 ---- */
+@layer utilities {
+  /* 极细边界：whisper border */
+  .border-whisper {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  /* 多层阴影：柔和立体感 */
+  .shadow-notion {
+    box-shadow:
+      rgba(0, 0, 0, 0.04) 0px 4px 18px,
+      rgba(0, 0, 0, 0.027) 0px 2.025px 7.84688px,
+      rgba(0, 0, 0, 0.02) 0px 0.8px 2.925px,
+      rgba(0, 0, 0, 0.01) 0px 0.175px 1.04062px;
+  }
+
+  /* 深度阴影：弹层 / 悬浮卡片 */
+  .shadow-notion-deep {
+    box-shadow:
+      rgba(0, 0, 0, 0.01) 0px 1px 3px,
+      rgba(0, 0, 0, 0.02) 0px 3px 7px,
+      rgba(0, 0, 0, 0.02) 0px 7px 15px,
+      rgba(0, 0, 0, 0.04) 0px 14px 28px,
+      rgba(0, 0, 0, 0.05) 0px 23px 52px;
+  }
+
+  /* 黑色面板微投影（白字深色场景） */
+  .shadow-notion-dark {
+    box-shadow:
+      rgba(255, 255, 255, 0.06) 0px 1px 2px inset,
+      rgba(0, 0, 0, 0.25) 0px 8px 24px;
+  }
 }
 
 /* Scrollbar */

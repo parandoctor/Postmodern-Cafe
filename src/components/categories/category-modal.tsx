@@ -4,7 +4,7 @@ import * as React from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { RAINBOW_COLORS, type RainbowColor } from "@/types";
-import { cn } from "@/lib/utils";
+import { cn, getContrastColor } from "@/lib/utils";
 import {
   FolderOpen, Image, FileText, Video, Music, Code, Archive,
   File, Book, User, Settings, Star, Heart, Camera, Globe,
@@ -102,7 +102,7 @@ export function CategoryModal({
           className="flex flex-col items-center gap-3 rounded-xl p-6 transition-colors"
           style={{ backgroundColor: `${colorInfo.hex}15` }}
         >
-          <SelectedIcon className="h-10 w-10" style={{ color: colorInfo.hex }} />
+          <SelectedIcon className="h-10 w-10" style={{ color: getContrastColor(colorInfo.hex) }} />
           <p className="text-sm font-medium">{name || "分类名称"}</p>
         </div>
 
