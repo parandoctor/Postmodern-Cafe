@@ -44,3 +44,6 @@ public/uploads/*
 .vscode/*
 !.vscode/settings.json
 !.vscode/extensions.json
+
+# Claude
+mission.md

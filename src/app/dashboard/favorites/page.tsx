@@ -77,7 +77,7 @@ export default function FavoritesPage() {
             return (
               <div
                 key={file.id}
-                className="group relative rounded-lg border border-border bg-card p-4 hover:border-foreground/20 transition-colors"
+                className="group relative rounded-lg border border-whisper bg-white/60 backdrop-blur-sm p-4 hover:border-foreground/25 transition-colors"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary">

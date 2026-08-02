@@ -52,7 +52,7 @@ export function Dialog({
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.2 }}
             className={cn(
-              "relative z-10 w-full rounded-2xl border border-border/50 bg-card p-6 shadow-2xl",
+              "relative z-10 w-full rounded-2xl border border-border/50 bg-white/90 backdrop-blur-xl p-6 shadow-2xl",
               maxWidth,
               "mx-4 max-h-[85vh] overflow-y-auto",
               className,

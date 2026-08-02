@@ -49,7 +49,7 @@ export function CalendarWidget() {
   };
 
   return (
-    <section className="rounded-xl border border-black/10 bg-background p-3 shadow-notion dark:border-white/10">
+    <section className="rounded-xl border border-black/10 bg-white/60 backdrop-blur-sm p-3">
       <div className="mb-2 flex items-center justify-between">
         <div className="flex items-center gap-1.5">
           <CalendarDays className="h-4 w-4 text-foreground" />
@@ -58,20 +58,20 @@ export function CalendarWidget() {
         <div className="flex items-center gap-0.5">
           <button
             onClick={goPrev}
-            className="rounded-md p-1 text-muted-foreground hover:bg-black/5 hover:text-foreground dark:hover:bg-white/10 transition-colors"
+            className="rounded-md p-1 text-muted-foreground hover:bg-black/5 hover:text-foreground transition-colors"
           >
             <ChevronLeft className="h-3.5 w-3.5" />
           </button>
           <button
             onClick={goToday}
-            className="rounded-md px-1.5 py-0.5 text-xs font-medium text-muted-foreground hover:bg-black/5 hover:text-foreground dark:hover:bg-white/10 transition-colors"
+            className="rounded-md px-1.5 py-0.5 text-xs font-medium text-muted-foreground hover:bg-black/5 hover:text-foreground transition-colors"
             title="回到今天"
           >
             {viewYear}年{viewMonth + 1}月
           </button>
           <button
             onClick={goNext}
-            className="rounded-md p-1 text-muted-foreground hover:bg-black/5 hover:text-foreground dark:hover:bg-white/10 transition-colors"
+            className="rounded-md p-1 text-muted-foreground hover:bg-black/5 hover:text-foreground transition-colors"
           >
             <ChevronRight className="h-3.5 w-3.5" />
           </button>
@@ -98,8 +98,8 @@ export function CalendarWidget() {
               className={cn(
                 "flex h-7 items-center justify-center rounded-md text-[12px] tabular-nums transition-colors",
                 isToday && "bg-foreground font-semibold text-background",
-                !isToday && isSelected && "bg-black/10 font-medium dark:bg-white/15",
-                !isToday && !isSelected && "text-foreground/80 hover:bg-black/5 dark:hover:bg-white/10",
+                !isToday && isSelected && "bg-black/10 font-medium",
+                !isToday && !isSelected && "text-foreground/80 hover:bg-black/5",
               )}
             >
               {d}

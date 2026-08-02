@@ -34,7 +34,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center px-6 bg-background">
+    <div className="relative flex min-h-screen flex-col items-center justify-center px-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -44,19 +44,19 @@ export default function RegisterPage() {
         {/* Logo */}
         <div className="mb-8 text-center">
           <Link href="/" className="inline-flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center border border-border bg-background">
-              <span className="text-lg font-bold">R</span>
+            <div className="flex h-10 w-10 items-center justify-center border border-white/20 bg-white/5">
+              <span className="text-lg font-bold text-white">R</span>
             </div>
-            <span className="text-2xl font-semibold">收纳盒</span>
+            <span className="text-2xl font-semibold text-white">收纳盒</span>
           </Link>
         </div>
 
         {/* Card */}
-        <div className="border border-border bg-background p-8">
+        <div className="border border-white/15 bg-black/5 p-8">
           {/* Header */}
           <div className="mb-8 text-center">
-            <h1 className="text-2xl font-bold tracking-tight">创建账户</h1>
-            <p className="mt-1 text-sm text-muted-foreground">
+            <h1 className="text-2xl font-bold tracking-tight text-white">创建账户</h1>
+            <p className="mt-1 text-sm text-white/50">
               注册后即可开始管理你的文件
             </p>
           </div>
@@ -66,7 +66,7 @@ export default function RegisterPage() {
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-4 border border-destructive/50 bg-destructive/5 p-3 text-sm text-destructive"
+              className="mb-4 border border-red-400/40 bg-red-500/10 p-3 text-sm text-red-300"
             >
               {error}
             </motion.div>
@@ -75,14 +75,14 @@ export default function RegisterPage() {
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="name">昵称</Label>
+              <Label htmlFor="name" className="text-white/70">昵称</Label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
                 <Input
                   id="name"
                   type="text"
                   placeholder="你的昵称"
-                  className="pl-10 rounded-none"
+                  className="pl-10 rounded-none !border-white/20 !bg-white/5 !text-white placeholder:!text-white/35"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
@@ -94,14 +94,14 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email">邮箱</Label>
+              <Label htmlFor="email" className="text-white/70">邮箱</Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
                 <Input
                   id="email"
                   type="email"
                   placeholder="your@email.com"
-                  className="pl-10 rounded-none"
+                  className="pl-10 rounded-none !border-white/20 !bg-white/5 !text-white placeholder:!text-white/35"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -111,14 +111,14 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password">密码</Label>
+              <Label htmlFor="password" className="text-white/70">密码</Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" />
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="至少6位，包含字母和数字"
-                  className="pl-10 pr-10 rounded-none"
+                  className="pl-10 pr-10 rounded-none !border-white/20 !bg-white/5 !text-white placeholder:!text-white/35"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -128,7 +128,7 @@ export default function RegisterPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors"
                   tabIndex={-1}
                 >
                   {showPassword ? (
@@ -138,20 +138,19 @@ export default function RegisterPage() {
                   )}
                 </button>
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-white/40">
                 至少6个字符，包含字母和数字
               </p>
             </div>
 
             <Button
               type="submit"
-              className="w-full gap-2 rounded-none"
+              className="w-full gap-2 rounded-none border border-white/25 bg-white text-black hover:bg-white/90 hover:text-black"
               size="lg"
               disabled={loading}
-              variant="outline"
             >
               {loading ? (
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-foreground border-t-transparent" />
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-black border-t-transparent" />
               ) : (
                 <UserPlus className="h-4 w-4" />
               )}
@@ -160,11 +159,11 @@ export default function RegisterPage() {
           </form>
 
           {/* Footer */}
-          <div className="mt-6 text-center text-sm text-muted-foreground">
+          <div className="mt-6 text-center text-sm text-white/50">
             已有账户？{" "}
             <Link
               href="/login"
-              className="font-medium underline underline-offset-4 hover:text-foreground"
+              className="font-medium underline underline-offset-4 hover:text-white"
             >
               立即登录
             </Link>

@@ -3,7 +3,6 @@
 import * as React from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  LayoutDashboard,
   HardDrive,
   FolderOpen,
   Star,
@@ -12,15 +11,17 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Image,
   X,
   Check,
   CalendarDays,
+  GripVertical,
+  StickyNote,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { logoutUser } from "@/actions/auth";
 import { useUIStore } from "@/store";
@@ -29,9 +30,9 @@ import { SidebarNotes } from "@/components/layout/sidebar-notes";
 import { SidebarMusic } from "@/components/layout/sidebar-music";
 import { CalendarWidget } from "@/components/layout/calendar-widget";
 import { TimerWidget } from "@/components/layout/timer-widget";
+import { NotesModal } from "@/components/layout/notes-modal";
 
 const sidebarItems = [
-  { label: "概览", href: "/dashboard", icon: LayoutDashboard },
   { label: "我的文件", href: "/dashboard/files", icon: HardDrive },
   { label: "分类管理", href: "/dashboard/categories", icon: FolderOpen },
   { label: "收藏夹", href: "/dashboard/favorites", icon: Star },
@@ -42,9 +43,14 @@ const sidebarItems = [
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { sidebarOpen, toggleSidebar, rightOpen, setRightOpen, toggleRight, wallpaper, setWallpaper } = useUIStore();
+  const { sidebarOpen, sidebarWidth, setSidebarWidth, toggleSidebar, rightOpen, setRightOpen, toggleRight, wallpaper, setWallpaper } = useUIStore();
   const [wallpaperOpen, setWallpaperOpen] = React.useState(false);
+  const [notesOpen, setNotesOpen] = React.useState(false);
+  const [workspaceCollapsed, setWorkspaceCollapsed] = React.useState(false);
+  const [privateCollapsed, setPrivateCollapsed] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const sidebarRef = React.useRef<HTMLDivElement>(null);
+  const dragging = React.useRef(false);
 
   const handleLogout = async () => {
     await logoutUser();
@@ -62,74 +68,151 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     reader.readAsDataURL(file);
   };
 
+  // ---- Sidebar drag resize ----
+  const onMouseDown = React.useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    dragging.current = true;
+    const startX = e.clientX;
+    const startW = sidebarWidth;
+    const onMove = (ev: MouseEvent) => {
+      if (!dragging.current) return;
+      const delta = ev.clientX - startX;
+      const newW = Math.max(200, Math.min(480, startW + delta));
+      setSidebarWidth(newW);
+    };
+    const onUp = () => {
+      dragging.current = false;
+      document.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mouseup", onUp);
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+    };
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+    document.addEventListener("mousemove", onMove);
+    document.addEventListener("mouseup", onUp);
+  }, [sidebarWidth, setSidebarWidth]);
+
+  const currentLabel = sidebarItems.find((s) => pathname === s.href || (s.href !== "/dashboard" && pathname.startsWith(s.href)))?.label ?? "我的文件";
+
   return (
-    <div className="flex min-h-screen bg-background">
-      {/* Sidebar - Notion 风格 */}
+    <div className="relative flex min-h-screen">
+      {/* Wallpaper layer — sits above blueprint, below content */}
+      {wallpaper && (
+        <div
+          className="fixed inset-0 z-[1]"
+          style={{
+            backgroundImage: `url(${wallpaper})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundAttachment: "fixed",
+          }}
+        />
+      )}
+
+      {/* Sidebar - Notion style + draggable */}
       <aside
+        ref={sidebarRef}
         className={cn(
-          "fixed left-0 top-0 z-40 flex h-full flex-col border-r border-black/10 bg-card transition-all duration-200 dark:border-white/10",
-          sidebarOpen ? "w-[280px]" : "w-16",
+          "fixed left-0 top-0 z-40 flex h-full flex-col border-r border-whisper bg-white/75 backdrop-blur-md transition-[width] duration-150",
         )}
+        style={{ width: sidebarOpen ? sidebarWidth : 64 }}
       >
         {/* Logo */}
-        <div className="flex h-14 shrink-0 items-center border-b border-black/10 px-4 dark:border-white/10">
+        <div className="flex h-14 shrink-0 items-center border-b border-whisper px-4">
           {sidebarOpen ? (
             <a href="/dashboard" className="flex items-center gap-2.5">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-foreground shadow-notion">
+              <div className="flex h-7 w-7 items-center justify-center rounded bg-foreground">
                 <span className="text-xs font-bold text-background">R</span>
               </div>
-              <span className="text-sm font-semibold tracking-tight">收纳盒</span>
+              <span className="text-[15px] font-semibold tracking-tight">收纳盒</span>
             </a>
           ) : (
-            <a href="/dashboard" className="mx-auto flex h-7 w-7 items-center justify-center rounded-lg bg-foreground">
+            <a href="/dashboard" className="mx-auto flex h-7 w-7 items-center justify-center rounded bg-foreground">
               <span className="text-xs font-bold text-background">R</span>
             </a>
           )}
         </div>
 
-        {/* 滚动区域：导航 + 小部件 */}
-        <div className="flex-1 space-y-3 overflow-y-auto p-2">
+        {/* Scroll area: nav + widgets */}
+        <div className="flex-1 space-y-2 overflow-y-auto p-2">
+          {/* 工作区 — 分组标题（与待办 widget 同格式） */}
           {sidebarOpen && (
-            <p className="px-3 pt-1 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-              工作区
-            </p>
+            <button
+              onClick={() => setWorkspaceCollapsed((c) => !c)}
+              className="flex w-full items-center gap-1.5 rounded px-2 py-1.5 text-left hover:bg-[rgba(0,0,0,0.05)] transition-colors"
+            >
+              <ChevronDown
+                className={cn(
+                  "h-3.5 w-3.5 text-muted-foreground transition-transform",
+                  workspaceCollapsed && "-rotate-90",
+                )}
+              />
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                工作区
+              </span>
+            </button>
           )}
-          <nav className="space-y-0.5">
-            {sidebarItems.map((item) => {
-              const isActive = pathname === item.href ||
-                (item.href !== "/dashboard" && pathname.startsWith(item.href));
-              return (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
-                    isActive
-                      ? "bg-black/5 font-medium text-foreground dark:bg-white/10"
-                      : "text-muted-foreground hover:bg-black/5 hover:text-foreground dark:hover:bg-white/10",
-                  )}
-                >
-                  <item.icon className="h-4 w-4 shrink-0" />
-                  {sidebarOpen && <span>{item.label}</span>}
-                </a>
-              );
-            })}
-          </nav>
+          {!workspaceCollapsed && (
+            <nav className="space-y-0.5">
+              {sidebarItems.map((item) => {
+                const isActive = pathname === item.href || pathname.startsWith(item.href);
+                return (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      "flex items-center gap-1.5 rounded px-2 py-1.5 transition-colors",
+                      isActive
+                        ? "bg-[rgba(0,0,0,0.08)] text-foreground"
+                        : "text-muted-foreground hover:bg-[rgba(0,0,0,0.05)] hover:text-foreground",
+                    )}
+                  >
+                    <item.icon className="h-3.5 w-3.5 shrink-0" />
+                    {sidebarOpen && (
+                      <span className="text-[11px] font-semibold uppercase tracking-wider">
+                        {item.label}
+                      </span>
+                    )}
+                  </a>
+                );
+              })}
+            </nav>
+          )}
 
+          {/* 私有空间 — 待办 / 随手记 / 音乐盒 */}
           {sidebarOpen && (
-            <div className="space-y-1 border-t border-black/10 pt-2 dark:border-white/10">
-              <SidebarTodo />
-              <SidebarNotes />
-              <SidebarMusic />
+            <div className="space-y-1 border-t border-whisper pt-2">
+              <button
+                onClick={() => setPrivateCollapsed((c) => !c)}
+                className="flex w-full items-center gap-1.5 rounded px-2 py-1.5 text-left hover:bg-[rgba(0,0,0,0.05)] transition-colors"
+              >
+                <ChevronDown
+                  className={cn(
+                    "h-3.5 w-3.5 text-muted-foreground transition-transform",
+                    privateCollapsed && "-rotate-90",
+                  )}
+                />
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  私有空间
+                </span>
+              </button>
+              {!privateCollapsed && (
+                <div className="space-y-1">
+                  <SidebarTodo />
+                  <SidebarNotes onOpenFull={() => setNotesOpen(true)} />
+                  <SidebarMusic />
+                </div>
+              )}
             </div>
           )}
         </div>
 
         {/* Bottom */}
-        <div className="shrink-0 border-t border-black/10 p-2 dark:border-white/10">
+        <div className="shrink-0 border-t border-whisper p-2">
           <button
             onClick={toggleSidebar}
-            className="flex w-full items-center rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-black/5 hover:text-foreground dark:hover:bg-white/10 transition-colors"
+            className="flex w-full items-center rounded px-3 py-1.5 text-[14px] text-muted-foreground hover:bg-[rgba(0,0,0,0.05)] hover:text-foreground transition-colors"
           >
             {sidebarOpen ? (
               <>
@@ -141,41 +224,46 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             )}
           </button>
         </div>
+
+        {/* Drag handle */}
+        {sidebarOpen && (
+          <div
+            className="absolute right-0 top-0 h-full w-1 cursor-col-resize hover:bg-notion-blue/20 transition-colors z-50"
+            onMouseDown={onMouseDown}
+            title="拖动调整侧边栏宽度"
+          />
+        )}
       </aside>
 
       {/* Main area */}
       <div
         className={cn(
-          "flex flex-1 flex-col transition-all duration-200",
-          sidebarOpen ? "ml-[280px]" : "ml-16",
+          "flex flex-1 flex-col transition-all duration-150",
           rightOpen ? "lg:mr-[300px]" : "lg:mr-0",
         )}
-        style={
-          wallpaper
-            ? {
-                backgroundImage: `url(${wallpaper})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                backgroundAttachment: "fixed",
-              }
-            : undefined
-        }
+        style={{ marginLeft: sidebarOpen ? sidebarWidth : 64 }}
       >
         {/* Top bar */}
-        <header className={cn(
-          "sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border px-5",
-          wallpaper ? "bg-background/70" : "bg-background",
-        )}>
-          <div className="flex items-center gap-4">
-            <span className="text-sm font-medium text-muted-foreground">
-              {sidebarItems.find((s) => pathname === s.href || (s.href !== "/dashboard" && pathname.startsWith(s.href)))?.label ?? "概览"}
+        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-whisper bg-white/70 backdrop-blur-md px-5">
+          <div className="flex items-center gap-3">
+            <span className="text-[14px] font-medium text-muted-foreground">
+              {currentLabel}
             </span>
+            {/* Notes shortcut button */}
+            <button
+              onClick={() => setNotesOpen(true)}
+              className="flex items-center gap-1.5 rounded px-2 py-1 text-[12px] text-muted-foreground hover:bg-[rgba(0,0,0,0.05)] hover:text-foreground transition-colors"
+              title="打开随时记写"
+            >
+              <StickyNote className="h-3.5 w-3.5" />
+              随时记写
+            </button>
           </div>
 
           <div className="flex items-center gap-1">
             <button
               onClick={toggleRight}
-              className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors lg:hidden"
+              className="flex h-8 w-8 items-center justify-center rounded text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors lg:hidden"
               title="侧边面板"
             >
               <CalendarDays className="h-4 w-4" />
@@ -183,7 +271,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             <button
               onClick={toggleRight}
               className={cn(
-                "hidden h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors lg:flex",
+                "hidden h-8 w-8 items-center justify-center rounded text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors lg:flex",
                 rightOpen && "bg-secondary text-foreground",
               )}
               title={rightOpen ? "收起面板" : "展开面板"}
@@ -192,7 +280,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             </button>
             <button
               onClick={() => setWallpaperOpen(true)}
-              className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+              className="flex h-8 w-8 items-center justify-center rounded text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
               title="更换背景"
             >
               <Image className="h-4 w-4" />
@@ -200,16 +288,15 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             {wallpaper && (
               <button
                 onClick={() => setWallpaper(null)}
-                className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
+                className="flex h-8 w-8 items-center justify-center rounded text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
                 title="移除背景"
               >
                 <X className="h-4 w-4" />
               </button>
             )}
-            <ThemeToggle />
             <a
               href="/profile"
-              className="flex h-8 w-8 items-center justify-center rounded-md hover:bg-secondary transition-colors"
+              className="flex h-8 w-8 items-center justify-center rounded hover:bg-secondary transition-colors"
             >
               <Avatar className="h-6 w-6">
                 <AvatarImage src="" alt="用户" />
@@ -220,7 +307,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             </a>
             <button
               onClick={handleLogout}
-              className="flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
+              className="flex h-8 w-8 items-center justify-center rounded text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
               title="退出登录"
             >
               <LogOut className="h-4 w-4" />
@@ -229,15 +316,12 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* Page content */}
-        <main className={cn(
-          "flex-1 p-5 lg:p-6",
-          wallpaper && "bg-background/60",
-        )}>
+        <main className="relative z-[2] flex-1 p-5 lg:p-6">
           {children}
         </main>
       </div>
 
-      {/* Wallpaper Dialog - rendered at top level */}
+      {/* Wallpaper Dialog */}
       <Dialog
         open={wallpaperOpen}
         onClose={() => setWallpaperOpen(false)}
@@ -253,19 +337,17 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             onChange={handleWallpaperUpload}
             className="hidden"
           />
-
-          {/* 默认浅色 */}
           <button
             onClick={() => {
               setWallpaper(null);
               setWallpaperOpen(false);
             }}
-            className="flex w-full items-center gap-3 rounded-lg border border-black/10 bg-background px-4 py-3 text-sm hover:bg-black/5 dark:border-white/10 dark:hover:bg-white/10 transition-colors"
+            className="flex w-full items-center gap-3 rounded-lg border border-whisper bg-white/60 px-4 py-3 text-sm hover:bg-black/[0.04] transition-colors"
           >
             <span
               className={cn(
-                "flex h-10 w-10 items-center justify-center rounded-lg",
-                !wallpaper ? "bg-foreground text-background" : "bg-black/5 dark:bg-white/10",
+                "flex h-10 w-10 items-center justify-center rounded",
+                !wallpaper ? "bg-foreground text-background" : "bg-secondary",
               )}
             >
               <Check className="h-4 w-4" />
@@ -275,13 +357,11 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               <span className="block text-xs text-muted-foreground">简洁的纯色背景</span>
             </span>
           </button>
-
-          {/* 自定义壁纸 */}
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="flex w-full items-center gap-3 rounded-lg border border-black/10 bg-background px-4 py-3 text-sm hover:bg-black/5 dark:border-white/10 dark:hover:bg-white/10 transition-colors"
+            className="flex w-full items-center gap-3 rounded-lg border border-whisper bg-white/60 px-4 py-3 text-sm hover:bg-black/[0.04] transition-colors"
           >
-            <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-black/5 dark:bg-white/10">
+            <span className="flex h-10 w-10 items-center justify-center rounded bg-secondary">
               <Image className="h-4 w-4" />
             </span>
             <span className="text-left">
@@ -289,14 +369,13 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               <span className="block text-xs text-muted-foreground">从本地选择一张图片</span>
             </span>
           </button>
-
           {wallpaper && (
             <button
               onClick={() => {
                 setWallpaper(null);
                 setWallpaperOpen(false);
               }}
-              className="w-full rounded-lg border border-border px-4 py-2.5 text-sm text-destructive hover:bg-destructive/10 transition-colors"
+              className="w-full rounded border border-border px-4 py-2.5 text-sm text-destructive hover:bg-destructive/10 transition-colors"
             >
               移除壁纸
             </button>
@@ -307,15 +386,15 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       {/* Right panel: 日历 + 计时器 */}
       <aside
         className={cn(
-          "fixed right-0 top-0 z-40 hidden h-full w-[300px] flex-col border-l border-black/10 bg-card transition-all duration-200 lg:flex dark:border-white/10",
+          "fixed right-0 top-0 z-40 hidden h-full w-[300px] flex-col border-l border-whisper bg-white/45 backdrop-blur-md transition-transform duration-200 lg:flex",
           rightOpen ? "translate-x-0" : "translate-x-full",
         )}
       >
-        <div className="flex h-14 shrink-0 items-center justify-between border-b border-black/10 px-4 dark:border-white/10">
-          <span className="text-sm font-semibold tracking-tight">面板</span>
+        <div className="flex h-14 shrink-0 items-center justify-between border-b border-whisper px-4">
+          <span className="text-[14px] font-semibold tracking-tight">面板</span>
           <button
             onClick={() => setRightOpen(false)}
-            className="rounded-md p-1.5 text-muted-foreground hover:bg-black/5 hover:text-foreground dark:hover:bg-white/10 transition-colors"
+            className="rounded p-1.5 text-muted-foreground hover:bg-[rgba(0,0,0,0.05)] hover:text-foreground transition-colors"
             title="收起面板"
           >
             <X className="h-4 w-4" />
@@ -326,6 +405,9 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           <TimerWidget />
         </div>
       </aside>
+
+      {/* Notes full modal */}
+      <NotesModal open={notesOpen} onClose={() => setNotesOpen(false)} />
     </div>
   );
 }
