@@ -66,10 +66,10 @@ export function NotesModal({ open, onClose }: NotesModalProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="flex h-[75vh] w-full max-w-2xl flex-col overflow-hidden rounded-xl border border-whisper bg-card shadow-notion-deep dark:border-white/10"
+            className="flex h-[75vh] w-full max-w-2xl flex-col overflow-hidden rounded-xl border border-black/[0.12] bg-white/85 backdrop-blur-xl shadow-card"
           >
             {/* Header */}
-            <div className="flex shrink-0 items-center justify-between border-b border-whisper px-5 py-3.5 dark:border-white/10">
+            <div className="flex shrink-0 items-center justify-between border-b border-whisper px-5 py-3.5">
               <div className="flex items-center gap-2.5">
                 <div className="flex h-7 w-7 items-center justify-center rounded bg-foreground">
                   <StickyNote className="h-4 w-4 text-background" />
@@ -79,7 +79,7 @@ export function NotesModal({ open, onClose }: NotesModalProps) {
               </div>
               <button
                 onClick={onClose}
-                className="rounded p-1.5 text-muted-foreground hover:bg-[rgba(0,0,0,0.04)] hover:text-foreground dark:hover:bg-[rgba(255,255,255,0.05)] transition-colors"
+                className="rounded p-1.5 text-muted-foreground hover:bg-[rgba(0,0,0,0.05)] hover:text-foreground transition-colors"
                 title="关闭"
               >
                 <X className="h-4 w-4" />
@@ -87,8 +87,8 @@ export function NotesModal({ open, onClose }: NotesModalProps) {
             </div>
 
             {/* Input area */}
-            <div className="shrink-0 border-b border-whisper p-4 dark:border-white/10">
-              <div className="flex items-start gap-2 rounded-lg border border-whisper bg-background p-3 dark:border-white/10">
+            <div className="shrink-0 border-b border-whisper p-4">
+              <div className="flex items-start gap-2 rounded-lg border border-whisper bg-white/70 p-3">
                 <textarea
                   ref={inputRef}
                   value={text}
@@ -132,7 +132,7 @@ export function NotesModal({ open, onClose }: NotesModalProps) {
                       layout
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      className="group relative flex flex-col rounded-lg border border-whisper bg-background p-4 hover:shadow-notion transition-shadow dark:border-white/10"
+                      className="group relative flex flex-col rounded-lg border border-whisper bg-white/60 p-4 hover:shadow-card transition-shadow"
                     >
                       {editingId === note.id ? (
                         <textarea
@@ -151,7 +151,7 @@ export function NotesModal({ open, onClose }: NotesModalProps) {
                           }}
                           onBlur={commitEdit}
                           rows={3}
-                          className="w-full resize-none rounded border border-whisper bg-background px-2 py-1.5 text-[13px] leading-relaxed focus:outline-none dark:border-white/20"
+                          className="w-full resize-none rounded border border-whisper bg-white/70 px-2 py-1.5 text-[13px] leading-relaxed focus:outline-none"
                         />
                       ) : (
                         <>

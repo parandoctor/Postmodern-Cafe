@@ -74,11 +74,11 @@ export function TimerWidget() {
   const displayStr = finished && mode === "countdown" ? "00:00" : fmt(display);
 
   return (
-    <section className="rounded-xl border border-black/10 bg-background p-3 shadow-notion dark:border-white/10">
+    <section className="rounded-xl border border-black/10 bg-white/60 backdrop-blur-sm p-3">
       <div className="mb-2 flex items-center gap-1.5">
         <TimerIcon className="h-4 w-4 text-foreground" />
         <h3 className="text-sm font-semibold tracking-tight">计时器</h3>
-        <div className="ml-auto flex rounded-md bg-black/5 p-0.5 dark:bg-white/10">
+        <div className="ml-auto flex rounded-md bg-black/5 p-0.5">
           {(
             [
               { key: "stopwatch", label: "秒表" },
@@ -119,8 +119,8 @@ export function TimerWidget() {
               className={cn(
                 "rounded-md px-2 py-0.5 text-[11px] font-medium transition-colors",
                 total === m * 60 * 1000
-                  ? "bg-black/10 dark:bg-white/15"
-                  : "text-muted-foreground hover:bg-black/5 dark:hover:bg-white/10",
+                  ? "bg-black/10"
+                  : "text-muted-foreground hover:bg-black/5",
               )}
             >
               {m} 分
@@ -149,7 +149,7 @@ export function TimerWidget() {
         </button>
         <button
           onClick={reset}
-          className="flex h-8 w-14 items-center justify-center gap-1 rounded-md bg-black/5 text-[12px] font-medium text-foreground/80 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/15 transition-colors"
+          className="flex h-8 w-14 items-center justify-center gap-1 rounded-md bg-black/5 text-[12px] font-medium text-foreground/80 hover:bg-black/10 transition-colors"
         >
           <RotateCcw className="h-3.5 w-3.5" /> 重置
         </button>

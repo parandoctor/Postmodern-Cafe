@@ -41,7 +41,7 @@ export function SidebarNotes({ onOpenFull }: { onOpenFull?: () => void }) {
         role="button"
         tabIndex={0}
         onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setCollapsed((c) => !c); } }}
-        className="flex w-full items-center gap-1.5 rounded px-2 py-1.5 text-left hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.05)] transition-colors cursor-pointer"
+        className="flex w-full items-center gap-1.5 rounded px-2 py-1.5 text-left hover:bg-[rgba(0,0,0,0.05)] transition-colors cursor-pointer"
       >
         <ChevronDown
           className={cn(
@@ -66,7 +66,7 @@ export function SidebarNotes({ onOpenFull }: { onOpenFull?: () => void }) {
 
       {!collapsed && (
         <div className="mt-1 space-y-1">
-          <div className="flex items-center gap-1.5 rounded border border-whisper bg-background px-2 py-1.5 dark:border-white/10">
+          <div className="flex items-center gap-1.5 rounded border border-whisper bg-white/60 px-2 py-1.5">
             <StickyNote className="h-3.5 w-3.5 shrink-0 text-muted-foreground/60" />
             <input
               value={text}
@@ -86,7 +86,7 @@ export function SidebarNotes({ onOpenFull }: { onOpenFull?: () => void }) {
               {notes.slice(0, 8).map((note) => (
                 <li
                   key={note.id}
-                  className="group flex items-start gap-1.5 rounded px-1.5 py-1 hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.05)] transition-colors"
+                  className="group flex items-start gap-1.5 rounded px-1.5 py-1 hover:bg-[rgba(0,0,0,0.05)] transition-colors"
                 >
                   {editingId === note.id ? (
                     <input
@@ -98,7 +98,7 @@ export function SidebarNotes({ onOpenFull }: { onOpenFull?: () => void }) {
                         if (e.key === "Escape") setEditingId(null);
                       }}
                       onBlur={commitEdit}
-                      className="w-full rounded border border-whisper bg-background px-1.5 py-0.5 text-[13px] focus:outline-none dark:border-white/20"
+                      className="w-full rounded border border-whisper bg-white/70 px-1.5 py-0.5 text-[13px] focus:outline-none"
                     />
                   ) : (
                     <button

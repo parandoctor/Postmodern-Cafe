@@ -65,26 +65,26 @@ function BrowserWindow({
     >
       {/* Depth shadow layers */}
       <div
-        className="absolute inset-0 rounded-lg bg-black/4"
+        className="absolute inset-0 rounded-lg bg-black/[0.05]"
         style={{
           transform: `translate(${offsetX + 3}px, ${offsetY + 3}px)`,
         }}
       />
       <div
-        className="absolute inset-0 rounded-lg bg-black/6"
+        className="absolute inset-0 rounded-lg bg-black/[0.08]"
         style={{
           transform: `translate(${offsetX + 1.5}px, ${offsetY + 1.5}px)`,
         }}
       />
 
-      {/* Window frame */}
-      <div className="relative flex flex-col rounded-lg border border-black/[0.15] bg-card shadow-notion overflow-hidden dark:border-white/[0.12]">
+      {/* Window frame — translucent so blueprint shows through */}
+      <div className="relative flex flex-col rounded-lg border border-black/[0.12] bg-white/70 backdrop-blur-md shadow-card overflow-hidden">
         {/* Title bar */}
-        <div className="flex h-9 shrink-0 items-center gap-2 border-b border-black/[0.08] bg-secondary px-3 dark:border-white/[0.06]">
+        <div className="flex h-9 shrink-0 items-center gap-2 border-b border-black/[0.08] bg-white/60 px-3">
           {/* Traffic light dots */}
           <div className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-black/[0.25]" />
-            <span className="h-2.5 w-2.5 rounded-full bg-black/[0.20]" />
+            <span className="h-2.5 w-2.5 rounded-full bg-black/[0.30]" />
+            <span className="h-2.5 w-2.5 rounded-full bg-black/[0.22]" />
             <span className="h-2.5 w-2.5 rounded-full bg-black/[0.15]" />
           </div>
           <span className="flex-1 text-center text-[10px] font-medium text-muted-foreground tracking-wider uppercase select-none">
@@ -113,7 +113,7 @@ function CategoryCard({
   onDelete: () => void;
   onClick: () => void;
 }) {
-  const colorInfo = RAINBOW_COLORS[cat.color];
+  const colorInfo = RAINBOW_COLORS[cat.color] ?? RAINBOW_COLORS.blue;
   const IconComponent = (ICONS[cat.icon] ?? FolderOpen) as React.ComponentType<{ className?: string }>;
   return (
     <motion.div
@@ -123,7 +123,7 @@ function CategoryCard({
       exit={{ opacity: 0, scale: 0.92 }}
       transition={{ duration: 0.25, ease: [0.22, 0.85, 0.25, 1] }}
       onClick={onClick}
-      className="group relative cursor-pointer rounded border border-black/[0.10] bg-background p-3 hover:border-black/[0.25] hover:shadow-notion-hover transition-all duration-200 dark:border-white/[0.08] dark:hover:border-white/[0.18]"
+      className="group relative cursor-pointer rounded border border-black/[0.10] bg-white/60 backdrop-blur-sm p-3 hover:border-black/[0.25] transition-all duration-200"
     >
       {/* Hard edge accent strip */}
       <div
@@ -134,7 +134,7 @@ function CategoryCard({
       <div className="flex items-start gap-3 pl-1">
         <IconComponent className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
         <div className="min-w-0 flex-1">
-          <h3 className="text-[13px] font-semibold truncate">{cat.name}</h3>
+          <h3 className="text-[13px] font-semibold truncate text-foreground">{cat.name}</h3>
           {cat.description && (
             <p className="mt-0.5 text-[11px] text-muted-foreground truncate">{cat.description}</p>
           )}
@@ -147,14 +147,14 @@ function CategoryCard({
         <div className="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
           <button
             onClick={(e) => { e.stopPropagation(); onEdit(); }}
-            className="rounded p-1 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+            className="rounded p-1 hover:bg-black/5 transition-colors"
             title="编辑"
           >
             <Edit3 className="h-3 w-3 text-muted-foreground" />
           </button>
           <button
             onClick={(e) => { e.stopPropagation(); onDelete(); }}
-            className="rounded p-1 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+            className="rounded p-1 hover:bg-black/5 transition-colors"
             title="删除"
           >
             <Trash2 className="h-3 w-3 text-muted-foreground" />
@@ -262,7 +262,7 @@ export default function CategoriesPage() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="fixed top-20 right-6 z-50 rounded border border-black/[0.15] bg-card px-4 py-3 shadow-notion text-[14px] dark:border-white/[0.12]"
+            className="fixed top-20 right-6 z-50 rounded border border-black/[0.12] bg-white/85 backdrop-blur px-4 py-3 text-[14px] text-foreground"
           >
             {message}
           </motion.div>
@@ -312,7 +312,7 @@ export default function CategoriesPage() {
                   {/* Add button per column */}
                   <button
                     onClick={() => openCreateModal(colIdx)}
-                    className="flex w-full items-center justify-center gap-1.5 rounded border border-dashed border-black/[0.12] py-3 text-[12px] text-muted-foreground hover:border-black/[0.25] hover:text-foreground transition-colors dark:border-white/[0.08] dark:hover:border-white/[0.18]"
+                    className="flex w-full items-center justify-center gap-1.5 rounded border border-dashed border-black/[0.15] py-3 text-[12px] text-muted-foreground hover:border-black/[0.30] hover:text-foreground transition-colors"
                   >
                     <Plus className="h-3.5 w-3.5" />
                     在此列添加

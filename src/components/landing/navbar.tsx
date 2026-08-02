@@ -5,7 +5,6 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Button } from "@/components/ui/button";
 
 const navLinks = [
@@ -31,14 +30,14 @@ export function Navbar() {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
         scrolled
-          ? "bg-card/80 backdrop-blur-md border-b border-whisper"
+          ? "bg-white/70 backdrop-blur-md border-b border-whisper"
           : "bg-transparent",
       )}
     >
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6 lg:px-8">
         {/* Logo */}
         <Link href="/" className="group flex items-center gap-2.5">
-          <div className="flex h-8 w-8 items-center justify-center border border-whisper bg-card">
+          <div className="flex h-8 w-8 items-center justify-center border border-whisper bg-white/70 backdrop-blur-sm">
             <span className="text-[14px] font-bold">R</span>
           </div>
           <span className="text-[16px] font-semibold tracking-tight text-foreground">
@@ -61,7 +60,6 @@ export function Navbar() {
 
         {/* Right actions */}
         <div className="hidden items-center gap-2 md:flex">
-          <ThemeToggle />
           <Button variant="ghost" size="sm" asChild>
             <a href="/login">登录</a>
           </Button>
@@ -72,7 +70,6 @@ export function Navbar() {
 
         {/* Mobile trigger */}
         <div className="flex items-center gap-2 md:hidden">
-          <ThemeToggle />
           <Button
             variant="ghost"
             size="icon"

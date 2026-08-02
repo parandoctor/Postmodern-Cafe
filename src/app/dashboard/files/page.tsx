@@ -169,7 +169,7 @@ export default function FilesPage() {
     <div className="space-y-4">
       {/* Message toast */}
       {message && (
-        <div className="rounded-lg border border-border bg-card px-4 py-2.5 text-sm">
+        <div className="rounded-lg border border-whisper bg-white/70 px-4 py-2.5 text-sm">
           {message}
         </div>
       )}
@@ -287,7 +287,7 @@ export default function FilesPage() {
                   "group relative rounded-lg border p-4 transition-colors cursor-pointer",
                   isSelected
                     ? "border-foreground/30 bg-secondary"
-                    : "border-border bg-card hover:border-foreground/20 hover:bg-secondary/50",
+                    : "border-whisper bg-white/60 backdrop-blur-sm hover:border-foreground/25 hover:bg-white/80",
                 )}
               >
                 {/* Checkbox */}
@@ -373,7 +373,7 @@ export default function FilesPage() {
                     {moreMenuFileId === file.id && (
                       <div
                         ref={moreMenuRef}
-                        className="absolute right-0 top-full mt-1 z-50 min-w-36 rounded-lg border border-border bg-card py-1 shadow-lg"
+                        className="absolute right-0 top-full mt-1 z-50 min-w-36 rounded-lg border border-whisper bg-white/90 backdrop-blur py-1 shadow-lg"
                         onClick={(e) => e.stopPropagation()}
                       >
                         <button
@@ -396,7 +396,7 @@ export default function FilesPage() {
                             <FolderOpen className="h-3.5 w-3.5" /> 移动到...
                           </button>
                           {moveMenuFileId === file.id && (
-                            <div className="absolute left-full top-0 ml-1 min-w-28 rounded-lg border border-border bg-card py-1 shadow-lg">
+                            <div className="absolute left-full top-0 ml-1 min-w-28 rounded-lg border border-whisper bg-white/90 backdrop-blur py-1 shadow-lg">
                               <button
                                 onClick={() => handleMove(file.id, null)}
                                 className="flex w-full items-center gap-2 px-3 py-1.5 text-sm hover:bg-secondary transition-colors"
@@ -518,7 +518,7 @@ export default function FilesPage() {
                           {moreMenuFileId === file.id && (
                             <div
                               ref={moreMenuRef}
-                              className="absolute right-0 top-full mt-1 z-50 min-w-36 rounded-lg border border-border bg-card py-1 shadow-lg"
+                              className="absolute right-0 top-full mt-1 z-50 min-w-36 rounded-lg border border-whisper bg-white/90 backdrop-blur py-1 shadow-lg"
                             >
                               <button
                                 onClick={() => handleRenameStart(file)}
@@ -540,7 +540,7 @@ export default function FilesPage() {
                                   <FolderOpen className="h-3.5 w-3.5" /> 移动到...
                                 </button>
                                 {moveMenuFileId === file.id && (
-                                  <div className="absolute left-full top-0 ml-1 min-w-28 rounded-lg border border-border bg-card py-1 shadow-lg">
+                                  <div className="absolute left-full top-0 ml-1 min-w-28 rounded-lg border border-whisper bg-white/90 backdrop-blur py-1 shadow-lg">
                                     <button
                                       onClick={() => handleMove(file.id, null)}
                                       className="flex w-full items-center gap-2 px-3 py-1.5 text-sm hover:bg-secondary transition-colors"

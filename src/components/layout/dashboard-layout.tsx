@@ -11,6 +11,7 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Image,
   X,
   Check,
@@ -21,7 +22,6 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { logoutUser } from "@/actions/auth";
 import { useUIStore } from "@/store";
@@ -46,6 +46,8 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { sidebarOpen, sidebarWidth, setSidebarWidth, toggleSidebar, rightOpen, setRightOpen, toggleRight, wallpaper, setWallpaper } = useUIStore();
   const [wallpaperOpen, setWallpaperOpen] = React.useState(false);
   const [notesOpen, setNotesOpen] = React.useState(false);
+  const [workspaceCollapsed, setWorkspaceCollapsed] = React.useState(false);
+  const [privateCollapsed, setPrivateCollapsed] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const sidebarRef = React.useRef<HTMLDivElement>(null);
   const dragging = React.useRef(false);
@@ -112,12 +114,12 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       <aside
         ref={sidebarRef}
         className={cn(
-          "fixed left-0 top-0 z-40 flex h-full flex-col border-r border-whisper bg-card transition-[width] duration-150 dark:border-white/10",
+          "fixed left-0 top-0 z-40 flex h-full flex-col border-r border-whisper bg-white/75 backdrop-blur-md transition-[width] duration-150",
         )}
         style={{ width: sidebarOpen ? sidebarWidth : 64 }}
       >
         {/* Logo */}
-        <div className="flex h-14 shrink-0 items-center border-b border-whisper px-4 dark:border-white/10">
+        <div className="flex h-14 shrink-0 items-center border-b border-whisper px-4">
           {sidebarOpen ? (
             <a href="/dashboard" className="flex items-center gap-2.5">
               <div className="flex h-7 w-7 items-center justify-center rounded bg-foreground">
@@ -134,47 +136,83 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
         {/* Scroll area: nav + widgets */}
         <div className="flex-1 space-y-2 overflow-y-auto p-2">
+          {/* 工作区 — 分组标题（与待办 widget 同格式） */}
           {sidebarOpen && (
-            <p className="px-2 pt-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-              工作区
-            </p>
+            <button
+              onClick={() => setWorkspaceCollapsed((c) => !c)}
+              className="flex w-full items-center gap-1.5 rounded px-2 py-1.5 text-left hover:bg-[rgba(0,0,0,0.05)] transition-colors"
+            >
+              <ChevronDown
+                className={cn(
+                  "h-3.5 w-3.5 text-muted-foreground transition-transform",
+                  workspaceCollapsed && "-rotate-90",
+                )}
+              />
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                工作区
+              </span>
+            </button>
           )}
-          <nav className="space-y-0.5">
-            {sidebarItems.map((item) => {
-              const isActive = pathname === item.href || pathname.startsWith(item.href);
-              return (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "flex items-center gap-2 rounded px-2 py-1.5 text-[13px] font-medium transition-colors",
-                    isActive
-                      ? "bg-[rgba(0,0,0,0.06)] text-foreground dark:bg-[rgba(255,255,255,0.08)]"
-                      : "text-muted-foreground hover:bg-[rgba(0,0,0,0.04)] hover:text-foreground dark:hover:bg-[rgba(255,255,255,0.05)]",
-                  )}
-                >
-                  <item.icon className="h-4 w-4 shrink-0" />
-                  {sidebarOpen && <span>{item.label}</span>}
-                </a>
-              );
-            })}
-          </nav>
+          {!workspaceCollapsed && (
+            <nav className="space-y-0.5">
+              {sidebarItems.map((item) => {
+                const isActive = pathname === item.href || pathname.startsWith(item.href);
+                return (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      "flex items-center gap-1.5 rounded px-2 py-1.5 transition-colors",
+                      isActive
+                        ? "bg-[rgba(0,0,0,0.08)] text-foreground"
+                        : "text-muted-foreground hover:bg-[rgba(0,0,0,0.05)] hover:text-foreground",
+                    )}
+                  >
+                    <item.icon className="h-3.5 w-3.5 shrink-0" />
+                    {sidebarOpen && (
+                      <span className="text-[11px] font-semibold uppercase tracking-wider">
+                        {item.label}
+                      </span>
+                    )}
+                  </a>
+                );
+              })}
+            </nav>
+          )}
 
-          {/* Divider & Widgets */}
+          {/* 私有空间 — 待办 / 随手记 / 音乐盒 */}
           {sidebarOpen && (
-            <div className="space-y-1 border-t border-whisper pt-2 dark:border-white/10">
-              <SidebarTodo />
-              <SidebarNotes onOpenFull={() => setNotesOpen(true)} />
-              <SidebarMusic />
+            <div className="space-y-1 border-t border-whisper pt-2">
+              <button
+                onClick={() => setPrivateCollapsed((c) => !c)}
+                className="flex w-full items-center gap-1.5 rounded px-2 py-1.5 text-left hover:bg-[rgba(0,0,0,0.05)] transition-colors"
+              >
+                <ChevronDown
+                  className={cn(
+                    "h-3.5 w-3.5 text-muted-foreground transition-transform",
+                    privateCollapsed && "-rotate-90",
+                  )}
+                />
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  私有空间
+                </span>
+              </button>
+              {!privateCollapsed && (
+                <div className="space-y-1">
+                  <SidebarTodo />
+                  <SidebarNotes onOpenFull={() => setNotesOpen(true)} />
+                  <SidebarMusic />
+                </div>
+              )}
             </div>
           )}
         </div>
 
         {/* Bottom */}
-        <div className="shrink-0 border-t border-whisper p-2 dark:border-white/10">
+        <div className="shrink-0 border-t border-whisper p-2">
           <button
             onClick={toggleSidebar}
-            className="flex w-full items-center rounded px-3 py-1.5 text-[14px] text-muted-foreground hover:bg-[rgba(0,0,0,0.04)] hover:text-foreground dark:hover:bg-[rgba(255,255,255,0.05)] transition-colors"
+            className="flex w-full items-center rounded px-3 py-1.5 text-[14px] text-muted-foreground hover:bg-[rgba(0,0,0,0.05)] hover:text-foreground transition-colors"
           >
             {sidebarOpen ? (
               <>
@@ -206,7 +244,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         style={{ marginLeft: sidebarOpen ? sidebarWidth : 64 }}
       >
         {/* Top bar */}
-        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-whisper bg-card/85 backdrop-blur-md px-5 dark:border-white/10">
+        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-whisper bg-white/70 backdrop-blur-md px-5">
           <div className="flex items-center gap-3">
             <span className="text-[14px] font-medium text-muted-foreground">
               {currentLabel}
@@ -214,7 +252,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             {/* Notes shortcut button */}
             <button
               onClick={() => setNotesOpen(true)}
-              className="flex items-center gap-1.5 rounded px-2 py-1 text-[12px] text-muted-foreground hover:bg-[rgba(0,0,0,0.04)] hover:text-foreground dark:hover:bg-[rgba(255,255,255,0.05)] transition-colors"
+              className="flex items-center gap-1.5 rounded px-2 py-1 text-[12px] text-muted-foreground hover:bg-[rgba(0,0,0,0.05)] hover:text-foreground transition-colors"
               title="打开随时记写"
             >
               <StickyNote className="h-3.5 w-3.5" />
@@ -256,7 +294,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 <X className="h-4 w-4" />
               </button>
             )}
-            <ThemeToggle />
             <a
               href="/profile"
               className="flex h-8 w-8 items-center justify-center rounded hover:bg-secondary transition-colors"
@@ -305,7 +342,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               setWallpaper(null);
               setWallpaperOpen(false);
             }}
-            className="flex w-full items-center gap-3 rounded-lg border border-whisper bg-background px-4 py-3 text-sm hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.05)] transition-colors"
+            className="flex w-full items-center gap-3 rounded-lg border border-whisper bg-white/60 px-4 py-3 text-sm hover:bg-black/[0.04] transition-colors"
           >
             <span
               className={cn(
@@ -322,7 +359,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           </button>
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="flex w-full items-center gap-3 rounded-lg border border-whisper bg-background px-4 py-3 text-sm hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.05)] transition-colors"
+            className="flex w-full items-center gap-3 rounded-lg border border-whisper bg-white/60 px-4 py-3 text-sm hover:bg-black/[0.04] transition-colors"
           >
             <span className="flex h-10 w-10 items-center justify-center rounded bg-secondary">
               <Image className="h-4 w-4" />
@@ -349,15 +386,15 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       {/* Right panel: 日历 + 计时器 */}
       <aside
         className={cn(
-          "fixed right-0 top-0 z-40 hidden h-full w-[300px] flex-col border-l border-whisper bg-card transition-transform duration-200 lg:flex dark:border-white/10",
+          "fixed right-0 top-0 z-40 hidden h-full w-[300px] flex-col border-l border-whisper bg-white/45 backdrop-blur-md transition-transform duration-200 lg:flex",
           rightOpen ? "translate-x-0" : "translate-x-full",
         )}
       >
-        <div className="flex h-14 shrink-0 items-center justify-between border-b border-whisper px-4 dark:border-white/10">
+        <div className="flex h-14 shrink-0 items-center justify-between border-b border-whisper px-4">
           <span className="text-[14px] font-semibold tracking-tight">面板</span>
           <button
             onClick={() => setRightOpen(false)}
-            className="rounded p-1.5 text-muted-foreground hover:bg-[rgba(0,0,0,0.04)] hover:text-foreground dark:hover:bg-[rgba(255,255,255,0.05)] transition-colors"
+            className="rounded p-1.5 text-muted-foreground hover:bg-[rgba(0,0,0,0.05)] hover:text-foreground transition-colors"
             title="收起面板"
           >
             <X className="h-4 w-4" />

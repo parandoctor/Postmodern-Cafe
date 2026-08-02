@@ -29,7 +29,7 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer id="about" className="border-t border-whisper bg-card">
+    <footer id="about" className="border-t border-whisper bg-white/60 backdrop-blur-md">
       <div className="mx-auto max-w-5xl px-6 py-16 lg:px-8 lg:py-24">
         <div className="grid gap-12 lg:grid-cols-3">
           {/* Brand */}
@@ -41,7 +41,7 @@ export function Footer() {
             className="lg:col-span-1"
           >
             <div className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center border border-whisper bg-background">
+              <div className="flex h-8 w-8 items-center justify-center border border-whisper bg-white/70">
                 <span className="text-[14px] font-bold">R</span>
               </div>
               <span className="text-[16px] font-semibold">收纳盒</span>

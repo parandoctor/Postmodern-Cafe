@@ -23,7 +23,7 @@ export function SidebarTodo() {
     <div className="px-2">
       <button
         onClick={() => setCollapsed((c) => !c)}
-        className="flex w-full items-center gap-1.5 rounded px-2 py-1.5 text-left hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.05)] transition-colors"
+        className="flex w-full items-center gap-1.5 rounded px-2 py-1.5 text-left hover:bg-[rgba(0,0,0,0.05)] transition-colors"
       >
         <ChevronDown
           className={cn(
@@ -42,7 +42,7 @@ export function SidebarTodo() {
 
       {!collapsed && (
         <div className="mt-1 space-y-1">
-          <div className="flex items-center gap-1.5 rounded border border-whisper bg-background px-2 py-1.5 dark:border-white/10">
+          <div className="flex items-center gap-1.5 rounded border border-whisper bg-white/60 px-2 py-1.5">
             <Circle className="h-3.5 w-3.5 shrink-0 text-muted-foreground/60" />
             <input
               value={text}
@@ -62,7 +62,7 @@ export function SidebarTodo() {
               {todos.map((todo) => (
                 <li
                   key={todo.id}
-                  className="group flex items-center gap-2 rounded px-1.5 py-1 hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.05)] transition-colors"
+                  className="group flex items-center gap-2 rounded px-1.5 py-1 hover:bg-[rgba(0,0,0,0.05)] transition-colors"
                 >
                   <button
                     onClick={() => toggleTodo(todo.id)}
@@ -98,7 +98,7 @@ export function SidebarTodo() {
           {doneCount > 0 && (
             <button
               onClick={clearDone}
-              className="w-full rounded px-2 py-1 text-left text-[11px] text-muted-foreground hover:bg-[rgba(0,0,0,0.04)] hover:text-foreground dark:hover:bg-[rgba(255,255,255,0.05)] transition-colors"
+              className="w-full rounded px-2 py-1 text-left text-[11px] text-muted-foreground hover:bg-[rgba(0,0,0,0.05)] hover:text-foreground transition-colors"
             >
               清除已完成
             </button>

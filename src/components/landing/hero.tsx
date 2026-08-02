@@ -22,7 +22,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-10 inline-flex items-center gap-2 rounded-full border border-whisper bg-card/90 backdrop-blur-sm px-5 py-2 text-[14px] font-medium text-muted-foreground"
+          className="mb-10 inline-flex items-center gap-2 rounded-full border border-whisper bg-white/70 backdrop-blur-sm px-5 py-2 text-[14px] font-medium text-muted-foreground"
         >
           <span className="h-1.5 w-1.5 rounded-full bg-foreground/60" />
           简约 · 高效 · 有序
@@ -77,7 +77,7 @@ export function Hero() {
         >
           {pills.map((item) => (
             <div key={item.label} className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded border border-whisper bg-card/90 backdrop-blur-sm dark:border-white/10">
+              <div className="flex h-10 w-10 items-center justify-center rounded border border-whisper bg-white/70 backdrop-blur-sm">
                 <item.icon className="h-[18px] w-[18px] text-muted-foreground" />
               </div>
               <div className="text-left">

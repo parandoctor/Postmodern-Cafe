@@ -27,8 +27,8 @@ function FeatureCard({ icon: Icon, title, description, delay }: FeatureCardProps
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}
     >
-      <div className="group relative overflow-hidden rounded-xl border border-whisper bg-card p-6 shadow-notion transition-shadow hover:shadow-notion-hover dark:border-white/10">
-        <div className="mb-4 flex h-10 w-10 items-center justify-center rounded border border-whisper bg-background dark:border-white/10">
+      <div className="group relative overflow-hidden rounded-xl border border-whisper bg-white/60 backdrop-blur-md p-6 shadow-card transition-shadow hover:shadow-card-hover">
+        <div className="mb-4 flex h-10 w-10 items-center justify-center rounded border border-whisper bg-white/70">
           <Icon className="h-[18px] w-[18px] text-muted-foreground" />
         </div>
         <h3 className="mb-2 text-[16px] font-semibold tracking-[-0.15px]">{title}</h3>
