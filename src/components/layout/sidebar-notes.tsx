@@ -1,11 +1,11 @@
 "use client";
 
 import * as React from "react";
-import { ChevronDown, StickyNote, Trash2, X } from "lucide-react";
+import { ChevronDown, StickyNote, X, Maximize2 } from "lucide-react";
 import { useNotesStore } from "@/store/widgets";
 import { cn } from "@/lib/utils";
 
-export function SidebarNotes() {
+export function SidebarNotes({ onOpenFull }: { onOpenFull?: () => void }) {
   const { notes, addNote, updateNote, removeNote } = useNotesStore();
   const [text, setText] = React.useState("");
   const [collapsed, setCollapsed] = React.useState(false);
@@ -36,9 +36,12 @@ export function SidebarNotes() {
 
   return (
     <div className="px-2">
-      <button
+      <div
         onClick={() => setCollapsed((c) => !c)}
-        className="flex w-full items-center gap-1.5 rounded-md px-2 py-1.5 text-left hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setCollapsed((c) => !c); } }}
+        className="flex w-full items-center gap-1.5 rounded px-2 py-1.5 text-left hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.05)] transition-colors cursor-pointer"
       >
         <ChevronDown
           className={cn(
@@ -46,14 +49,24 @@ export function SidebarNotes() {
             collapsed && "-rotate-90",
           )}
         />
-        <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+        <StickyNote className="h-3.5 w-3.5 text-muted-foreground" />
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
           随时记写
         </span>
-      </button>
+        {onOpenFull && (
+          <button
+            onClick={(e) => { e.stopPropagation(); onOpenFull(); }}
+            className="ml-auto rounded p-0.5 text-muted-foreground hover:text-foreground transition-colors"
+            title="展开到工作台"
+          >
+            <Maximize2 className="h-3 w-3" />
+          </button>
+        )}
+      </div>
 
       {!collapsed && (
         <div className="mt-1 space-y-1">
-          <div className="flex items-center gap-1.5 rounded-md border border-black/10 bg-background px-2 py-1.5 dark:border-white/10">
+          <div className="flex items-center gap-1.5 rounded border border-whisper bg-background px-2 py-1.5 dark:border-white/10">
             <StickyNote className="h-3.5 w-3.5 shrink-0 text-muted-foreground/60" />
             <input
               value={text}
@@ -67,13 +80,13 @@ export function SidebarNotes() {
           </div>
 
           {notes.length === 0 ? (
-            <p className="px-1 py-1 text-xs text-muted-foreground/60">暂无记录</p>
+            <p className="px-1 py-1 text-[12px] text-muted-foreground/60">暂无记录</p>
           ) : (
             <ul className="max-h-36 space-y-0.5 overflow-y-auto pr-0.5">
-              {notes.map((note) => (
+              {notes.slice(0, 8).map((note) => (
                 <li
                   key={note.id}
-                  className="group flex items-start gap-1.5 rounded-md px-1.5 py-1 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                  className="group flex items-start gap-1.5 rounded px-1.5 py-1 hover:bg-[rgba(0,0,0,0.04)] dark:hover:bg-[rgba(255,255,255,0.05)] transition-colors"
                 >
                   {editingId === note.id ? (
                     <input
@@ -85,7 +98,7 @@ export function SidebarNotes() {
                         if (e.key === "Escape") setEditingId(null);
                       }}
                       onBlur={commitEdit}
-                      className="w-full rounded border border-black/20 bg-background px-1.5 py-0.5 text-[13px] focus:outline-none dark:border-white/20"
+                      className="w-full rounded border border-whisper bg-background px-1.5 py-0.5 text-[13px] focus:outline-none dark:border-white/20"
                     />
                   ) : (
                     <button

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/components/ui/theme-provider";
+import { BlueprintOverlay } from "@/components/ui/blueprint-overlay";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -22,7 +23,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN" suppressHydrationWarning>
-      <body className="min-h-screen bg-background antialiased">
+      <body className="min-h-screen bg-background text-foreground antialiased">
+        <BlueprintOverlay />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

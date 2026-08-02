@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ChevronDown, Music, Plus, Play, Pause, Trash2 } from "lucide-react";
+import { ChevronDown, Music, Plus, Play, Pause, Trash2, Disc3 } from "lucide-react";
 import { useMusicStore } from "@/store/widgets";
 import { formatFileSize, cn } from "@/lib/utils";
 
@@ -63,7 +63,8 @@ export function SidebarMusic() {
             collapsed && "-rotate-90",
           )}
         />
-        <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+        <Disc3 className="h-3.5 w-3.5 text-muted-foreground" />
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
           音乐盒
         </span>
         <span className="ml-auto text-[10px] tabular-nums text-muted-foreground/70">

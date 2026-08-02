@@ -118,6 +118,35 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
   };
 }
 
+// ---- Per-account localStorage scoping ----
+
+const USER_ID_KEY = "rainbow-box-active-user-id";
+
+/** Get the currently active user ID from local storage (set on login) */
+export function getActiveUserId(): string | null {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem(USER_ID_KEY);
+}
+
+/** Set the active user ID (call on login) — also triggers re-hydration of scoped stores */
+export function setActiveUserId(userId: string | null): void {
+  if (typeof window === "undefined") return;
+  if (userId) {
+    localStorage.setItem(USER_ID_KEY, userId);
+  } else {
+    localStorage.removeItem(USER_ID_KEY);
+  }
+}
+
+/**
+ * Build a user-scoped localStorage key.
+ * Returns the base key if no active user, otherwise appends `-<userId>`.
+ */
+export function userStorageKey(base: string): string {
+  const uid = getActiveUserId();
+  return uid ? `${base}-${uid}` : base;
+}
+
 /**
  * Get file icon name based on extension
  */

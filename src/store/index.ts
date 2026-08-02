@@ -1,15 +1,30 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 import type { FileItem, Category, UploadProgress, UserProfile } from "@/types";
+import { userStorageKey, setActiveUserId } from "@/lib/utils";
+
+// ---- 用户作用域的 localStorage 适配器 ----
+const scopedStorage = () =>
+  createJSONStorage(() => {
+    const storage = typeof window !== "undefined" ? window.localStorage : null;
+    if (!storage) return { getItem: () => null, setItem: () => {}, removeItem: () => {} };
+    return {
+      getItem: (name: string) => storage.getItem(userStorageKey(name)),
+      setItem: (name: string, value: string) => storage.setItem(userStorageKey(name), value),
+      removeItem: (name: string) => storage.removeItem(userStorageKey(name)),
+    };
+  });
 
 // ---- UI Store ----
 interface UIState {
   sidebarOpen: boolean;
+  sidebarWidth: number;
   rightOpen: boolean;
   theme: "light" | "dark" | "system";
   wallpaper: string | null;
   setSidebarOpen: (open: boolean) => void;
   toggleSidebar: () => void;
+  setSidebarWidth: (width: number) => void;
   setRightOpen: (open: boolean) => void;
   toggleRight: () => void;
   setWallpaper: (wallpaper: string | null) => void;
@@ -19,18 +34,40 @@ export const useUIStore = create<UIState>()(
   persist(
     (set) => ({
       sidebarOpen: true,
+      sidebarWidth: 280,
       rightOpen: true,
       theme: "system",
       wallpaper: null,
       setSidebarOpen: (open) => set({ sidebarOpen: open }),
       toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
+      setSidebarWidth: (width) => set({ sidebarWidth: width }),
       setRightOpen: (open) => set({ rightOpen: open }),
       toggleRight: () => set((state) => ({ rightOpen: !state.rightOpen })),
-      setWallpaper: (wallpaper) => set({ wallpaper }),
+      setWallpaper: (wallpaper) => {
+        // 仅接受 null（默认）或 data: URL（自定义壁纸），过滤旧 preset 字符串
+        if (wallpaper !== null && !wallpaper.startsWith("data:")) {
+          set({ wallpaper: null });
+          return;
+        }
+        set({ wallpaper });
+      },
     }),
     {
       name: "rainbow-box-ui",
-      partialize: (state) => ({ wallpaper: state.wallpaper, sidebarOpen: state.sidebarOpen, rightOpen: state.rightOpen }),
+      version: 2,
+      partialize: (state) => ({ wallpaper: state.wallpaper, sidebarOpen: state.sidebarOpen, rightOpen: state.rightOpen, sidebarWidth: state.sidebarWidth }),
+      storage: scopedStorage(),
+      migrate: (persistedState, version) => {
+        const state = persistedState as Partial<UIState>;
+        // 清理旧版非 data: URL 的 wallpaper 预设值
+        if (version < 2 && typeof state.wallpaper === "string" && !state.wallpaper.startsWith("data:")) {
+          state.wallpaper = null;
+        }
+        if (typeof state.wallpaper === "string" && !state.wallpaper.startsWith("data:")) {
+          state.wallpaper = null;
+        }
+        return state as UIState;
+      },
     },
   ),
 );
@@ -136,6 +173,10 @@ interface UserState {
 export const useUserStore = create<UserState>()((set) => ({
   user: null,
   isLoading: true,
-  setUser: (user) => set({ user }),
+  setUser: (user) => {
+    set({ user });
+    // 同步活跃用户 ID，用于 localStorage 按账号隔离
+    setActiveUserId(user?.id ?? null);
+  },
   setLoading: (loading) => set({ isLoading: loading }),
 }));

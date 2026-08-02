@@ -1,10 +1,34 @@
 // ============================================================
 // 侧边栏小部件数据层：每日待办 / 随手记 / 音乐盒
 // ============================================================
+// 所有 localStorage 持久化均已按账号隔离：
+// 登录时调用 setActiveUserId(userId) 将 userId 写入
+// "rainbow-box-active-user-id"，存储键自动追加 "-<userId>" 后缀。
+// ============================================================
 
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 import { idbGetAll, idbPut, idbDelete } from "@/lib/idb";
+import { userStorageKey } from "@/lib/utils";
+
+// ---- 用户作用域的 localStorage 适配器 ----
+const scopedStorage = () =>
+  createJSONStorage(() => {
+    const storage = typeof window !== "undefined" ? window.localStorage : null;
+    if (!storage) {
+      // SSR fallback: noop storage
+      return {
+        getItem: () => null,
+        setItem: () => {},
+        removeItem: () => {},
+      };
+    }
+    return {
+      getItem: (name: string) => storage.getItem(userStorageKey(name)),
+      setItem: (name: string, value: string) => storage.setItem(userStorageKey(name), value),
+      removeItem: (name: string) => storage.removeItem(userStorageKey(name)),
+    };
+  });
 
 // ---- 每日待办 ----
 export interface Todo {
@@ -44,7 +68,7 @@ export const useTodoStore = create<TodoState>()(
       clearDone: () =>
         set((state) => ({ todos: state.todos.filter((t) => !t.done) })),
     }),
-    { name: "rainbow-box-todos" },
+    { name: "rainbow-box-todos", storage: scopedStorage() },
   ),
 );
 
@@ -83,7 +107,7 @@ export const useNotesStore = create<NotesState>()(
       removeNote: (id) =>
         set((state) => ({ notes: state.notes.filter((n) => n.id !== id) })),
     }),
-    { name: "rainbow-box-notes" },
+    { name: "rainbow-box-notes", storage: scopedStorage() },
   ),
 );
 
