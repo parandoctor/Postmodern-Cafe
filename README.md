@@ -411,5 +411,5 @@ main        ← 稳定发布分支（受保护）
 ---
 
 <p align="center">
-  <sub>Made with ❤️ by Rainbow-box Team · v1.1.01</sub>
+  <sub>Made with Coronade (Gestalt Team) · v1.1.01</sub>
 </p>
