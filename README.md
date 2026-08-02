@@ -406,5 +406,5 @@ main        ← 稳定发布分支（受保护）
 ---
 
 <p align="center">
-  <sub>Made with ❤️ by Coronade(Parandoctor) · v1.0.2</sub>
+  <sub>Made with ❤️ by Coronade(Parandoctor) · v1.1.0</sub>
 </p>
