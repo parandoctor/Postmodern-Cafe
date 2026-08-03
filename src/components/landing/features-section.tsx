@@ -83,11 +83,11 @@ export function FeaturesSection() {
           className="mx-auto max-w-2xl text-center"
         >
           <h2 className="text-[32px] font-bold tracking-[-0.5px] sm:text-[40px]">
-            强大而优雅的文件管理
+            一站式管理你的生活与事务
           </h2>
           <p className="mt-4 text-[16px] text-muted-foreground leading-relaxed">
-            从上传到分类，从预览到管理，每一个细节都经过精心打磨，
-            为你带来前所未有的文件管理体验。
+            从文件归档到生活规划，从待办事务到随手记录，每一个细节都经过精心打磨，
+            为你带来前所未有的综合服务体验。
           </p>
         </motion.div>
 

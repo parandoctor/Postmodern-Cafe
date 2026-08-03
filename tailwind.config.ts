@@ -12,12 +12,13 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: [
-          "-apple-system",
-          "BlinkMacSystemFont",
-          '"SF Pro Display"',
-          '"SF Pro Text"',
-          '"Helvetica Neue"',
-          "Arial",
+          "var(--font-sans)",
+          '"思源黑体"',
+          '"Source Han Sans SC"',
+          '"Noto Sans SC"',
+          '"Noto Sans CJK SC"',
+          '"PingFang SC"',
+          '"Microsoft YaHei"',
           "sans-serif",
         ],
         mono: [

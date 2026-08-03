@@ -38,10 +38,10 @@ export function Navbar() {
         {/* Logo */}
         <Link href="/" className="group flex items-center gap-2.5">
           <div className="flex h-8 w-8 items-center justify-center border border-whisper bg-white/70 backdrop-blur-sm">
-            <span className="text-[14px] font-bold">R</span>
+            <span className="text-[14px] font-bold">C</span>
           </div>
           <span className="text-[16px] font-semibold tracking-tight text-foreground">
-            收纳盒
+            后现代咖啡馆
           </span>
         </Link>
 

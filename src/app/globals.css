@@ -41,9 +41,9 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family:
-      Inter, -apple-system, BlinkMacSystemFont,
-      "Helvetica Neue", Arial,
-      "Noto Sans SC", "PingFang SC", sans-serif;
+      var(--font-sans),
+      "思源黑体", "Source Han Sans SC", "Noto Sans SC", "Noto Sans CJK SC",
+      "PingFang SC", "Microsoft YaHei", sans-serif;
     font-feature-settings: "lnum", "locl";
   }
 }

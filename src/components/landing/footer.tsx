@@ -42,13 +42,13 @@ export function Footer() {
           >
             <div className="flex items-center gap-2.5">
               <div className="flex h-8 w-8 items-center justify-center border border-whisper bg-white/70">
-                <span className="text-[14px] font-bold">R</span>
+                <span className="text-[14px] font-bold">C</span>
               </div>
-              <span className="text-[16px] font-semibold">收纳盒</span>
+              <span className="text-[16px] font-semibold">后现代咖啡馆</span>
             </div>
             <p className="mt-4 max-w-sm text-[14px] text-muted-foreground leading-relaxed">
-              极简风格个人文件管理与分类收纳平台。
-              黑白配色，分类清晰，让每一份文件都有它的归属。
+              黑白蓝图风格的综合服务平台，
+              统一管理生活记录、资料归档与事务处理，让一切井然有序。
             </p>
 
             <div className="mt-8">
@@ -110,13 +110,13 @@ export function Footer() {
             <h4 className="text-[14px] font-medium">关于</h4>
             <ul className="mt-4 space-y-3">
               <li className="text-[14px] text-muted-foreground">
-                收纳盒 &copy; {currentYear}
+                后现代咖啡馆 &copy; {currentYear}
               </li>
               <li className="text-[14px] text-muted-foreground">
-                简约 · 高效 · 有序
+                生活 · 资料 · 事务
               </li>
               <li className="text-[14px] text-muted-foreground">
-                用最纯粹的方式管理文件
+                用最纯粹的方式管理生活与事务
               </li>
             </ul>
           </motion.div>
@@ -131,7 +131,7 @@ export function Footer() {
           className="mt-16 border-t border-whisper pt-8 text-center"
         >
           <p className="text-[12px] text-muted-foreground">
-            &copy; {currentYear} 收纳盒. 保留所有权利.
+            &copy; {currentYear} 后现代咖啡馆. 保留所有权利.
           </p>
         </motion.div>
       </div>

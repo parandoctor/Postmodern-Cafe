@@ -45,9 +45,9 @@ export default function RegisterPage() {
         <div className="mb-8 text-center">
           <Link href="/" className="inline-flex items-center gap-2">
             <div className="flex h-10 w-10 items-center justify-center border border-white/20 bg-white/5">
-              <span className="text-lg font-bold text-white">R</span>
+              <span className="text-lg font-bold text-white">C</span>
             </div>
-            <span className="text-2xl font-semibold text-white">收纳盒</span>
+            <span className="text-2xl font-semibold text-white">后现代咖啡馆</span>
           </Link>
         </div>
 
