@@ -1,9 +1,9 @@
-# 🗂️ 收纳盒 (Rainbow-box) `v1.1.01`
+# 🗂️ 后现代咖啡馆 (Rainbow-box) `v1.1.1`
 
-> 现代化个人文件管理与分类收纳平台 —— 以黑白灰阶分类重新定义文件管理方式，让每一份文件都有它的归属。
+> 现代化综合服务平台 —— 统一管理你的生活记录、资料归档与事务处理，让一切井然有序。
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.1.01-blue" alt="Version" />
+  <img src="https://img.shields.io/badge/version-1.1.1-blue" alt="Version" />
   <img src="https://img.shields.io/badge/Next.js-15.1-black?logo=next.js" alt="Next.js" />
   <img src="https://img.shields.io/badge/React-19.0-61DAFB?logo=react" alt="React" />
   <img src="https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript" alt="TypeScript" />
@@ -15,9 +15,9 @@
 
 ## 📖 项目简介
 
-**收纳盒 (Rainbow-box)** 是一个基于 Next.js 的现代化个人文件管理与分类收纳平台。它采用"白、浅灰、中灰、灰、深灰、墨、黑"七级黑白灰阶作为分类体系，以 Notion 风格统一后台界面，让文件管理变得直观、优雅且高效。支持拖拽上传、在线预览、智能搜索、收藏、回收站等丰富的功能，并提供每日待办、随手记、音乐盒、日历与计时器等效率面板，以及暗黑/明亮双主题切换。
+**后现代咖啡馆 (Rainbow-box)** 是一个基于 Next.js 的综合服务平台，在个人文件收纳能力之上，进一步覆盖生活记录、资料归档与事务处理。它采用"白、浅灰、中灰、灰、深灰、墨、黑"七级黑白灰阶作为分类体系，以 Notion 风格统一后台界面，让生活与事务管理变得直观、优雅且高效。支持拖拽上传、在线预览、智能搜索、收藏、回收站等文件能力，并提供每日待办、随手记、音乐盒、日历与计时器等效率面板。
 
-当前版本 **v1.1.01** 完成了整体视觉升级：首页与分类管理界面改为黑白单色天体蓝图科技风格（SVG 轨道曲线 + 十字定位 + 月球纹理，替代 Three.js 粒子系统）；侧边栏支持拖拽调宽；随时记写新增全屏工作台模式；全部 localStorage 持久化按账号隔离。
+当前版本 **v1.1.1** 完成品牌升级：项目更名为"后现代咖啡馆"，定位升级为综合服务平台；首页宣传文案与 UI 同步更新，全站字体切换为思源黑体（Noto Sans SC）；README 使用步骤重写，面向零基础用户。
 
 ---
 
@@ -198,57 +198,118 @@ Rainbow-box/
 
 ---
 
-## 🚀 快速开始
+## 🚀 快速开始（新手友好版）
 
-### 环境要求
+> 本项目的数据库默认使用 SQLite（本地文件数据库），**不需要**额外安装 MySQL / PostgreSQL。
+> 下面每一步都给出了具体操作，照着做即可在浏览器里打开项目。
 
-| 工具 | 最低版本 |
-|------|----------|
-| **Node.js** | >= 18.17 |
-| **pnpm**（推荐） | >= 8.0 |
-| 或 npm / yarn | — |
+### 第一步：安装 Node.js（必装环境）
 
-### 分步安装
+项目运行在 **Node.js** 之上，电脑上还没有安装的话，请先安装：
+
+1. 打开 Node.js 官网：**[https://nodejs.org](https://nodejs.org)**
+2. 点击下载 **LTS（长期支持）** 版本（例如 v20 或 v22），双击安装包一路"下一步"即可
+3. 安装完成后，打开终端（Windows 按 `Win + R` 输入 `cmd` 回车，或打开 PowerShell），输入下面命令验证：
 
 ```bash
-# 1. 克隆仓库
-git clone https://github.com/parandoctor/Box.git rainbow-box
-cd rainbow-box
-
-# 2. 安装依赖
-pnpm install
-
-# 3. 配置环境变量
-cp .env.example .env
-# 编辑 .env，按需设置：
-#   DATABASE_URL="file:./dev.db"
-
-# 4. 初始化数据库（创建表结构）
-pnpm db:push
-
-# 5. （可选）填充示例种子数据
-pnpm seed
-
-# 6. 启动开发服务器
-pnpm dev
+node -v
+npm -v
 ```
 
-浏览器访问 **[http://localhost:3000](http://localhost:3000)** 即可体验。
+能看到类似 `v20.x.x` 和 `10.x.x` 的版本号，说明安装成功。
+
+### 第二步：获取项目代码
+
+方式一（推荐，需要已安装 Git）：
+
+```bash
+git clone https://github.com/parandoctor/Box.git rainbow-box
+```
+
+方式二：直接到 GitHub 仓库页面点击 **Code → Download ZIP** 下载并解压到任意文件夹。
+
+### 第三步：进入项目文件夹
+
+在终端中进入项目所在的文件夹（把下面的路径换成你自己的）：
+
+```bash
+cd rainbow-box
+```
+
+如果使用 VS Code：用 VS Code 打开这个文件夹，然后按 `` Ctrl + ` ``（反引号）打开内置终端，终端会自动定位到项目目录。
+
+### 第四步：安装依赖
+
+在项目文件夹中执行：
+
+```bash
+npm install
+```
+
+> 国内网络安装较慢时，可先切换为淘宝镜像再安装：
+> `npm config set registry https://registry.npmmirror.com`
+
+### 第五步：配置环境变量（可选）
+
+项目自带 `.env.example` 模板，首次使用复制一份即可：
+
+```bash
+# Windows PowerShell
+Copy-Item .env.example .env
+```
+
+默认使用本地 SQLite 数据库，`.env` 中的 `DATABASE_URL="file:./dev.db"` 无需修改，保持默认即可直接运行。
+
+### 第六步：初始化数据库
+
+```bash
+npm run db:push
+```
+
+该命令会创建数据库表结构。想要体验示例数据（演示分类等）可再执行：
+
+```bash
+npm run seed
+```
+
+### 第七步：启动项目
+
+```bash
+npm run dev
+```
+
+看到终端出现 `Ready in ...` 提示即为启动成功。
+
+### 第八步：在浏览器中打开
+
+打开浏览器访问 **[http://localhost:3000](http://localhost:3000)**，点击右上角"注册"创建账号，即可开始使用。
+
+---
+
+### 常见问题
+
+| 问题 | 解决办法 |
+|------|----------|
+| 端口 3000 被占用 | 换一个端口启动：`npm run dev -- -p 3001`，访问 `http://localhost:3001` |
+| `npm install` 非常慢 | 执行 `npm config set registry https://registry.npmmirror.com` 后重装 |
+| `db:push` 报错说找不到环境变量 | 确认已完成第五步，`DATABASE_URL` 保持 `file:./dev.db` |
+| 登录后文件上传到哪个目录 | 文件保存在 `public/uploads/` 下，按日期分目录存放 |
+| 我习惯用 pnpm | 安装 pnpm 后，把下面的 `npm` 换成 `pnpm` 即可 |
 
 ### 常用命令一览
 
 | 命令 | 说明 |
 |------|------|
-| `pnpm dev` | 启动开发服务器（热更新） |
-| `pnpm build` | 构建生产版本 |
-| `pnpm start` | 启动生产服务器 |
-| `pnpm lint` | ESLint 代码检查 |
-| `pnpm type-check` | TypeScript 类型检查 |
-| `pnpm db:push` | 直接推送 Schema 到 SQLite |
-| `pnpm db:migrate` | 创建数据库迁移文件 |
-| `pnpm db:studio` | 打开 Prisma Studio 可视化管理 |
-| `pnpm db:reset` | 重置数据库（删除所有数据） |
-| `pnpm seed` | 执行种子数据填充脚本 |
+| `npm run dev` | 启动开发服务器（热更新，日常开发用这个） |
+| `npm run build` | 构建生产版本 |
+| `npm run start` | 启动生产服务器（需先 build） |
+| `npm run lint` | ESLint 代码检查 |
+| `npm run type-check` | TypeScript 类型检查 |
+| `npm run db:push` | 直接推送 Schema 到 SQLite |
+| `npm run db:migrate` | 创建数据库迁移文件 |
+| `npm run db:studio` | 打开 Prisma Studio 可视化管理数据库 |
+| `npm run db:reset` | 重置数据库（删除所有数据，慎用） |
+| `npm run seed` | 填充示例种子数据 |
 
 ---
 
@@ -411,5 +472,5 @@ main        ← 稳定发布分支（受保护）
 ---
 
 <p align="center">
-  <sub>Made with Coronade (Gestalt Team) · v1.1.01</sub>
+  <sub>Made with Coronade (Gestalt Team) · v1.1.1</sub>
 </p>

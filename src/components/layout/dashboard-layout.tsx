@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { logoutUser } from "@/actions/auth";
+import { processWallpaperImage } from "@/lib/wallpaper";
 import { useUIStore } from "@/store";
 import { SidebarTodo } from "@/components/layout/sidebar-todo";
 import { SidebarNotes } from "@/components/layout/sidebar-notes";
@@ -45,6 +46,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { sidebarOpen, sidebarWidth, setSidebarWidth, toggleSidebar, rightOpen, setRightOpen, toggleRight, wallpaper, setWallpaper } = useUIStore();
   const [wallpaperOpen, setWallpaperOpen] = React.useState(false);
+  const [wallpaperProcessing, setWallpaperProcessing] = React.useState(false);
   const [notesOpen, setNotesOpen] = React.useState(false);
   const [workspaceCollapsed, setWorkspaceCollapsed] = React.useState(false);
   const [privateCollapsed, setPrivateCollapsed] = React.useState(false);
@@ -57,15 +59,35 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     router.push("/");
   };
 
-  const handleWallpaperUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleWallpaperUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      setWallpaper(reader.result as string);
+    // 允许重复选择同一文件
+    e.target.value = "";
+    setWallpaperProcessing(true);
+    try {
+      // canvas 智能重绘：EXIF 方向修正、低分图放大防模糊、超大图压缩体积
+      const optimized = await processWallpaperImage(file);
+      setWallpaper(optimized);
       setWallpaperOpen(false);
-    };
-    reader.readAsDataURL(file);
+    } catch (err) {
+      console.error("壁纸优化失败，回退原图", err);
+      try {
+        // 优化失败时回退：直接使用原始文件
+        const raw = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = () => reject(reader.error);
+          reader.readAsDataURL(file);
+        });
+        setWallpaper(raw);
+        setWallpaperOpen(false);
+      } catch {
+        // 完全失败，保持现状
+      }
+    } finally {
+      setWallpaperProcessing(false);
+    }
   };
 
   // ---- Sidebar drag resize ----
@@ -123,13 +145,13 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           {sidebarOpen ? (
             <a href="/dashboard" className="flex items-center gap-2.5">
               <div className="flex h-7 w-7 items-center justify-center rounded bg-foreground">
-                <span className="text-xs font-bold text-background">R</span>
+                <span className="text-xs font-bold text-background">C</span>
               </div>
-              <span className="text-[15px] font-semibold tracking-tight">收纳盒</span>
+              <span className="text-[15px] font-semibold tracking-tight">后现代咖啡馆</span>
             </a>
           ) : (
             <a href="/dashboard" className="mx-auto flex h-7 w-7 items-center justify-center rounded bg-foreground">
-              <span className="text-xs font-bold text-background">R</span>
+              <span className="text-xs font-bold text-background">C</span>
             </a>
           )}
         </div>
@@ -326,7 +348,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         open={wallpaperOpen}
         onClose={() => setWallpaperOpen(false)}
         title="更换背景壁纸"
-        description="仅提供默认浅色与自定义壁纸"
+        description="上传图片后自动优化清晰度并压缩体积"
         maxWidth="max-w-md"
       >
         <div className="space-y-4">
@@ -359,14 +381,21 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           </button>
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="flex w-full items-center gap-3 rounded-lg border border-whisper bg-white/60 px-4 py-3 text-sm hover:bg-black/[0.04] transition-colors"
+            disabled={wallpaperProcessing}
+            className="flex w-full items-center gap-3 rounded-lg border border-whisper bg-white/60 px-4 py-3 text-sm hover:bg-black/[0.04] transition-colors disabled:cursor-not-allowed disabled:opacity-50"
           >
             <span className="flex h-10 w-10 items-center justify-center rounded bg-secondary">
               <Image className="h-4 w-4" />
             </span>
             <span className="text-left">
-              <span className="block font-medium">自定义壁纸</span>
-              <span className="block text-xs text-muted-foreground">从本地选择一张图片</span>
+              <span className="block font-medium">
+                {wallpaperProcessing ? "正在优化图片…" : "自定义壁纸"}
+              </span>
+              <span className="block text-xs text-muted-foreground">
+                {wallpaperProcessing
+                  ? "正在提升清晰度并压缩体积，请稍候"
+                  : "从本地选择一张图片，自动优化清晰度"}
+              </span>
             </span>
           </button>
           {wallpaper && (

@@ -25,7 +25,7 @@ export function Hero() {
           className="mb-10 inline-flex items-center gap-2 rounded-full border border-whisper bg-white/70 backdrop-blur-sm px-5 py-2 text-[14px] font-medium text-muted-foreground"
         >
           <span className="h-1.5 w-1.5 rounded-full bg-foreground/60" />
-          简约 · 高效 · 有序
+          一站式综合服务平台
         </motion.div>
 
         {/* Main Title — bold, compressed, impactful */}
@@ -35,9 +35,9 @@ export function Hero() {
           transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           className="text-balance text-[52px] font-bold leading-[1.02] tracking-[-2px] sm:text-[64px] md:text-[76px] lg:text-[84px]"
         >
-          让文件管理
+          让生活与事务
           <br />
-          <span className="text-foreground/85">更加高效快捷</span>
+          <span className="text-foreground/85">管理更加高效快捷</span>
         </motion.h1>
 
         {/* Subtitle */}
@@ -47,7 +47,7 @@ export function Hero() {
           transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           className="mx-auto mt-10 max-w-xl text-balance text-[18px] leading-relaxed text-muted-foreground sm:text-[20px]"
         >
-          极简收纳 · 有序分类 · 极速文件管理
+          生活记录 · 资料归档 · 事务处理
         </motion.p>
 
         {/* CTA Buttons */}

@@ -23,7 +23,11 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
+.env
 .env*.local
+
+# env template (示例模板，如需跟踪请保留)
+# .env.example
 
 # vercel
 .vercel
@@ -35,6 +39,11 @@ next-env.d.ts
 # prisma
 prisma/dev.db
 prisma/dev.db-journal
+prisma/prisma/dev.db
+prisma/prisma/dev.db-journal
+
+# runtime logs
+dev.log
 
 # uploads
 public/uploads/*
