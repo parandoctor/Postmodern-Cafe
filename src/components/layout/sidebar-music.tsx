@@ -1,16 +1,18 @@
 "use client";
 
 import * as React from "react";
-import { ChevronDown, Music, Plus, Play, Pause, Trash2, Disc3 } from "lucide-react";
+import { ChevronDown, Music, Plus, Play, Pause, Trash2, Disc3, UploadCloud } from "lucide-react";
 import { useMusicStore } from "@/store/widgets";
 import { formatFileSize, cn } from "@/lib/utils";
 
 export function SidebarMusic() {
-  const { tracks, currentId, load, add, remove, setCurrent } = useMusicStore();
+  const { tracks, currentId, hydrated, load, add, remove, setCurrent, migrateLocal } = useMusicStore();
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const audioRef = React.useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [collapsed, setCollapsed] = React.useState(false);
+  const [migrating, setMigrating] = React.useState(false);
+  const [migrateMsg, setMigrateMsg] = React.useState("");
 
   const currentTrack = tracks.find((t) => t.id === currentId) ?? null;
 
@@ -18,19 +20,23 @@ export function SidebarMusic() {
     load();
   }, [load]);
 
-  const handleFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
-    files.forEach((file) => {
-      if (!file.type.startsWith("audio/")) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        add(file.name, file.size, reader.result as string).catch((err) =>
-          console.error("[music] 保存音乐失败:", err),
-        );
-      };
-      reader.readAsDataURL(file);
-    });
+    for (const file of files) {
+      if (!file.type.startsWith("audio/")) continue;
+      const ok = await add(file.name, file.size, file);
+      if (!ok) console.error("[music] 上传音乐失败:", file.name);
+    }
     e.target.value = "";
+  };
+
+  const handleMigrate = async () => {
+    setMigrating(true);
+    setMigrateMsg("");
+    const { migrated } = await migrateLocal();
+    setMigrating(false);
+    setMigrateMsg(migrated > 0 ? `已迁移 ${migrated} 首本地音乐` : "没有可迁移的本地音乐");
+    if (migrated > 0) await load();
   };
 
   const togglePlay = (trackId: string) => {
@@ -89,6 +95,22 @@ export function SidebarMusic() {
             onChange={handleFiles}
             className="hidden"
           />
+
+          {migrateMsg && (
+            <p className="px-1 text-[11px] text-muted-foreground/70">{migrateMsg}</p>
+          )}
+
+          {!hydrated && (
+            <button
+              onClick={handleMigrate}
+              disabled={migrating}
+              className="flex w-full items-center gap-1.5 rounded-md border border-dashed border-black/20 px-2 py-1.5 text-[12px] text-muted-foreground hover:border-black/40 hover:text-foreground transition-colors disabled:opacity-50"
+              title="将旧版本地音乐迁移到云端存储"
+            >
+              <UploadCloud className="h-3.5 w-3.5" />
+              {migrating ? "迁移中..." : "迁移本地音乐"}
+            </button>
+          )}
 
           {tracks.length === 0 ? (
             <p className="px-1 py-1 text-xs text-muted-foreground/60">上传音乐开始播放</p>
@@ -155,7 +177,7 @@ export function SidebarMusic() {
               <audio
                 key={currentTrack.id}
                 ref={audioRef}
-                src={currentTrack.dataUrl}
+                src={currentTrack.path}
                 autoPlay
                 controls
                 className="h-7 w-full"

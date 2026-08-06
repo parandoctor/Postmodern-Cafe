@@ -144,3 +144,62 @@ export interface OperationLog {
   detail: string | null;
   createdAt: Date;
 }
+
+// ---- Todo (每日待办) ----
+export interface TodoItem {
+  id: string;
+  text: string;
+  done: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// ---- Note (随时记写 / 知识) ----
+export interface NoteItem {
+  id: string;
+  text: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// ---- MusicTrack (音乐盒) ----
+export interface MusicTrackItem {
+  id: string;
+  name: string;
+  size: number;
+  path: string;
+  addedAt: Date;
+}
+
+// ---- Task (任务管理) ----
+export type TaskPriority = "HIGH" | "MEDIUM" | "LOW";
+
+export const TASK_PRIORITY_LABEL: Record<TaskPriority, string> = {
+  HIGH: "重要",
+  MEDIUM: "一般",
+  LOW: "次要",
+};
+
+export interface TaskLinkItem {
+  id: string;
+  taskId: string;
+  fileId: string | null;
+  noteId: string | null;
+  file?: FileItem | null;
+  note?: NoteItem | null;
+}
+
+export interface TaskItem {
+  id: string;
+  title: string;
+  description: string | null;
+  priority: TaskPriority;
+  done: boolean;
+  dueDate: Date | null;
+  sortOrder: number;
+  parentId: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  children: TaskItem[];
+  links: TaskLinkItem[];
+}

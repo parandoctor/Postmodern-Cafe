@@ -6,9 +6,13 @@ import { useTodoStore } from "@/store/widgets";
 import { cn } from "@/lib/utils";
 
 export function SidebarTodo() {
-  const { todos, addTodo, toggleTodo, removeTodo, clearDone } = useTodoStore();
+  const { todos, load, addTodo, toggleTodo, removeTodo, clearDone } = useTodoStore();
   const [text, setText] = React.useState("");
   const [collapsed, setCollapsed] = React.useState(false);
+
+  React.useEffect(() => {
+    load();
+  }, [load]);
 
   const doneCount = todos.filter((t) => t.done).length;
 

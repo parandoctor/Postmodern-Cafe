@@ -1,9 +1,9 @@
-# 🗂️ 后现代咖啡馆 (Rainbow-box) `v1.1.2`
+# 🗂️ 后现代咖啡馆 (Rainbow-box) `v1.2.0`
 
 > 现代化综合服务平台 —— 统一管理你的生活记录、资料归档与事务处理，让一切井然有序。
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.1.1-blue" alt="Version" />
+  <img src="https://img.shields.io/badge/version-1.2.0-blue" alt="Version" />
   <img src="https://img.shields.io/badge/Next.js-15.1-black?logo=next.js" alt="Next.js" />
   <img src="https://img.shields.io/badge/React-19.0-61DAFB?logo=react" alt="React" />
   <img src="https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript" alt="TypeScript" />
@@ -17,7 +17,7 @@
 
 **后现代咖啡馆 (Rainbow-box)** 是一个基于 Next.js 的综合服务平台，在个人文件收纳能力之上，进一步覆盖生活记录、资料归档与事务处理。它采用"白、浅灰、中灰、灰、深灰、墨、黑"七级黑白灰阶作为分类体系，以 Notion 风格统一后台界面，让生活与事务管理变得直观、优雅且高效。支持拖拽上传、在线预览、智能搜索、收藏、回收站等文件能力，并提供每日待办、随手记、音乐盒、日历与计时器等效率面板。
 
-当前版本 **v1.1.2** 完成品牌升级：项目更名为"后现代咖啡馆".
+当前版本 **v1.2.0** 完成数据全面落库与任务管理板块：待办、随手记、音乐数据由 localStorage / IndexedDB 迁移至数据库（首次加载自动迁移旧数据，按账号隔离）；工作区新增"任务管理"，支持任务名、目的、关联文件与知识、完成状态、三档重要性、父子任务多级拆分，以及列表 / 时间线两种视图与拖拽自定义排序。
 
 ---
 
@@ -34,6 +34,7 @@
 | **收藏 & 最近** | 一键收藏常用文件，自动记录最近访问与最近修改，高频文件触手可及 |
 | **回收站** | 删除文件进入回收站，30 天内可随时恢复，到期自动物理清理 |
 | **标签系统** | 自定义标签及颜色，灵活标记与快速筛选文件 |
+| **任务管理** | 任务名、目的、关联知识/文件、完成状态；三档重要性（高/中/低）；父子任务多级拆分；列表 / 时间线双视图；拖拽自定义排序 |
 
 ### 🔐 账户与安全
 
@@ -51,7 +52,7 @@
 - **Notion 风格后台**：导航居中、侧边栏、卡片、弹窗统一黑白灰阶设计，多层阴影营造立体感
 - **可调侧边栏**：支持左右拖动调整宽度（200–480px），右侧面板可切换
 - **效率面板**：左侧每日待办、随手记、音乐盒（本地音乐上传播放）；右侧日历与计时器；随手记支持展开到工作台的全屏模式（75vh 模态框）
-- **账号数据隔离**：待办、随手记、壁纸等全部 localStorage 持久化按账号隔离，切换账号互不干扰
+- **账号数据隔离**：待办、随手记、壁纸等数据按账号隔离，切换账号互不干扰；v1.2.0 起待办、随手记、音乐数据全面落库，旧 localStorage / IndexedDB 数据首次加载自动迁移
 - **暗黑 / 明亮**双主题，可跟随系统或手动切换
 - **Framer Motion** 驱动的流畅页面过渡与交互动画
 - 响应式自适应布局，桌面端与移动端体验一致
@@ -89,7 +90,7 @@
 Rainbow-box/
 │
 ├── prisma/                            # 数据库层
-│   ├── schema.prisma                  # 数据模型定义（10 张表）
+│   ├── schema.prisma                  # 数据模型定义（15 张表）
 │   ├── seed.ts                        # 种子数据脚本
 │   └── prisma/                        # Prisma Client 生成文件
 │
@@ -103,7 +104,10 @@ Rainbow-box/
 │   │   ├── auth.ts                    #   登录 / 注册 / 登出
 │   │   ├── categories.ts              #   分类 CRUD
 │   │   ├── files.ts                   #   文件 CRUD / 搜索 / 移动
-│   │   └── profile.ts                 #   用户资料更新
+│   │   ├── profile.ts                 #   用户资料更新
+│   │   ├── widgets.ts                 #   待办 / 随手记（v1.2.0 落库）
+│   │   ├── music.ts                   #   音乐盒（v1.2.0 落库）
+│   │   └── tasks.ts                   #   任务 CRUD / 排序 / 关联（v1.2.0 新增）
 │   │
 │   ├── app/                           # 🔹 Next.js App Router
 │   │   ├── globals.css                #   全局样式 & CSS 变量（Notion warm neutral）
@@ -127,6 +131,7 @@ Rainbow-box/
 │   │   ├── dashboard/                 #   仪表盘页面实现
 │   │   │   ├── layout.tsx             #     仪表盘布局外壳
 │   │   │   ├── page.tsx               #     仪表盘首页
+│   │   │   ├── tasks/page.tsx         #     任务管理页（列表/时间线，v1.2.0 新增）
 │   │   │   ├── categories/            #     分类页 & [color] 筛选（天体蓝图）
 │   │   │   ├── favorites/page.tsx     #     收藏页
 │   │   │   ├── files/page.tsx         #     文件页
@@ -144,6 +149,9 @@ Rainbow-box/
 │   │   ├── auth/                      #   认证表单组件
 │   │   ├── categories/                #   分类组件（模态框等）
 │   │   ├── files/                     #   文件组件（预览器、上传区）
+│   │   ├── tasks/                     #   任务组件（v1.2.0 新增）
+│   │   │   ├── task-modal.tsx         #     任务编辑弹窗
+│   │   │   └── task-card.tsx          #     任务卡片
 │   │   ├── landing/                   #   首页组件
 │   │   │   ├── navbar.tsx             #     导航栏（居中 Notion 风格）
 │   │   │   ├── hero.tsx               #     SVG 天体蓝图 Hero（轨道曲线 + 十字定位 + 月球纹理）
@@ -315,7 +323,7 @@ npm run dev
 
 ## 🗄️ 数据库设计
 
-本项目采用 **SQLite** + **Prisma ORM**，包含 10 张核心数据表，完整的实体关系如下：
+本项目采用 **SQLite** + **Prisma ORM**，包含 15 张核心数据表，完整的实体关系如下：
 
 ### 实体关系图 (ERD)
 
@@ -330,10 +338,19 @@ erDiagram
     User ||--o{ Tag : "创建标签"
     User ||--o{ UploadRecord : "上传记录"
     User ||--o{ OperationLog : "操作日志"
+    User ||--o{ Todo : "每日待办"
+    User ||--o{ Note : "随手记/知识"
+    User ||--o{ MusicTrack : "音乐曲库"
+    User ||--o{ Task : "创建任务"
+    User ||--o{ TaskLink : "任务关联"
     Category ||--o{ File : "分类包含"
     File ||--o{ Favorite : "被收藏"
     File ||--o| RecycleBin : "回收状态"
     File ||--o{ UploadRecord : "上传关联"
+    File ||--o{ TaskLink : "被任务关联"
+    Note ||--o{ TaskLink : "被任务关联"
+    Task ||--o{ TaskLink : "拥有关联"
+    Task ||--o{ Task : "父子拆分"
 
     User {
         string id PK "CUID"
@@ -389,6 +406,55 @@ erDiagram
         datetime deletedAt "删除时间"
         datetime expiresAt "30天后过期"
     }
+
+    Todo {
+        string id PK "CUID"
+        string text "待办内容"
+        boolean done "完成状态"
+        string userId FK "所属用户"
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    Note {
+        string id PK "CUID"
+        string text "随手记内容"
+        string userId FK "所属用户"
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    MusicTrack {
+        string id PK "CUID"
+        string name "曲名"
+        int size "文件大小"
+        string path "音频路径"
+        string userId FK "所属用户"
+        datetime addedAt "添加时间"
+    }
+
+    Task {
+        string id PK "CUID"
+        string title "任务名"
+        string description "目的"
+        TaskPriority priority "重要性三档"
+        boolean done "完成状态"
+        datetime dueDate "截止日期"
+        int sortOrder "同级排序"
+        string parentId FK "父任务"
+        string userId FK "所属用户"
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    TaskLink {
+        string id PK "CUID"
+        string taskId FK "所属任务"
+        string fileId FK "关联文件"
+        string noteId FK "关联知识"
+        string userId FK "所属用户"
+        datetime createdAt
+    }
 ```
 
 ### 数据模型说明
@@ -405,6 +471,11 @@ erDiagram
 | **Tag** | 标签 | 用户自定义标记 | name+userId 唯一 |
 | **UploadRecord** | 上传记录 | 上传状态追踪 | userId + fileId 复合索引 |
 | **OperationLog** | 操作日志 | 全操作审计追踪 | userId 索引 |
+| **Todo** | 每日待办 | 待办事项（v1.2.0 落库） | userId 索引 |
+| **Note** | 随手记 | 随时记写与知识沉淀（v1.2.0 落库） | userId 索引 |
+| **MusicTrack** | 音乐曲库 | 音乐元数据与存储路径（v1.2.0 落库） | userId 索引 |
+| **Task** | 任务 | 任务名/目的/优先级/完成状态/父子拆分 | userId+parentId 索引 |
+| **TaskLink** | 任务关联 | 任务 ↔ 文件 / 知识 关联 | taskId、fileId、noteId 索引 |
 
 ---
 
@@ -472,5 +543,5 @@ main        ← 稳定发布分支（受保护）
 ---
 
 <p align="center">
-  <sub>Made with Coronade (Gestalt Team) · v1.1.2</sub>
+  <sub>Made with Coronade (Gestalt Team) · v1.2.0</sub>
 </p>
