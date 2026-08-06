@@ -159,3 +159,57 @@ export function validateInputSafe<T>(
   }
   return { success: false, error: result.error };
 }
+
+// ---- Widget Schemas (Todo / Note) ----
+export const todoTextSchema = z.object({
+  text: z
+    .string()
+    .min(1, "待办内容不能为空")
+    .max(200, "待办内容最长200个字符"),
+});
+
+export const noteTextSchema = z.object({
+  text: z
+    .string()
+    .min(1, "内容不能为空")
+    .max(5000, "内容最长5000个字符"),
+});
+
+// ---- Task Schemas ----
+export const createTaskSchema = z.object({
+  title: z
+    .string()
+    .min(1, "任务名不能为空")
+    .max(100, "任务名最长100个字符"),
+  description: z
+    .string()
+    .max(2000, "目的最长2000个字符")
+    .optional(),
+  priority: z.enum(["HIGH", "MEDIUM", "LOW"]).default("MEDIUM"),
+  dueDate: z.string().datetime().nullable().optional(),
+  parentId: z.string().nullable().optional(),
+});
+
+export const updateTaskSchema = createTaskSchema
+  .partial()
+  .extend({
+    done: z.boolean().optional(),
+  });
+
+export const addTaskLinkSchema = z.object({
+  taskId: z.string().min(1, "任务ID不能为空"),
+  fileId: z.string().nullable().optional(),
+  noteId: z.string().nullable().optional(),
+}).refine((v) => Boolean(v.fileId) || Boolean(v.noteId), {
+  message: "请选择要关联的文件或知识",
+  path: ["fileId"],
+});
+
+export const reorderTasksSchema = z.object({
+  items: z.array(
+    z.object({
+      id: z.string().min(1, "任务ID不能为空"),
+      sortOrder: z.number().int().min(0),
+    }),
+  ),
+});

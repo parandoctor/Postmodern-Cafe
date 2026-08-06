@@ -12,11 +12,15 @@ interface NotesModalProps {
 }
 
 export function NotesModal({ open, onClose }: NotesModalProps) {
-  const { notes, addNote, updateNote, removeNote } = useNotesStore();
+  const { notes, load, addNote, updateNote, removeNote } = useNotesStore();
   const [text, setText] = React.useState("");
   const [editingId, setEditingId] = React.useState<string | null>(null);
   const [editingText, setEditingText] = React.useState("");
   const inputRef = React.useRef<HTMLTextAreaElement>(null);
+
+  React.useEffect(() => {
+    if (open) load();
+  }, [open, load]);
 
   const submit = () => {
     const value = text.trim();

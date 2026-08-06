@@ -6,11 +6,15 @@ import { useNotesStore } from "@/store/widgets";
 import { cn } from "@/lib/utils";
 
 export function SidebarNotes({ onOpenFull }: { onOpenFull?: () => void }) {
-  const { notes, addNote, updateNote, removeNote } = useNotesStore();
+  const { notes, load, addNote, updateNote, removeNote } = useNotesStore();
   const [text, setText] = React.useState("");
   const [collapsed, setCollapsed] = React.useState(false);
   const [editingId, setEditingId] = React.useState<string | null>(null);
   const [editingText, setEditingText] = React.useState("");
+
+  React.useEffect(() => {
+    load();
+  }, [load]);
 
   const submit = () => {
     const value = text.trim();

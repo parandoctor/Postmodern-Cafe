@@ -18,6 +18,7 @@ import {
   CalendarDays,
   GripVertical,
   StickyNote,
+  Target,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -34,6 +35,7 @@ import { TimerWidget } from "@/components/layout/timer-widget";
 import { NotesModal } from "@/components/layout/notes-modal";
 
 const sidebarItems = [
+  { label: "任务管理", href: "/dashboard/tasks", icon: Target },
   { label: "我的文件", href: "/dashboard/files", icon: HardDrive },
   { label: "分类管理", href: "/dashboard/categories", icon: FolderOpen },
   { label: "收藏夹", href: "/dashboard/favorites", icon: Star },
