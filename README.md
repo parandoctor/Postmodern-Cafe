@@ -1,6 +1,6 @@
 # 🗂️ 后现代咖啡馆 (Postmodern Cafe) `v1.2.0`
 
-> 现代化综合服务平台 —— 统一管理你的生活记录、资料归档与事务处理，让一切井然有序。
+> 现代化综合服务平台 —— 管理你的生活记录、资料归档与事务处理，让一切井然有序。
 
 <p align="center">
   <img src="https://img.shields.io/badge/version-1.2.0-blue" alt="Version" />
