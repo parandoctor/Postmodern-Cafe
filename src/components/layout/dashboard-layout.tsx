@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import NextImage from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import {
   HardDrive,
@@ -17,7 +18,6 @@ import {
   Check,
   CalendarDays,
   GripVertical,
-  StickyNote,
   Target,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -32,7 +32,6 @@ import { SidebarNotes } from "@/components/layout/sidebar-notes";
 import { SidebarMusic } from "@/components/layout/sidebar-music";
 import { CalendarWidget } from "@/components/layout/calendar-widget";
 import { TimerWidget } from "@/components/layout/timer-widget";
-import { NotesModal } from "@/components/layout/notes-modal";
 
 const sidebarItems = [
   { label: "任务管理", href: "/dashboard/tasks", icon: Target },
@@ -49,7 +48,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { sidebarOpen, sidebarWidth, setSidebarWidth, toggleSidebar, rightOpen, setRightOpen, toggleRight, wallpaper, setWallpaper } = useUIStore();
   const [wallpaperOpen, setWallpaperOpen] = React.useState(false);
   const [wallpaperProcessing, setWallpaperProcessing] = React.useState(false);
-  const [notesOpen, setNotesOpen] = React.useState(false);
   const [workspaceCollapsed, setWorkspaceCollapsed] = React.useState(false);
   const [privateCollapsed, setPrivateCollapsed] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -147,13 +145,13 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           {sidebarOpen ? (
             <a href="/dashboard" className="flex items-center gap-2.5">
               <div className="flex h-7 w-7 items-center justify-center rounded bg-foreground">
-                <span className="text-xs font-bold text-background">C</span>
+                <NextImage src="/images/cafe-logo-white.png" alt="后现代咖啡馆" width={20} height={20} className="h-5 w-5 object-contain dark:invert" />
               </div>
               <span className="text-[15px] font-semibold tracking-tight">后现代咖啡馆</span>
             </a>
           ) : (
             <a href="/dashboard" className="mx-auto flex h-7 w-7 items-center justify-center rounded bg-foreground">
-              <span className="text-xs font-bold text-background">C</span>
+              <NextImage src="/images/cafe-logo-white.png" alt="后现代咖啡馆" width={20} height={20} className="h-5 w-5 object-contain dark:invert" />
             </a>
           )}
         </div>
@@ -224,7 +222,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               {!privateCollapsed && (
                 <div className="space-y-1">
                   <SidebarTodo />
-                  <SidebarNotes onOpenFull={() => setNotesOpen(true)} />
+                  <SidebarNotes />
                   <SidebarMusic />
                 </div>
               )}
@@ -273,15 +271,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             <span className="text-[14px] font-medium text-muted-foreground">
               {currentLabel}
             </span>
-            {/* Notes shortcut button */}
-            <button
-              onClick={() => setNotesOpen(true)}
-              className="flex items-center gap-1.5 rounded px-2 py-1 text-[12px] text-muted-foreground hover:bg-[rgba(0,0,0,0.05)] hover:text-foreground transition-colors"
-              title="打开随时记写"
-            >
-              <StickyNote className="h-3.5 w-3.5" />
-              随时记写
-            </button>
           </div>
 
           <div className="flex items-center gap-1">
@@ -436,9 +425,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           <TimerWidget />
         </div>
       </aside>
-
-      {/* Notes full modal */}
-      <NotesModal open={notesOpen} onClose={() => setNotesOpen(false)} />
     </div>
   );
 }

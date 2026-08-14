@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Plus, List, Clock, Flag, CheckCircle2, Circle, GripVertical } from "lucide-react";
+import { Plus, List, Clock, Flag, Circle, GripVertical } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getTasks, createTask, updateTask, reorderTasks } from "@/actions/tasks";
 import { TaskCard } from "@/components/tasks/task-card";
@@ -296,11 +296,12 @@ export default function TasksPage() {
                         className="shrink-0 transition-colors hover:opacity-70"
                         title={t.done ? "标记为未完成" : "标记为完成"}
                       >
-                        {t.done ? (
-                          <CheckCircle2 className="h-4 w-4 text-foreground" />
-                        ) : (
-                          <Circle className="h-4 w-4 text-muted-foreground/60" />
-                        )}
+                        <Circle
+                          className={cn(
+                            "h-4 w-4 transition-colors",
+                            t.done ? "fill-foreground text-foreground" : "text-muted-foreground/60",
+                          )}
+                        />
                       </button>
                       <span className={cn("min-w-0 flex-1 truncate text-[13px]", t.done && "text-muted-foreground line-through")}>
                         {t.title}

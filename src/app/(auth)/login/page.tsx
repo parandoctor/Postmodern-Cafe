@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -44,7 +45,7 @@ export default function LoginPage() {
         <div className="mb-8 text-center">
           <Link href="/" className="inline-flex items-center gap-2">
             <div className="flex h-10 w-10 items-center justify-center border border-white/20 bg-white/5">
-              <span className="text-lg font-bold text-white">C</span>
+              <Image src="/images/cafe-logo-white.png" alt="后现代咖啡馆" width={28} height={28} className="h-7 w-7 object-contain" />
             </div>
             <span className="text-2xl font-semibold text-white">后现代咖啡馆</span>
           </Link>

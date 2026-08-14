@@ -140,7 +140,7 @@ export function TaskCard({ task, depth = 0, onChanged, onEdit, onAddSub }: TaskC
           title={task.done ? "标记为未完成" : "标记为完成"}
         >
           {task.done ? (
-            <Check className="h-4 w-4 text-foreground" />
+            <Circle className="h-4 w-4 fill-foreground text-foreground" />
           ) : (
             <Circle className="h-4 w-4 text-muted-foreground/60" />
           )}
