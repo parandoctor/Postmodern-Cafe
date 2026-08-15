@@ -160,14 +160,7 @@ export function validateInputSafe<T>(
   return { success: false, error: result.error };
 }
 
-// ---- Widget Schemas (Todo / Note) ----
-export const todoTextSchema = z.object({
-  text: z
-    .string()
-    .min(1, "待办内容不能为空")
-    .max(200, "待办内容最长200个字符"),
-});
-
+// ---- Widget Schemas (Note) ----
 export const noteTextSchema = z.object({
   text: z
     .string()

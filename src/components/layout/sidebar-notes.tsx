@@ -1,11 +1,12 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { ChevronDown, StickyNote, X, Maximize2 } from "lucide-react";
 import { useNotesStore } from "@/store/widgets";
 import { cn } from "@/lib/utils";
 
-export function SidebarNotes({ onOpenFull }: { onOpenFull?: () => void }) {
+export function SidebarNotes() {
   const { notes, load, addNote, updateNote, removeNote } = useNotesStore();
   const [text, setText] = React.useState("");
   const [collapsed, setCollapsed] = React.useState(false);
@@ -40,32 +41,32 @@ export function SidebarNotes({ onOpenFull }: { onOpenFull?: () => void }) {
 
   return (
     <div className="px-2">
-      <div
-        onClick={() => setCollapsed((c) => !c)}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setCollapsed((c) => !c); } }}
-        className="flex w-full items-center gap-1.5 rounded px-2 py-1.5 text-left hover:bg-[rgba(0,0,0,0.05)] transition-colors cursor-pointer"
-      >
-        <ChevronDown
-          className={cn(
-            "h-3.5 w-3.5 text-muted-foreground transition-transform",
-            collapsed && "-rotate-90",
-          )}
-        />
-        <StickyNote className="h-3.5 w-3.5 text-muted-foreground" />
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-          随时记写
-        </span>
-        {onOpenFull && (
-          <button
-            onClick={(e) => { e.stopPropagation(); onOpenFull(); }}
-            className="ml-auto rounded p-0.5 text-muted-foreground hover:text-foreground transition-colors"
-            title="展开到工作台"
-          >
-            <Maximize2 className="h-3 w-3" />
-          </button>
-        )}
+      <div className="flex w-full items-center gap-1.5">
+        {/* 折叠按钮：仅控制快速记录区 */}
+        <button
+          onClick={() => setCollapsed((c) => !c)}
+          className="flex shrink-0 items-center rounded p-0.5 text-left hover:bg-[rgba(0,0,0,0.05)] transition-colors"
+          title={collapsed ? "展开快速记录" : "收起快速记录"}
+        >
+          <ChevronDown
+            className={cn(
+              "h-3.5 w-3.5 text-muted-foreground transition-transform",
+              collapsed && "-rotate-90",
+            )}
+          />
+        </button>
+        {/* 标题：点击进入随时记写工作台（页面化） */}
+        <Link
+          href="/dashboard/notes"
+          className="flex min-w-0 flex-1 items-center gap-1.5 rounded px-2 py-1.5 text-left hover:bg-[rgba(0,0,0,0.05)] transition-colors"
+          title="打开随时记写工作台"
+        >
+          <StickyNote className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+          <span className="truncate text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            随时记写
+          </span>
+          <Maximize2 className="ml-auto h-3 w-3 shrink-0 text-muted-foreground/50 group-hover:text-muted-foreground" />
+        </Link>
       </div>
 
       {!collapsed && (

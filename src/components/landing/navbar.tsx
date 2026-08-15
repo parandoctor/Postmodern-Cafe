@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
@@ -38,7 +39,7 @@ export function Navbar() {
         {/* Logo */}
         <Link href="/" className="group flex items-center gap-2.5">
           <div className="flex h-8 w-8 items-center justify-center border border-whisper bg-white/70 backdrop-blur-sm">
-            <span className="text-[14px] font-bold">C</span>
+            <Image src="/images/cafe-logo-black.png" alt="后现代咖啡馆" width={20} height={20} className="h-5 w-5 object-contain dark:invert" />
           </div>
           <span className="text-[16px] font-semibold tracking-tight text-foreground">
             后现代咖啡馆

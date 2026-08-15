@@ -1,7 +1,8 @@
 // ============================================================
-// 侧边栏小部件数据层：每日待办 / 随手记 / 音乐盒
+// 侧边栏小部件数据层：随手记 / 音乐盒
 // 1.2.0：数据源由 localStorage / IndexedDB 迁移至后端数据库，
 // store 仅作前端缓存，所有写操作经 Server Actions 落库。
+// 1.2.1：每日待办合并入任务管理，移除 Todo store。
 // 首次加载时自动将旧版本地数据导入后端（按账号隔离）。
 // ============================================================
 
@@ -9,12 +10,6 @@ import { create } from "zustand";
 import { idbGetAll, idbDelete } from "@/lib/idb";
 import { userStorageKey } from "@/lib/utils";
 import {
-  getTodos,
-  addTodo as apiAddTodo,
-  toggleTodo as apiToggleTodo,
-  removeTodo as apiRemoveTodo,
-  clearDoneTodos as apiClearDoneTodos,
-  importLocalTodos,
   getNotes,
   addNote as apiAddNote,
   updateNote as apiUpdateNote,
@@ -26,85 +21,7 @@ import {
   uploadMusicTrack,
   removeMusicTrack as apiRemoveMusicTrack,
 } from "@/actions/music";
-import type { TodoItem, NoteItem, MusicTrackItem } from "@/types";
-
-// ---- 每日待办 ----
-interface TodoState {
-  todos: TodoItem[];
-  hydrated: boolean;
-  load: () => Promise<void>;
-  addTodo: (text: string) => Promise<boolean>;
-  toggleTodo: (id: string) => Promise<void>;
-  removeTodo: (id: string) => Promise<void>;
-  clearDone: () => Promise<void>;
-}
-
-export const useTodoStore = create<TodoState>()((set) => ({
-  todos: [],
-  hydrated: false,
-
-  load: async () => {
-    const res = await getTodos();
-    if (res.success && res.data) {
-      set({ todos: res.data, hydrated: true });
-    } else {
-      set({ hydrated: true });
-    }
-    // 旧版 localStorage 数据迁移（一次性）
-    try {
-      if (typeof window === "undefined") return;
-      const legacyKey = userStorageKey("rainbow-box-todos");
-      const raw = localStorage.getItem(legacyKey);
-      if (!raw) return;
-      const parsed = JSON.parse(raw) as { state?: { todos?: Array<{ text: string; done: boolean }> } };
-      const list = parsed.state?.todos ?? [];
-      if (list.length > 0) {
-        const importRes = await importLocalTodos(list);
-        if (importRes.success) {
-          localStorage.removeItem(legacyKey);
-          const fresh = await getTodos();
-          if (fresh.success && fresh.data) set({ todos: fresh.data });
-        }
-      } else {
-        localStorage.removeItem(legacyKey);
-      }
-    } catch {
-      // 迁移失败不阻塞使用
-    }
-  },
-
-  addTodo: async (text) => {
-    const res = await apiAddTodo({ text });
-    if (res.success && res.data) {
-      set((state) => ({ todos: [res.data!, ...state.todos] }));
-      return true;
-    }
-    return false;
-  },
-
-  toggleTodo: async (id) => {
-    const res = await apiToggleTodo(id);
-    if (res.success && res.data) {
-      set((state) => ({
-        todos: state.todos.map((t) => (t.id === id ? res.data! : t)),
-      }));
-    }
-  },
-
-  removeTodo: async (id) => {
-    const res = await apiRemoveTodo(id);
-    if (res.success) {
-      set((state) => ({ todos: state.todos.filter((t) => t.id !== id) }));
-    }
-  },
-
-  clearDone: async () => {
-    const res = await apiClearDoneTodos();
-    if (res.success) {
-      set((state) => ({ todos: state.todos.filter((t) => !t.done) }));
-    }
-  },
-}));
+import type { NoteItem, MusicTrackItem } from "@/types";
 
 // ---- 随手记 ----
 interface NotesState {

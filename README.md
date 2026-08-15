@@ -1,9 +1,9 @@
-# 🗂️ 后现代咖啡馆 (Postmodern Cafe) `v1.2.0`
+# 🗂️ 后现代咖啡馆 (Postmodern Cafe) `v1.2.2`
 
 > 现代化综合服务平台 —— 管理你的生活记录、资料归档与事务处理，让一切井然有序。
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.2.0-blue" alt="Version" />
+  <img src="https://img.shields.io/badge/version-1.2.2-blue" alt="Version" />
   <img src="https://img.shields.io/badge/Next.js-15.1-black?logo=next.js" alt="Next.js" />
   <img src="https://img.shields.io/badge/React-19.0-61DAFB?logo=react" alt="React" />
   <img src="https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript" alt="TypeScript" />
@@ -15,9 +15,9 @@
 
 ## 📖 项目简介
 
-**后现代咖啡馆 (Postmodern-Cafe)** 是一个基于 Next.js 的综合服务平台，在个人文件收纳能力之上，进一步覆盖生活记录、资料归档与事务处理。它采用"白、浅灰、中灰、灰、深灰、墨、黑"七级黑白灰阶作为分类体系，以 Notion 风格统一后台界面，让生活与事务管理变得直观、优雅且高效。支持拖拽上传、在线预览、智能搜索、收藏、回收站等文件能力，并提供每日待办、随手记、音乐盒、日历与计时器等效率面板。
+**后现代咖啡馆 (Postmodern-Cafe)** 是一个基于 Next.js 的综合服务平台，在个人文件收纳能力之上，进一步覆盖生活记录、资料归档与事务处理。它采用"白、浅灰、中灰、灰、深灰、墨、黑"七级黑白灰阶作为分类体系，以 Notion 风格统一后台界面，让生活与事务管理变得直观、优雅且高效。支持拖拽上传、在线预览、智能搜索、收藏、回收站等文件能力，并提供任务管理（今日任务）、随手记、音乐盒、日历与计时器等效率面板。
 
-当前版本 **v1.2.0** 完成数据全面落库与任务管理板块：待办、随手记、音乐数据由 localStorage / IndexedDB 迁移至数据库（首次加载自动迁移旧数据，按账号隔离）；工作区新增"任务管理"，支持任务名、目的、关联文件与知识、完成状态、三档重要性、父子任务多级拆分，以及列表 / 时间线两种视图与拖拽自定义排序。
+当前版本 **v1.2.2** 统一私有空间：侧边栏"工作区 / 私有空间"同级并列，去掉私有空间外框；今日任务、随时记写、音乐盒三者同列，均可点击标题在中间操作台全屏打开独立工作台；任务管理固定"长期任务"分组（无截止日期任务），与今日任务明确区分。
 
 ---
 
@@ -34,7 +34,7 @@
 | **收藏 & 最近** | 一键收藏常用文件，自动记录最近访问与最近修改，高频文件触手可及 |
 | **回收站** | 删除文件进入回收站，30 天内可随时恢复，到期自动物理清理 |
 | **标签系统** | 自定义标签及颜色，灵活标记与快速筛选文件 |
-| **任务管理** | 任务名、目的、关联知识/文件、完成状态；三档重要性（高/中/低）；父子任务多级拆分；列表 / 时间线双视图；拖拽自定义排序 |
+| **任务管理** | 任务名、目的、关联知识/文件、完成状态；三档重要性（高/中/低）；父子任务多级拆分；列表 / 时间线双视图；拖拽自定义排序；固定"长期任务"分组（无截止日期）与今日任务区分 |
 
 ### 🔐 账户与安全
 
@@ -51,8 +51,8 @@
 - **蓝图分类页**：分类管理界面为天体轨道曲线背景 + 坐标十字定位点 + 月球灰度肌理 + 蓝图草稿质感 + 透明渐变分类卡片
 - **Notion 风格后台**：导航居中、侧边栏、卡片、弹窗统一黑白灰阶设计，多层阴影营造立体感
 - **可调侧边栏**：支持左右拖动调整宽度（200–480px），右侧面板可切换
-- **效率面板**：左侧每日待办、随手记、音乐盒（本地音乐上传播放）；右侧日历与计时器；随手记支持展开到工作台的全屏模式（75vh 模态框）
-- **账号数据隔离**：待办、随手记、壁纸等数据按账号隔离，切换账号互不干扰；v1.2.0 起待办、随手记、音乐数据全面落库，旧 localStorage / IndexedDB 数据首次加载自动迁移
+- **效率面板**：左侧今日任务、随时记写、音乐盒三列同级；右侧日历与计时器；三者标题点击均可进入中间操作台的全屏工作台页面（今日任务 / 随时记写 / 音乐盒）
+- **账号数据隔离**：随手记、任务、壁纸等数据按账号隔离，切换账号互不干扰；v1.2.0 起随手记、音乐数据全面落库，旧 localStorage / IndexedDB 数据首次加载自动迁移
 - **暗黑 / 明亮**双主题，可跟随系统或手动切换
 - **Framer Motion** 驱动的流畅页面过渡与交互动画
 - 响应式自适应布局，桌面端与移动端体验一致
@@ -90,7 +90,7 @@
 Rainbow-box/
 │
 ├── prisma/                            # 数据库层
-│   ├── schema.prisma                  # 数据模型定义（15 张表）
+│   ├── schema.prisma                  # 数据模型定义（14 张表）
 │   ├── seed.ts                        # 种子数据脚本
 │   └── prisma/                        # Prisma Client 生成文件
 │
@@ -105,7 +105,7 @@ Rainbow-box/
 │   │   ├── categories.ts              #   分类 CRUD
 │   │   ├── files.ts                   #   文件 CRUD / 搜索 / 移动
 │   │   ├── profile.ts                 #   用户资料更新
-│   │   ├── widgets.ts                 #   待办 / 随手记（v1.2.0 落库）
+│   │   ├── widgets.ts                 #   随手记（v1.2.1 起仅随手记，每日待办已合并入任务管理）
 │   │   ├── music.ts                   #   音乐盒（v1.2.0 落库）
 │   │   └── tasks.ts                   #   任务 CRUD / 排序 / 关联（v1.2.0 新增）
 │   │
@@ -132,6 +132,9 @@ Rainbow-box/
 │   │   │   ├── layout.tsx             #     仪表盘布局外壳
 │   │   │   ├── page.tsx               #     仪表盘首页
 │   │   │   ├── tasks/page.tsx         #     任务管理页（列表/时间线，v1.2.0 新增）
+│   │   │   ├── today/page.tsx         #     今日任务工作台页（v1.2.2 新增）
+│   │   │   ├── notes/page.tsx         #     随时记写工作台页（v1.2.1 新增）
+│   │   │   ├── music/page.tsx         #     音乐盒工作台页（v1.2.2 新增）
 │   │   │   ├── categories/            #     分类页 & [color] 筛选（天体蓝图）
 │   │   │   ├── favorites/page.tsx     #     收藏页
 │   │   │   ├── files/page.tsx         #     文件页
@@ -159,10 +162,9 @@ Rainbow-box/
 │   │   │   └── footer.tsx             #     页脚
 │   │   ├── layout/                    #   布局组件
 │   │   │   ├── dashboard-layout.tsx   #     仪表盘布局（可拖拽侧边栏 + 右面板）
-│   │   │   ├── notes-modal.tsx        #     随时记写工作台全屏模态框（75vh）
-│   │   │   ├── sidebar-todo.tsx       #     每日待办
-│   │   │   ├── sidebar-notes.tsx      #     随手记（8 条上限 + 展开）
-│   │   │   ├── sidebar-music.tsx      #     音乐盒（本地音乐）
+│   │   │   ├── sidebar-todo.tsx       #     今日任务（标题跳转工作台 + 快速记录，v1.2.2）
+│   │   │   ├── sidebar-notes.tsx      #     随时记写（入口跳转工作台 + 快速记录）
+│   │   │   ├── sidebar-music.tsx      #     音乐盒（标题跳转工作台 + 快速播放）
 │   │   │   ├── calendar-widget.tsx    #     日历
 │   │   │   └── timer-widget.tsx       #     计时器
 │   │   └── ui/                        #   通用 UI 组件
@@ -189,7 +191,7 @@ Rainbow-box/
 │   ├── services/                      # 🔹 业务服务层
 │   ├── store/                         # 🔹 Zustand 全局状态
 │   │   ├── index.ts                   #   Store 定义（UI / 文件 / 分类，含 sidebarWidth）
-│   │   └── widgets.ts                 #   Widget Store（待办 / 随手记 / 音乐）
+│   │   └── widgets.ts                 #   Widget Store（随手记 / 音乐）
 │   ├── styles/                        # 🔹 额外样式表
 │   └── types/                         # 🔹 TypeScript 类型定义
 │       └── index.ts                   #   核心类型 & 接口
@@ -231,7 +233,7 @@ npm -v
 方式一（推荐，需要已安装 Git）：
 
 ```bash
-git clone https://github.com/parandoctor/Box.git rainbow-box
+git clone https://github.com/parandoctor/Postmodern-Cafe.git rainbow-box
 ```
 
 方式二：直接到 GitHub 仓库页面点击 **Code → Download ZIP** 下载并解压到任意文件夹。
@@ -323,7 +325,7 @@ npm run dev
 
 ## 🗄️ 数据库设计
 
-本项目采用 **SQLite** + **Prisma ORM**，包含 15 张核心数据表，完整的实体关系如下：
+本项目采用 **SQLite** + **Prisma ORM**，包含 14 张核心数据表，完整的实体关系如下：
 
 ### 实体关系图 (ERD)
 
@@ -338,7 +340,6 @@ erDiagram
     User ||--o{ Tag : "创建标签"
     User ||--o{ UploadRecord : "上传记录"
     User ||--o{ OperationLog : "操作日志"
-    User ||--o{ Todo : "每日待办"
     User ||--o{ Note : "随手记/知识"
     User ||--o{ MusicTrack : "音乐曲库"
     User ||--o{ Task : "创建任务"
@@ -407,15 +408,6 @@ erDiagram
         datetime expiresAt "30天后过期"
     }
 
-    Todo {
-        string id PK "CUID"
-        string text "待办内容"
-        boolean done "完成状态"
-        string userId FK "所属用户"
-        datetime createdAt
-        datetime updatedAt
-    }
-
     Note {
         string id PK "CUID"
         string text "随手记内容"
@@ -471,7 +463,6 @@ erDiagram
 | **Tag** | 标签 | 用户自定义标记 | name+userId 唯一 |
 | **UploadRecord** | 上传记录 | 上传状态追踪 | userId + fileId 复合索引 |
 | **OperationLog** | 操作日志 | 全操作审计追踪 | userId 索引 |
-| **Todo** | 每日待办 | 待办事项（v1.2.0 落库） | userId 索引 |
 | **Note** | 随手记 | 随时记写与知识沉淀（v1.2.0 落库） | userId 索引 |
 | **MusicTrack** | 音乐曲库 | 音乐元数据与存储路径（v1.2.0 落库） | userId 索引 |
 | **Task** | 任务 | 任务名/目的/优先级/完成状态/父子拆分 | userId+parentId 索引 |
@@ -486,7 +477,7 @@ erDiagram
 ### 贡献流程
 
 1. **Fork** 本仓库到你的 GitHub 账户
-2. **Clone** 到本地：`git clone https://github.com/YOUR_USERNAME/Box.git`
+2. **Clone** 到本地：`git clone https://github.com/YOUR_USERNAME/Postmodern-Cafe.git`
 3. **创建**特性分支：`git checkout -b feature/your-feature-name`
 4. **编码**并确保通过类型检查和 Lint
 5. **提交**代码：`git commit -m '✨ feat: 添加某某功能'`

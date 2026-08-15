@@ -32,7 +32,6 @@ model User {
   uploadRecords UploadRecord[]
   operationLogs OperationLog[]
   tags          Tag[]
-  todos        Todo[]
   notes        Note[]
   musicTracks  MusicTrack[]
   tasks        Task[]
@@ -208,20 +207,6 @@ model OperationLog {
   @@index([userId, createdAt])
   @@index([operation])
   @@index([createdAt])
-}
-
-// ---- Todo (每日待办，1.2.0 由 localStorage 迁移至后端) ----
-model Todo {
-  id        String   @id @default(cuid())
-  text      String
-  done      Boolean  @default(false)
-  userId    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId, createdAt])
 }
 
 // ---- Note (随时记写 / 知识，1.2.0 由 localStorage 迁移至后端) ----

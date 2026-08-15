@@ -145,15 +145,6 @@ export interface OperationLog {
   createdAt: Date;
 }
 
-// ---- Todo (每日待办) ----
-export interface TodoItem {
-  id: string;
-  text: string;
-  done: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
 // ---- Note (随时记写 / 知识) ----
 export interface NoteItem {
   id: string;
