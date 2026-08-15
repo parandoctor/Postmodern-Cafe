@@ -202,31 +202,29 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             </nav>
           )}
 
-          {/* 私有空间 — 待办 / 随手记 / 音乐盒 */}
+          {/* 私有空间 — 今日任务 / 随时记写 / 音乐盒（与工作区同级） */}
           {sidebarOpen && (
-            <div className="space-y-1 border-t border-whisper pt-2">
-              <button
-                onClick={() => setPrivateCollapsed((c) => !c)}
-                className="flex w-full items-center gap-1.5 rounded px-2 py-1.5 text-left hover:bg-[rgba(0,0,0,0.05)] transition-colors"
-              >
-                <ChevronDown
-                  className={cn(
-                    "h-3.5 w-3.5 text-muted-foreground transition-transform",
-                    privateCollapsed && "-rotate-90",
-                  )}
-                />
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  私有空间
-                </span>
-              </button>
-              {!privateCollapsed && (
-                <div className="space-y-1">
-                  <SidebarTodo />
-                  <SidebarNotes />
-                  <SidebarMusic />
-                </div>
-              )}
-            </div>
+            <button
+              onClick={() => setPrivateCollapsed((c) => !c)}
+              className="flex w-full items-center gap-1.5 rounded px-2 py-1.5 text-left hover:bg-[rgba(0,0,0,0.05)] transition-colors"
+            >
+              <ChevronDown
+                className={cn(
+                  "h-3.5 w-3.5 text-muted-foreground transition-transform",
+                  privateCollapsed && "-rotate-90",
+                )}
+              />
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                私有空间
+              </span>
+            </button>
+          )}
+          {!privateCollapsed && (
+            <nav className="space-y-0.5">
+              <SidebarTodo />
+              <SidebarNotes />
+              <SidebarMusic />
+            </nav>
           )}
         </div>
 

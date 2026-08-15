@@ -1,13 +1,14 @@
 ﻿"use client";
 
 import * as React from "react";
-import { ChevronDown, Circle, Trash2, ListChecks } from "lucide-react";
+import Link from "next/link";
+import { ChevronDown, Circle, Trash2, ListChecks, Maximize2 } from "lucide-react";
 import { getTasks, createTask, updateTask, deleteTask } from "@/actions/tasks";
 import { cn } from "@/lib/utils";
 import type { TaskItem } from "@/types";
 
 function isToday(due: Date | null): boolean {
-  if (!due) return true;
+  if (!due) return false; // 无截止日期归入「长期任务」，与今日任务区分
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
   const target = new Date(due.getFullYear(), due.getMonth(), due.getDate()).getTime();
@@ -71,24 +72,36 @@ export function SidebarTodo() {
 
   return (
     <div className="px-2">
-      <button
-        onClick={() => setCollapsed((c) => !c)}
-        className="flex w-full items-center gap-1.5 rounded px-2 py-1.5 text-left hover:bg-[rgba(0,0,0,0.05)] transition-colors"
-      >
-        <ChevronDown
-          className={cn(
-            "h-3.5 w-3.5 text-muted-foreground transition-transform",
-            collapsed && "-rotate-90",
-          )}
-        />
-        <ListChecks className="h-3.5 w-3.5 text-muted-foreground" />
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-          今日任务
-        </span>
-        <span className="ml-auto text-[10px] tabular-nums text-muted-foreground/70">
-          {doneCount}/{doneCount + todayTasks.length}
-        </span>
-      </button>
+      <div className="flex w-full items-center gap-1.5">
+        {/* 折叠按钮：仅控制快速记录区 */}
+        <button
+          onClick={() => setCollapsed((c) => !c)}
+          className="flex shrink-0 items-center rounded p-0.5 text-left hover:bg-[rgba(0,0,0,0.05)] transition-colors"
+          title={collapsed ? "展开快速记录" : "收起快速记录"}
+        >
+          <ChevronDown
+            className={cn(
+              "h-3.5 w-3.5 text-muted-foreground transition-transform",
+              collapsed && "-rotate-90",
+            )}
+          />
+        </button>
+        {/* 标题：点击进入今日任务工作台（页面化） */}
+        <Link
+          href="/dashboard/today"
+          className="flex min-w-0 flex-1 items-center gap-1.5 rounded px-2 py-1.5 text-left hover:bg-[rgba(0,0,0,0.05)] transition-colors"
+          title="打开今日任务工作台"
+        >
+          <ListChecks className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+          <span className="truncate text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            今日任务
+          </span>
+          <span className="ml-auto text-[10px] tabular-nums text-muted-foreground/70">
+            {doneCount}/{doneCount + todayTasks.length}
+          </span>
+          <Maximize2 className="ml-1 h-3 w-3 shrink-0 text-muted-foreground/50" />
+        </Link>
+      </div>
 
       {!collapsed && (
         <div className="mt-1 space-y-1">

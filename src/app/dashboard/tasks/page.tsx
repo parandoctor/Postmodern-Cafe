@@ -31,7 +31,7 @@ const GROUP_LABEL: Record<string, string> = {
   today: "今天",
   tomorrow: "明天",
   "this-week": "本周内",
-  "no-date": "未设置日期",
+  "no-date": "长期任务",
 };
 
 export default function TasksPage() {
@@ -100,6 +100,7 @@ export default function TasksPage() {
   };
 
   const doneCount = tasks.filter((t) => t.done).length;
+  const longTermCount = tasks.filter((t) => !t.dueDate).length; // 长期任务（无截止日期）
 
   // ---- 时间线视图：切换完成状态 ----
   const toggleTimelineDone = async (t: TaskItem) => {
@@ -152,8 +153,8 @@ export default function TasksPage() {
     }
     order.push("no-date");
     for (const key of order) {
-      const list = groupMap.get(key);
-      if (list && list.length > 0) {
+      const list = groupMap.get(key) ?? []; // 长期任务（无截止日期）固定呈现，与今日任务区分
+      if (key === "no-date" || list.length > 0) {
         list.sort((a, b) => (a.dueDate?.getTime() ?? Infinity) - (b.dueDate?.getTime() ?? Infinity));
         timelineGroups.push({ key, tasks: list });
       }
@@ -167,7 +168,7 @@ export default function TasksPage() {
         <div>
           <h1 className="text-[18px] font-semibold tracking-tight">任务管理</h1>
           <p className="mt-0.5 text-[12px] text-muted-foreground">
-            共 {tasks.length} 个顶层任务 · 已完成 {doneCount} 个
+            共 {tasks.length} 个顶层任务 · 已完成 {doneCount} 个 · 长期任务 {longTermCount} 个
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -288,6 +289,11 @@ export default function TasksPage() {
                   </span>
                   <span className="text-[11px] text-muted-foreground/60">{group.tasks.length} 项</span>
                 </div>
+                {group.tasks.length === 0 ? (
+                  <div className="rounded-lg border border-dashed border-whisper bg-white/40 px-3 py-2.5 text-[12px] text-muted-foreground/60">
+                    暂无长期任务 · 新建任务时不设置截止日期即归入此栏
+                  </div>
+                ) : (
                 <div className="space-y-1.5">
                   {group.tasks.map((t) => (
                     <div key={t.id} className="flex items-center gap-2 rounded-lg border border-whisper bg-white/60 px-3 py-2">
@@ -320,6 +326,7 @@ export default function TasksPage() {
                     </div>
                   ))}
                 </div>
+                )}
               </div>
             ))
           )}
