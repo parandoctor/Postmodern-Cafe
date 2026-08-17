@@ -1,9 +1,9 @@
-# 🗂️ 后现代咖啡馆 (Postmodern Cafe) `v1.2.2`
+# 🗂️ 后现代咖啡馆 (Postmodern Cafe) `v1.2.3`
 
 > 现代化综合服务平台 —— 管理你的生活记录、资料归档与事务处理，让一切井然有序。
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.2.2-blue" alt="Version" />
+  <img src="https://img.shields.io/badge/version-1.2.3-blue" alt="Version" />
   <img src="https://img.shields.io/badge/Next.js-15.1-black?logo=next.js" alt="Next.js" />
   <img src="https://img.shields.io/badge/React-19.0-61DAFB?logo=react" alt="React" />
   <img src="https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript" alt="TypeScript" />
@@ -17,7 +17,7 @@
 
 **后现代咖啡馆 (Postmodern-Cafe)** 是一个基于 Next.js 的综合服务平台，在个人文件收纳能力之上，进一步覆盖生活记录、资料归档与事务处理。它采用"白、浅灰、中灰、灰、深灰、墨、黑"七级黑白灰阶作为分类体系，以 Notion 风格统一后台界面，让生活与事务管理变得直观、优雅且高效。支持拖拽上传、在线预览、智能搜索、收藏、回收站等文件能力，并提供任务管理（今日任务）、随手记、音乐盒、日历与计时器等效率面板。
 
-当前版本 **v1.2.2** 统一私有空间：侧边栏"工作区 / 私有空间"同级并列，去掉私有空间外框；今日任务、随时记写、音乐盒三者同列，均可点击标题在中间操作台全屏打开独立工作台；任务管理固定"长期任务"分组（无截止日期任务），与今日任务明确区分。
+当前版本 **v1.2.3** 为音乐盒操作台引入千禧风 Y2K 复古播放器（参考小红书"沐果素材"Y2K 播放器素材包的视觉语言，纯 CSS 实现不引入版权素材）：Winamp 风格银色金属机身 + 黑白灰 LCD 频谱屏 + 可拖拽进度/音量滑块 + 随机/单曲循环 + 旋转 CD 与磁带装饰，右侧为 Winamp 风格播放列表编辑器；整体为黑白灰单色，去除 iOS 式红绿灯圆点与绿色荧光，契合全站蓝图单色风格；v1.2.2 统一私有空间（侧边栏"工作区 / 私有空间"同级并列，去掉私有空间外框，今日任务、随时记写、音乐盒均可点击标题在中间操作台全屏打开独立工作台）。
 
 ---
 
@@ -110,7 +110,7 @@ Rainbow-box/
 │   │   └── tasks.ts                   #   任务 CRUD / 排序 / 关联（v1.2.0 新增）
 │   │
 │   ├── app/                           # 🔹 Next.js App Router
-│   │   ├── globals.css                #   全局样式 & CSS 变量（Notion warm neutral）
+│   │   ├── globals.css                #   全局样式 & CSS 变量（含 Y2K 播放器样式）
 │   │   ├── layout.tsx                 #   根布局（主题、元数据）
 │   │   ├── page.tsx                   #   首页 Landing Page
 │   │   │
@@ -134,7 +134,7 @@ Rainbow-box/
 │   │   │   ├── tasks/page.tsx         #     任务管理页（列表/时间线，v1.2.0 新增）
 │   │   │   ├── today/page.tsx         #     今日任务工作台页（v1.2.2 新增）
 │   │   │   ├── notes/page.tsx         #     随时记写工作台页（v1.2.1 新增）
-│   │   │   ├── music/page.tsx         #     音乐盒工作台页（v1.2.2 新增）
+│   │   │   ├── music/page.tsx         #     音乐盒工作台页（Y2K 复古播放器，v1.2.3 重做）
 │   │   │   ├── categories/            #     分类页 & [color] 筛选（天体蓝图）
 │   │   │   ├── favorites/page.tsx     #     收藏页
 │   │   │   ├── files/page.tsx         #     文件页
@@ -152,7 +152,7 @@ Rainbow-box/
 │   │   ├── auth/                      #   认证表单组件
 │   │   ├── categories/                #   分类组件（模态框等）
 │   │   ├── files/                     #   文件组件（预览器、上传区）
-│   │   ├── tasks/                     #   任务组件（v1.2.0 新增）
+│   │   ├── music/                     #   音乐组件（Y2K 播放器，v1.2.3 新增）\n│   │   │   ├── y2k-player.tsx         #     Winamp 风格播放器机身（LCD 频谱 / CD / 控制键）\n│   │   │   └── y2k-playlist.tsx       #     Winamp 风格播放列表编辑器\n│   │   ├── tasks/                     #   任务组件（v1.2.0 新增）
 │   │   │   ├── task-modal.tsx         #     任务编辑弹窗
 │   │   │   └── task-card.tsx          #     任务卡片
 │   │   ├── landing/                   #   首页组件

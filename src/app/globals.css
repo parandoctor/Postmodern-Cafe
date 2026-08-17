@@ -101,3 +101,73 @@
 .bp-dash-flow { animation: bp-dash linear infinite; }
 .bp-float { animation: bp-float ease-in-out infinite; }
 .bp-twinkle { animation: bp-twinkle ease-in-out infinite; }
+
+/* ============================================================
+   Y2K 千禧风音乐播放器 — Winamp / iPod 复古数码质感
+   (参考小红书素材包风格，纯 CSS 实现，无版权素材)
+   ============================================================ */
+@keyframes y2k-scan {
+  0% { transform: translateY(-120%); }
+  100% { transform: translateY(520%); }
+}
+@keyframes y2k-led {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+@keyframes y2k-marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes y2k-flicker {
+  0%, 100% { opacity: 1; }
+  90% { opacity: 1; }
+  91% { opacity: 0.55; }
+  92% { opacity: 1; }
+  96% { opacity: 0.75; }
+}
+
+/* 银色拉丝金属机身 */
+.y2k-metal {
+  background:
+    linear-gradient(180deg, #f4f4f4 0%, #e2e2e2 28%, #c8c8c8 52%, #ababab 78%, #b8b8b8 100%);
+}
+.y2k-metal-dark {
+  background: linear-gradient(180deg, #4a4a4a 0%, #333333 50%, #242424 100%);
+}
+/* 黑白灰标题栏（无彩色，契合蓝图单色风） */
+.y2k-titlebar {
+  background: linear-gradient(180deg, #4a4a4a 0%, #2c2c2c 45%, #131313 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+}
+/* 黑白灰 LCD 屏 */
+.y2k-lcd {
+  background:
+    radial-gradient(ellipse at 50% 130%, rgba(255,255,255,0.06), transparent 62%),
+    linear-gradient(180deg, #0b0b0b 0%, #111111 55%, #181818 100%);
+  box-shadow: inset 0 0 16px rgba(0,0,0,0.9), inset 0 0 1px rgba(255,255,255,0.12);
+}
+.y2k-lcd-text {
+  color: #ececec;
+  text-shadow: 0 0 3px rgba(255,255,255,0.35), 0 0 10px rgba(255,255,255,0.12);
+}
+/* 拟物按钮 */
+.y2k-btn {
+  background: linear-gradient(180deg, #f7f7f7 0%, #d6d6d6 45%, #b7b7b7 100%);
+  border: 1px solid #4c4c4c;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 1px 2px rgba(0,0,0,0.4);
+  transition: filter 0.1s ease, transform 0.05s ease;
+}
+.y2k-btn:hover { filter: brightness(1.06); }
+.y2k-btn:active {
+  background: linear-gradient(180deg, #a8a8a8 0%, #c8c8c8 60%, #dcdcdc 100%);
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+  transform: translateY(1px);
+}
+.y2k-led { animation: y2k-led 2s ease-in-out infinite; }
+.y2k-flicker { animation: y2k-flicker 5s linear infinite; }
+.y2k-marquee-track { animation: y2k-marquee 14s linear infinite; }
+.y2k-scanline { animation: y2k-scan 7s linear infinite; }
+
+/* Winamp 播放列表斑马纹 */
+.y2k-pl-row:nth-child(even) { background: rgba(230, 230, 230, 0.5); }
+.y2k-pl-row:hover { background: rgba(180, 180, 180, 0.35); }
