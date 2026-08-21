@@ -5,10 +5,6 @@ import NextImage from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import {
   HardDrive,
-  FolderOpen,
-  Star,
-  Clock,
-  Trash2,
   LogOut,
   ChevronLeft,
   ChevronRight,
@@ -35,11 +31,7 @@ import { TimerWidget } from "@/components/layout/timer-widget";
 
 const sidebarItems = [
   { label: "任务管理", href: "/dashboard/tasks", icon: Target },
-  { label: "我的文件", href: "/dashboard/files", icon: HardDrive },
-  { label: "分类管理", href: "/dashboard/categories", icon: FolderOpen },
-  { label: "收藏夹", href: "/dashboard/favorites", icon: Star },
-  { label: "最近使用", href: "/dashboard/recent", icon: Clock },
-  { label: "回收站", href: "/dashboard/recycle", icon: Trash2 },
+  { label: "文件管理", href: "/dashboard/files", icon: HardDrive },
 ];
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -115,7 +107,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     document.addEventListener("mouseup", onUp);
   }, [sidebarWidth, setSidebarWidth]);
 
-  const currentLabel = sidebarItems.find((s) => pathname === s.href || (s.href !== "/dashboard" && pathname.startsWith(s.href)))?.label ?? "我的文件";
+  const currentLabel = sidebarItems.find((s) => pathname === s.href || (s.href !== "/dashboard" && pathname.startsWith(s.href)) || (s.href === "/dashboard/files" && pathname.startsWith("/dashboard/categories")))?.label ?? "文件管理";
 
   return (
     <div className="relative flex min-h-screen">
@@ -178,7 +170,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           {!workspaceCollapsed && (
             <nav className="space-y-0.5">
               {sidebarItems.map((item) => {
-                const isActive = pathname === item.href || pathname.startsWith(item.href);
+                const isActive = pathname === item.href || pathname.startsWith(item.href) || (item.href === "/dashboard/files" && pathname.startsWith("/dashboard/categories"));
                 return (
                   <a
                     key={item.href}
@@ -426,3 +418,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
+
+
+
