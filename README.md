@@ -1,9 +1,9 @@
-# 🗂️ 后现代咖啡馆 (Postmodern Cafe) `v1.2.3`
+# 🗂️ 后现代咖啡馆 (Postmodern Cafe) `v1.2.4`
 
 > 现代化综合服务平台 —— 管理你的生活记录、资料归档与事务处理，让一切井然有序。
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.2.3-blue" alt="Version" />
+  <img src="https://img.shields.io/badge/version-1.2.4-blue" alt="Version" />
   <img src="https://img.shields.io/badge/Next.js-15.1-black?logo=next.js" alt="Next.js" />
   <img src="https://img.shields.io/badge/React-19.0-61DAFB?logo=react" alt="React" />
   <img src="https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript" alt="TypeScript" />
@@ -17,7 +17,7 @@
 
 **后现代咖啡馆 (Postmodern-Cafe)** 是一个基于 Next.js 的综合服务平台，在个人文件收纳能力之上，进一步覆盖生活记录、资料归档与事务处理。它采用"白、浅灰、中灰、灰、深灰、墨、黑"七级黑白灰阶作为分类体系，以 Notion 风格统一后台界面，让生活与事务管理变得直观、优雅且高效。支持拖拽上传、在线预览、智能搜索、收藏、回收站等文件能力，并提供任务管理（今日任务）、随手记、音乐盒、日历与计时器等效率面板。
 
-当前版本 **v1.2.3** 为音乐盒操作台引入千禧风 Y2K 复古播放器（参考小红书"沐果素材"Y2K 播放器素材包的视觉语言，纯 CSS 实现不引入版权素材）：Winamp 风格银色金属机身 + 黑白灰 LCD 频谱屏 + 可拖拽进度/音量滑块 + 随机/单曲循环 + 旋转 CD 与磁带装饰，右侧为 Winamp 风格播放列表编辑器；整体为黑白灰单色，去除 iOS 式红绿灯圆点与绿色荧光，契合全站蓝图单色风格；v1.2.2 统一私有空间（侧边栏"工作区 / 私有空间"同级并列，去掉私有空间外框，今日任务、随时记写、音乐盒均可点击标题在中间操作台全屏打开独立工作台）。
+当前版本 **v1.2.4** 将侧边栏"我的文件 / 分类管理 / 收藏夹 / 最近使用 / 回收站"五个文件功能入口合并为"文件管理"：选中文件管理后，中间操作台上方显示五个分栏用于切换，默认主页为分类管理；v1.2.3 为音乐盒操作台引入千禧风 Y2K 复古播放器（参考小红书"沐果素材"Y2K 播放器素材包的视觉语言，纯 CSS 实现不引入版权素材）：Winamp 风格银色金属机身 + 黑白灰 LCD 频谱屏 + 可拖拽进度/音量滑块 + 随机/单曲循环 + 旋转 CD 与磁带装饰，右侧为 Winamp 风格播放列表编辑器，整体为黑白灰单色；v1.2.2 统一私有空间（侧边栏"工作区 / 私有空间"同级并列，去掉私有空间外框，今日任务、随时记写、音乐盒均可点击标题在中间操作台全屏打开独立工作台）。
 
 ---
 
@@ -28,6 +28,7 @@
 | 功能 | 说明 |
 |------|------|
 | **拖拽上传** | 支持拖拽、点击、批量上传多种方式，大文件分块上传与断点续传，实时进度反馈，失败自动重试 |
+| **文件管理** | 侧边栏单一入口聚合我的文件 / 分类管理 / 收藏夹 / 最近使用 / 回收站，操作台上方五栏切换，默认分类管理（v1.2.4） |
 | **黑白分类** | 白、浅灰、中灰、灰、深灰、墨、黑七级灰阶分类，统一视觉规范，让文件管理清晰直观 |
 | **在线预览** | 图片、视频、音频、PDF、Office 文档、Markdown 等常见格式无需下载，直接在线预览 |
 | **智能搜索** | 按文件名关键词快速检索，支持按分类、文件类型、日期范围多维筛选，分页懒加载流畅不卡顿 |
@@ -135,11 +136,11 @@ Rainbow-box/
 │   │   │   ├── today/page.tsx         #     今日任务工作台页（v1.2.2 新增）
 │   │   │   ├── notes/page.tsx         #     随时记写工作台页（v1.2.1 新增）
 │   │   │   ├── music/page.tsx         #     音乐盒工作台页（Y2K 复古播放器，v1.2.3 重做）
-│   │   │   ├── categories/            #     分类页 & [color] 筛选（天体蓝图）
-│   │   │   ├── favorites/page.tsx     #     收藏页
-│   │   │   ├── files/page.tsx         #     文件页
-│   │   │   ├── recent/page.tsx        #     最近访问页
-│   │   │   └── recycle/page.tsx       #     回收站页
+│   │   │   ├── categories/            #     分类页 & [color] 筛选（天体蓝图；列表页 v1.2.4 起并入文件管理）
+│   │   │   ├── favorites/page.tsx     #     收藏页（v1.2.4 起 307 重定向至 /dashboard/files）
+│   │   │   ├── files/page.tsx         #     文件管理页（五合一 + 分栏切换，v1.2.4 重写）
+│   │   │   ├── recent/page.tsx        #     最近访问页（v1.2.4 起 307 重定向至 /dashboard/files）
+│   │   │   └── recycle/page.tsx       #     回收站页（v1.2.4 起 307 重定向至 /dashboard/files）
 │   │   │
 │   │   └── api/                       #   API 路由
 │   │       ├── auth/                  #     认证接口
@@ -151,7 +152,15 @@ Rainbow-box/
 │   ├── components/                    # 🔹 React 组件
 │   │   ├── auth/                      #   认证表单组件
 │   │   ├── categories/                #   分类组件（模态框等）
-│   │   ├── files/                     #   文件组件（预览器、上传区）
+│   │   ├── files/                     #   文件组件（预览器、上传区、views 视图）
+│   │   │   ├── file-preview.tsx       #     文件预览器
+│   │   │   ├── upload-zone.tsx        #     上传区
+│   │   │   └── views/                 #     文件管理五视图（v1.2.4 新增）
+│   │   │       ├── my-files-view.tsx  #       我的文件视图
+│   │   │       ├── categories-view.tsx#       分类管理视图
+│   │   │       ├── favorites-view.tsx #       收藏夹视图
+│   │   │       ├── recent-view.tsx    #       最近使用视图
+│   │   │       └── recycle-view.tsx   #       回收站视图
 │   │   ├── music/                     #   音乐组件（Y2K 播放器，v1.2.3 新增）\n│   │   │   ├── y2k-player.tsx         #     Winamp 风格播放器机身（LCD 频谱 / CD / 控制键）\n│   │   │   └── y2k-playlist.tsx       #     Winamp 风格播放列表编辑器\n│   │   ├── tasks/                     #   任务组件（v1.2.0 新增）
 │   │   │   ├── task-modal.tsx         #     任务编辑弹窗
 │   │   │   └── task-card.tsx          #     任务卡片
@@ -536,3 +545,5 @@ main        ← 稳定发布分支（受保护）
 <p align="center">
   <sub>Made with Coronade (Gestalt Team) · v1.2.0</sub>
 </p>
+
+
