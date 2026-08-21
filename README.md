@@ -485,6 +485,8 @@ erDiagram
 
 ### 贡献流程
 
+> 版本更新请务必遵循 [docs/版本更新流程.md](docs/版本更新流程.md) 强制清单：开发日志 + 版本文档 + README + package.json 版本号，缺一不可，且必须与代码同批提交。
+
 1. **Fork** 本仓库到你的 GitHub 账户
 2. **Clone** 到本地：`git clone https://github.com/YOUR_USERNAME/Postmodern-Cafe.git`
 3. **创建**特性分支：`git checkout -b feature/your-feature-name`
@@ -545,5 +547,6 @@ main        ← 稳定发布分支（受保护）
 <p align="center">
   <sub>Made with Coronade (Gestalt Team) · v1.2.0</sub>
 </p>
+
 
 
