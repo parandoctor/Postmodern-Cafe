@@ -4,6 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { ChevronDown, Music, Plus, Play, Pause, Trash2, Disc3, UploadCloud, Maximize2 } from "lucide-react";
 import { useMusicStore } from "@/store/widgets";
+import { useBgmStore } from "@/store/bgm";
 import { formatFileSize, cn } from "@/lib/utils";
 
 export function SidebarMusic() {
@@ -194,7 +195,10 @@ export function SidebarMusic() {
                 autoPlay
                 controls
                 className="h-7 w-full"
-                onPlay={() => setIsPlaying(true)}
+                onPlay={() => {
+                  setIsPlaying(true);
+                  useBgmStore.getState().setPlaying(false);
+                }}
                 onPause={() => setIsPlaying(false)}
                 onEnded={() => setIsPlaying(false)}
               />

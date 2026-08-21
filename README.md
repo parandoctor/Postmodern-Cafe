@@ -1,9 +1,9 @@
-# 🗂️ 后现代咖啡馆 (Postmodern Cafe) `v1.2.4`
+# 🗂️ 后现代咖啡馆 (Postmodern Cafe) `v1.2.5`
 
 > 现代化综合服务平台 —— 管理你的生活记录、资料归档与事务处理，让一切井然有序。
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.2.4-blue" alt="Version" />
+  <img src="https://img.shields.io/badge/version-1.2.5-blue" alt="Version" />
   <img src="https://img.shields.io/badge/Next.js-15.1-black?logo=next.js" alt="Next.js" />
   <img src="https://img.shields.io/badge/React-19.0-61DAFB?logo=react" alt="React" />
   <img src="https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript" alt="TypeScript" />
@@ -17,7 +17,7 @@
 
 **后现代咖啡馆 (Postmodern-Cafe)** 是一个基于 Next.js 的综合服务平台，在个人文件收纳能力之上，进一步覆盖生活记录、资料归档与事务处理。它采用"白、浅灰、中灰、灰、深灰、墨、黑"七级黑白灰阶作为分类体系，以 Notion 风格统一后台界面，让生活与事务管理变得直观、优雅且高效。支持拖拽上传、在线预览、智能搜索、收藏、回收站等文件能力，并提供任务管理（今日任务）、随手记、音乐盒、日历与计时器等效率面板。
 
-当前版本 **v1.2.4** 将侧边栏"我的文件 / 分类管理 / 收藏夹 / 最近使用 / 回收站"五个文件功能入口合并为"文件管理"：选中文件管理后，中间操作台上方显示五个分栏用于切换，默认主页为分类管理；v1.2.3 为音乐盒操作台引入千禧风 Y2K 复古播放器（参考小红书"沐果素材"Y2K 播放器素材包的视觉语言，纯 CSS 实现不引入版权素材）：Winamp 风格银色金属机身 + 黑白灰 LCD 频谱屏 + 可拖拽进度/音量滑块 + 随机/单曲循环 + 旋转 CD 与磁带装饰，右侧为 Winamp 风格播放列表编辑器，整体为黑白灰单色；v1.2.2 统一私有空间（侧边栏"工作区 / 私有空间"同级并列，去掉私有空间外框，今日任务、随时记写、音乐盒均可点击标题在中间操作台全屏打开独立工作台）。
+当前版本 **v1.2.5** 新增电机背景音乐：主页、登录注册页与后台系统默认播放，右下角提供播放 / 暂停 / 静音控制，页面跳转不中断，与音乐盒互斥播放。此前 v1.2.4 将侧边栏"我的文件 / 分类管理 / 收藏夹 / 最近使用 / 回收站"五个文件功能入口合并为"文件管理"：选中文件管理后，中间操作台上方显示五个分栏用于切换，默认主页为分类管理；v1.2.3 为音乐盒操作台引入千禧风 Y2K 复古播放器（参考小红书"沐果素材"Y2K 播放器素材包的视觉语言，纯 CSS 实现不引入版权素材）：Winamp 风格银色金属机身 + 黑白灰 LCD 频谱屏 + 可拖拽进度/音量滑块 + 随机/单曲循环 + 旋转 CD 与磁带装饰，右侧为 Winamp 风格播放列表编辑器，整体为黑白灰单色；v1.2.2 统一私有空间（侧边栏"工作区 / 私有空间"同级并列，去掉私有空间外框，今日任务、随时记写、音乐盒均可点击标题在中间操作台全屏打开独立工作台）。
 
 ---
 
@@ -53,6 +53,7 @@
 - **Notion 风格后台**：导航居中、侧边栏、卡片、弹窗统一黑白灰阶设计，多层阴影营造立体感
 - **可调侧边栏**：支持左右拖动调整宽度（200–480px），右侧面板可切换
 - **效率面板**：左侧今日任务、随时记写、音乐盒三列同级；右侧日历与计时器；三者标题点击均可进入中间操作台的全屏工作台页面（今日任务 / 随时记写 / 音乐盒）
+- **默认背景音乐**：主页 / 登录注册页 / 后台系统默认播放电机背景音乐，支持播放 / 暂停 / 静音，页面跳转不中断，与音乐盒互斥
 - **账号数据隔离**：随手记、任务、壁纸等数据按账号隔离，切换账号互不干扰；v1.2.0 起随手记、音乐数据全面落库，旧 localStorage / IndexedDB 数据首次加载自动迁移
 - **暗黑 / 明亮**双主题，可跟随系统或手动切换
 - **Framer Motion** 驱动的流畅页面过渡与交互动画
@@ -97,6 +98,7 @@ Rainbow-box/
 │
 ├── public/                            # 静态资源
 │   ├── images/                        # 公共图片
+│   ├── audio/                          # 默认背景音乐
 │   └── uploads/files/                 # 用户文件存储目录（按日期分）
 │
 ├── src/
@@ -183,7 +185,8 @@ Rainbow-box/
 │   │       ├── avatar.tsx             #     头像
 │   │       ├── label.tsx              #     标签
 │   │       ├── theme-provider.tsx     #     主题 Provider
-│   │       └── theme-toggle.tsx       #     主题切换按钮
+│   │       ├── theme-toggle.tsx       #     主题切换按钮
+│   │       └── default-bgm.tsx       #     默认背景音乐播放器
 │   │
 │   ├── hooks/                         # 🔹 自定义 Hooks
 │   │   └── index.ts                   #   通用 Hooks 导出
@@ -200,7 +203,8 @@ Rainbow-box/
 │   ├── services/                      # 🔹 业务服务层
 │   ├── store/                         # 🔹 Zustand 全局状态
 │   │   ├── index.ts                   #   Store 定义（UI / 文件 / 分类，含 sidebarWidth）
-│   │   └── widgets.ts                 #   Widget Store（随手记 / 音乐）
+│   │   ├── widgets.ts                 #   Widget Store（随手记 / 音乐）
+│   │   └── bgm.ts                     #   Store 定义（默认背景音乐状态）
 │   ├── styles/                        # 🔹 额外样式表
 │   └── types/                         # 🔹 TypeScript 类型定义
 │       └── index.ts                   #   核心类型 & 接口
@@ -543,7 +547,7 @@ main        ← 稳定发布分支（受保护）
 ---
 
 <p align="center">
-  <sub>Made with Coronade (Gestalt Team) · v1.2.0</sub>
+  <sub>Made with Coronade (Gestalt Team) · v1.2.5</sub>
 </p>
 
 

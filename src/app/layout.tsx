@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans_SC } from "next/font/google";
 import { BlueprintOverlay } from "@/components/ui/blueprint-overlay";
+import { DefaultBgm } from "@/components/ui/default-bgm";
 import "./globals.css";
 
 // 思源黑体（Noto Sans SC / Source Han Sans）：全站默认字体，本地打包自托管
@@ -34,6 +35,7 @@ export default function RootLayout({
       <body className={`${notoSansSC.variable} min-h-screen bg-background text-foreground antialiased`}>
         <BlueprintOverlay />
         {children}
+        <DefaultBgm />
       </body>
     </html>
   );
