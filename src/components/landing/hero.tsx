@@ -2,111 +2,165 @@
 
 import * as React from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Upload, Shield, FolderOpen } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Entrance } from "@/components/ui/entrance";
 
-// ---- Feature Pills at Bottom ----
 const pills = [
-  { icon: Upload, label: "极速上传", desc: "拖拽即可上传" },
-  { icon: Shield, label: "安全可靠", desc: "加密存储保障" },
-  { icon: FolderOpen, label: "分类管理", desc: "一目了然有序" },
+  { file: "upload.ts", label: "极速上传", desc: "拖拽即可上传" },
+  { file: "shield.enc", label: "安全可靠", desc: "加密存储保障" },
+  { file: "archive/", label: "分类管理", desc: "一目了然有序" },
+];
+
+const ascii = [
+  "  ██████╗  ██████╗ ███████╗████████╗",
+  " ██╔═══██╗██╔═══██╗██╔════╝╚══██╔══╝",
+  " ██║   ██║██║   ██║███████╗   ██║   ",
+  " ██║   ██║██║   ██║╚════██║   ██║   ",
+  " ╚██████╔╝╚██████╔╝███████║   ██║   ",
+  "  ╚═════╝  ╚═════╝ ╚══════╝   ╚═╝   ",
 ];
 
 export function Hero() {
   return (
-    <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 pt-16">
-      {/* Content sits above the global BlueprintOverlay */}
-      <div className="relative z-10 mx-auto max-w-4xl text-center">
-        {/* Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-10 inline-flex items-center gap-2 rounded-full border border-whisper bg-white/70 backdrop-blur-sm px-5 py-2 text-[14px] font-medium text-muted-foreground"
+    <section className="term-bg term-scanlines term-noise relative flex min-h-screen flex-col justify-center overflow-hidden px-6 pt-24 pb-24 lg:px-8">
+      <div className="relative z-10 mx-auto w-full max-w-6xl">
+        {/* Status line — left */}
+        <Entrance
+          as="div"
+          from={{ opacity: 0, x: -16 }}
+          to={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="mb-10 flex items-center gap-4 font-mono text-[11px] tracking-[0.2em] text-[#8a8a86]"
         >
-          <span className="h-1.5 w-1.5 rounded-full bg-foreground/60" />
-          一站式综合服务平台
-        </motion.div>
+          <span className="text-white">SYS.ONLINE</span>
+          <span>{"//"}</span>
+          <span>ARCHIVE.FS</span>
+          <span>{"//"}</span>
+          <span>GRAYSCALE.7</span>
+        </Entrance>
 
-        {/* Main Title — bold, compressed, impactful */}
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="text-balance text-[52px] font-bold leading-[1.02] tracking-[-2px] sm:text-[64px] md:text-[76px] lg:text-[84px]"
+        {/* ASCII logo — left */}
+        <Entrance
+          as="pre"
+          from={{ opacity: 0, x: -16 }}
+          to={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.05 }}
+          className="mb-10 select-none font-mono text-[10px] leading-[1.3] tracking-[0.02em] text-[#8a8a86] sm:text-[13px]"
         >
-          让生活与事务
-          <br />
-          <span className="text-foreground/85">管理更加高效快捷</span>
-        </motion.h1>
+          {ascii.join("\n")}
+        </Entrance>
 
-        {/* Subtitle */}
-        <motion.p
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="mx-auto mt-10 max-w-xl text-balance text-[18px] leading-relaxed text-muted-foreground sm:text-[20px]"
+        {/* Terminal commands — left */}
+        <Entrance
+          as="div"
+          from={{ opacity: 0, x: -16 }}
+          to={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          className="mb-10 max-w-md space-y-1.5 text-left font-mono text-[12px] text-[#8a8a86]"
         >
-          生活记录 · 资料归档 · 事务处理
-        </motion.p>
+          <p>
+            <span className="text-white">$</span> system.init --profile=postmodern{" "}
+            <span className="text-white">[OK]</span>
+          </p>
+          <p>
+            <span className="text-white">$</span> mount /archive/gray.7{" "}
+            <span className="text-white">[OK]</span>
+          </p>
+          <p>
+            <span className="text-white">$</span> <span className="text-white">open ./start</span>
+            <span className="term-caret ml-1" />
+          </p>
+        </Entrance>
 
-        {/* CTA Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-14 flex flex-col items-center justify-center gap-4 sm:flex-row"
+        {/* Title — left */}
+        <Entrance
+          as="h1"
+          from={{ opacity: 0, x: -16 }}
+          to={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+          className="text-left"
         >
-          <Button size="xl" className="group gap-2" asChild>
-            <a href="/register">
-              立即开始
-              <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </a>
-          </Button>
-          <Button variant="outline" size="xl" asChild>
-            <a href="#features">分类浏览</a>
-          </Button>
-        </motion.div>
+          <span
+            data-text="一切终将归档"
+            className="term-glitch font-mono text-[40px] font-bold leading-[1.06] tracking-[-0.02em] text-white sm:text-[64px] lg:text-[84px]"
+          >
+            一切终将归档
+          </span>
+          <span className="mt-3 block font-mono text-[14px] tracking-[0.22em] text-[#8a8a86] sm:text-[18px]">
+            EVERYTHING GETS ARCHIVED
+          </span>
+        </Entrance>
 
-        {/* Feature pills */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-24 flex flex-wrap items-center justify-center gap-10"
+        {/* Subtitle — left */}
+        <Entrance
+          as="p"
+          from={{ opacity: 0, x: -16 }}
+          to={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-8 max-w-xl font-mono text-[14px] leading-relaxed text-[#8a8a86] sm:text-[15px]"
         >
-          {pills.map((item) => (
-            <div key={item.label} className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded border border-whisper bg-white/70 backdrop-blur-sm">
-                <item.icon className="h-[18px] w-[18px] text-muted-foreground" />
-              </div>
-              <div className="text-left">
-                <div className="text-[14px] font-medium">{item.label}</div>
-                <div className="text-[12px] text-muted-foreground">{item.desc}</div>
-              </div>
+          生活记录 · 资料归档 · 事务处理 —— <span className="text-white">归档，是对时间的尊重。</span>
+        </Entrance>
+
+        {/* CTAs — left */}
+        <Entrance
+          as="div"
+          from={{ opacity: 0, x: -16 }}
+          to={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-12 flex flex-col items-start gap-4 font-mono sm:flex-row"
+        >
+          <a
+            href="/register"
+            className="inline-block border border-white bg-white px-9 py-4 text-[13px] font-bold tracking-[0.16em] text-black transition-all hover:bg-black hover:text-white hover:shadow-[0_0_24px_rgba(255,255,255,0.35)]"
+          >
+            开始归档 →
+          </a>
+          <a
+            href="#features"
+            className="inline-block border border-[#666] px-9 py-4 text-[13px] tracking-[0.16em] text-white transition-colors hover:border-white hover:shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+          >
+            浏览模块
+          </a>
+        </Entrance>
+
+        {/* Feature pills as terminal rows — left */}
+        <Entrance
+          as="div"
+          from={{ opacity: 0, x: -16 }}
+          to={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-20 w-full max-w-lg divide-y divide-[#1a1a18] border-y border-[#2a2a28] text-left font-mono"
+        >
+          {pills.map((p) => (
+            <div key={p.label} className="flex items-center gap-4 py-3">
+              <span className="text-[11px] text-[#4a4a48]">{p.file}</span>
+              <span className="text-[13px] text-white">▸ {p.label}</span>
+              <span className="ml-auto text-[11px] text-[#8a8a86]">{p.desc}</span>
+              <span className="text-[10px] tracking-[0.14em] text-[#4a4a48]">ACTIVE</span>
             </div>
           ))}
-        </motion.div>
+        </Entrance>
       </div>
 
       {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+      <Entrance
+        as="div"
+        from={{ opacity: 0 }}
+        to={{ opacity: 1 }}
         transition={{ delay: 1 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
+        className="absolute bottom-7 left-1/2 z-10 -translate-x-1/2"
       >
-        <div className="flex flex-col items-center gap-2">
-          <span className="text-[12px] text-muted-foreground/60">向下滚动</span>
-          <div className="h-10 w-6 rounded-full border border-whisper p-1">
+        <div className="flex flex-col items-center gap-2 font-mono">
+          <span className="text-[10px] tracking-[0.3em] text-[#8a8a86]">SCROLL</span>
+          <div className="h-9 w-5 overflow-hidden border border-[#2a2a28]">
             <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-              className="mx-auto h-2 w-1.5 rounded-full bg-foreground/50"
+              animate={{ y: [0, 24, 0] }}
+              transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+              className="mx-auto mt-1 h-1.5 w-1.5 bg-white"
             />
           </div>
         </div>
-      </motion.div>
+      </Entrance>
     </section>
   );
 }

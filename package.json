@@ -1,6 +1,6 @@
 {
   "name": "rainbow-box",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "private": true,
   "description": "后现代咖啡馆 - 一站式综合服务平台（生活记录 / 资料归档 / 事务处理）",
   "scripts": {

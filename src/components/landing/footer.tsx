@@ -1,139 +1,172 @@
 "use client";
 
 import * as React from "react";
-import { motion } from "framer-motion";
 import {
   Github,
   Mail,
   MessageCircle,
   Send,
   Globe,
+  ArrowUpRight,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Entrance } from "@/components/ui/entrance";
 
 interface SocialLink {
   label: string;
+  channel: string;
   icon: React.ComponentType<{ className?: string }>;
   href: string;
 }
 
 const socialLinks: SocialLink[] = [
-  { label: "GitHub", icon: Github, href: "#" },
-  { label: "邮箱", icon: Mail, href: "mailto:hello@rainbow-box.com" },
-  { label: "QQ", icon: MessageCircle, href: "#" },
-  { label: "Telegram", icon: Send, href: "#" },
-  { label: "个人网站", icon: Globe, href: "#" },
+  { label: "GitHub", channel: "github", icon: Github, href: "https://github.com" },
+  { label: "邮箱", channel: "mail", icon: Mail, href: "mailto:hello@rainbow-box.com" },
+  { label: "QQ", channel: "qq", icon: MessageCircle, href: "#" },
+  { label: "Telegram", channel: "telegram", icon: Send, href: "#" },
+  { label: "个人网站", channel: "web", icon: Globe, href: "#" },
+];
+
+const quickLinks = [
+  { label: "功能特性", href: "#features" },
+  { label: "登录", href: "/login" },
+  { label: "注册", href: "/register" },
 ];
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer id="about" className="border-t border-whisper bg-white/60 backdrop-blur-md">
-      <div className="mx-auto max-w-5xl px-6 py-16 lg:px-8 lg:py-24">
-        <div className="grid gap-12 lg:grid-cols-3">
-          {/* Brand */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="lg:col-span-1"
+    <footer
+      id="about"
+      className="term-bg term-scanlines term-noise relative overflow-hidden border-t border-black bg-[#0a0a0a]"
+    >
+      <div className="relative z-10 mx-auto max-w-6xl px-6 py-20 lg:px-8 lg:py-28">
+        <div className="grid gap-14 lg:grid-cols-[300px_1fr_260px]">
+          {/* Dotwork portrait art (Fig.02) */}
+          <Entrance
+            as="div"
+            from={{ opacity: 0, x: -24 }}
+            to={{ opacity: 1, x: 0 }}
+            inView
+            viewportMargin="-60px"
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center border border-whisper bg-white/70">
-                <span className="text-[14px] font-bold">C</span>
+            <div className="relative border border-[#2a2a28] bg-[#050505] p-3">
+              <img
+                src="/art/contact-dotwork.png"
+                alt="点阵人像 · STIPPLE"
+                className="w-full grayscale"
+                loading="lazy"
+              />
+              <div className="mt-3 flex items-center justify-between font-mono text-[10px] tracking-[0.2em] text-[#8a8a86]">
+                <span>FIG.02 — STIPPLE</span>
+                <span className="term-blink">●</span>
               </div>
-              <span className="text-[16px] font-semibold">后现代咖啡馆</span>
             </div>
-            <p className="mt-4 max-w-sm text-[14px] text-muted-foreground leading-relaxed">
-              黑白蓝图风格的综合服务平台，
-              统一管理生活记录、资料归档与事务处理，让一切井然有序。
+            <p className="mt-4 font-mono text-[10px] leading-relaxed tracking-[0.16em] text-[#4a4a48]">
+              黑白蓝图风格的综合服务平台
+              <br />
+              生活记录 · 资料归档 · 事务处理
             </p>
+          </Entrance>
 
-            <div className="mt-8">
-              <h4 className="text-[14px] font-medium mb-4">联系方式</h4>
-              <div className="flex flex-wrap gap-3">
-                {socialLinks.map((link) => (
-                  <a
-                    key={link.label}
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    title={link.label}
-                    className={cn(
-                      "flex h-10 w-10 items-center justify-center rounded border border-whisper",
-                      "text-muted-foreground transition-all duration-300",
-                      "hover:bg-[rgba(0,0,0,0.04)]",
-                    )}
-                  >
-                    <link.icon className="h-4 w-4" />
-                  </a>
-                ))}
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Quick links */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+          {/* Contact channels */}
+          <Entrance
+            as="div"
+            from={{ opacity: 0, y: 24 }}
+            to={{ opacity: 1, y: 0 }}
+            inView
+            viewportMargin="-60px"
+            transition={{ duration: 0.6, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
           >
-            <h4 className="text-[14px] font-medium">快速导航</h4>
-            <ul className="mt-4 space-y-3">
-              {[
-                { label: "功能特性", href: "#features" },
-                { label: "登录", href: "/login" },
-                { label: "注册", href: "/register" },
-              ].map((item) => (
+            <p className="font-mono text-[11px] tracking-[0.2em] text-[#8a8a86]">
+              $ ls ./contact --channels
+            </p>
+            <h3
+              data-text="联系方式 / CONTACT"
+              className="term-glitch mt-4 font-mono text-[22px] font-bold tracking-[-0.01em] text-white sm:text-[28px]"
+            >
+              联系方式 / CONTACT
+            </h3>
+
+            <div className="mt-8 divide-y divide-[#1a1a18] border-y border-[#2a2a28]">
+              {socialLinks.map((link) => (
+                <a
+                  key={link.channel}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center gap-4 py-[14px] font-mono transition-colors hover:bg-[#101010]"
+                >
+                  <link.icon className="h-[16px] w-[16px] text-[#8a8a86] transition-colors group-hover:text-white" />
+                  <span className="text-[13px] text-white">{link.label}</span>
+                  <span className="text-[11px] text-[#4a4a48]">./contact/{link.channel}</span>
+                  <ArrowUpRight className="ml-auto h-[14px] w-[14px] text-[#4a4a48] transition-all group-hover:translate-x-0.5 group-hover:text-white" />
+                </a>
+              ))}
+            </div>
+
+            <p className="mt-6 font-mono text-[12px] text-[#8a8a86]">
+              <span className="text-white">$</span> ping postmodern.cafe{" "}
+              <span className="text-white">[OK]</span>
+              <span className="term-caret ml-1" />
+            </p>
+          </Entrance>
+
+          {/* Quick nav + brand */}
+          <Entrance
+            as="div"
+            from={{ opacity: 0, y: 24 }}
+            to={{ opacity: 1, y: 0 }}
+            inView
+            viewportMargin="-60px"
+            transition={{ duration: 0.6, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <p className="font-mono text-[11px] tracking-[0.2em] text-[#8a8a86]">
+              $ tree ./quick-nav
+            </p>
+            <h4 className="mt-4 font-mono text-[14px] font-bold text-white">快速导航</h4>
+            <ul className="mt-5 space-y-3">
+              {quickLinks.map((item) => (
                 <li key={item.label}>
                   <a
                     href={item.href}
-                    className="text-[14px] text-muted-foreground transition-colors hover:text-foreground"
+                    className="font-mono text-[13px] text-[#8a8a86] transition-colors hover:text-white"
                   >
-                    {item.label}
+                    ▸ {item.label}
                   </a>
                 </li>
               ))}
             </ul>
-          </motion.div>
 
-          {/* About */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <h4 className="text-[14px] font-medium">关于</h4>
-            <ul className="mt-4 space-y-3">
-              <li className="text-[14px] text-muted-foreground">
-                后现代咖啡馆 &copy; {currentYear}
-              </li>
-              <li className="text-[14px] text-muted-foreground">
+            <div className="mt-10 border-t border-[#2a2a28] pt-6">
+              <div className="font-mono text-[13px] font-bold text-white">后现代咖啡馆</div>
+              <p className="mt-2 font-mono text-[11px] leading-relaxed text-[#4a4a48]">
+                $ whoami → POSTMODERN.CAFÉ
+                <br />
                 生活 · 资料 · 事务
-              </li>
-              <li className="text-[14px] text-muted-foreground">
-                用最纯粹的方式管理生活与事务
-              </li>
-            </ul>
-          </motion.div>
+              </p>
+            </div>
+          </Entrance>
         </div>
 
         {/* Bottom bar */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="mt-16 border-t border-whisper pt-8 text-center"
+        <Entrance
+          as="div"
+          from={{ opacity: 0 }}
+          to={{ opacity: 1 }}
+          inView
+          viewportMargin="-60px"
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mt-16 flex flex-wrap items-center gap-4 border-t border-[#2a2a28] pt-6 font-mono text-[11px] text-[#8a8a86]"
         >
-          <p className="text-[12px] text-muted-foreground">
-            &copy; {currentYear} 后现代咖啡馆. 保留所有权利.
-          </p>
-        </motion.div>
+          <span>© {currentYear} 后现代咖啡馆 · 保留所有权利</span>
+          <span className="ml-auto flex gap-6 tracking-[0.16em]">
+            <span>GRAY.7</span>
+            <span>FS.OK</span>
+            <span className="text-white">LINK.OK ●</span>
+          </span>
+        </Entrance>
       </div>
     </footer>
   );

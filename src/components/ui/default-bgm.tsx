@@ -1,14 +1,13 @@
 "use client";
 
 import * as React from "react";
-import { Play, Pause, Volume2, VolumeX } from "lucide-react";
 import { useBgmStore } from "@/store/bgm";
-import { cn } from "@/lib/utils";
 
 /**
  * 全局默认背景音乐（电机背景音乐）
  * 挂在根布局，主页 / 登录注册页 / 后台系统统一生效；
  * 受浏览器自动播放策略限制时，首次交互后自动续播。
+ * 终端风样式：方形描边 + 字符图标 + BGM 状态标签。
  */
 export function DefaultBgm() {
   const audioRef = React.useRef<HTMLAudioElement>(null);
@@ -49,8 +48,11 @@ export function DefaultBgm() {
     else setPlaying(true);
   };
 
+  const btnBase =
+    "flex h-8 w-8 items-center justify-center border border-[#555] bg-transparent font-mono text-[13px] text-white transition-colors hover:border-white hover:bg-white hover:text-black";
+
   return (
-    <div className="fixed bottom-4 right-4 z-[60] flex items-center gap-1.5">
+    <div className="fixed bottom-4 right-4 z-[60] flex items-center gap-2 border border-[#2a2a28] bg-[#050505]/90 px-3 py-2 font-mono backdrop-blur-md">
       <audio
         ref={audioRef}
         src="/audio/bgm-default.m4a"
@@ -59,32 +61,26 @@ export function DefaultBgm() {
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
       />
+      <span className="text-[10px] tracking-[0.16em] text-[#8a8a86]">
+        BGM:<span className="text-white">{playing ? "ON" : "OFF"}</span>
+      </span>
       <button
         type="button"
         onClick={toggle}
         aria-label={playing ? "暂停背景音乐" : "播放背景音乐"}
         title={playing ? "暂停背景音乐" : "播放背景音乐"}
-        className={cn(
-          "flex h-9 w-9 items-center justify-center rounded-full border shadow-notion backdrop-blur-md transition-all",
-          playing
-            ? "border-foreground/20 bg-foreground text-background"
-            : "border-black/10 bg-white/80 text-foreground hover:bg-white",
-        )}
+        className={btnBase}
       >
-        {playing ? (
-          <Pause className="h-4 w-4" />
-        ) : (
-          <Play className="h-4 w-4 translate-x-[1px]" />
-        )}
+        {playing ? "❚❚" : "▶"}
       </button>
       <button
         type="button"
         onClick={() => setMuted((m) => !m)}
         aria-label={muted ? "取消静音" : "静音"}
         title={muted ? "取消静音" : "静音"}
-        className="flex h-8 w-8 items-center justify-center rounded-full border border-black/10 bg-white/80 text-foreground shadow-notion backdrop-blur-md transition-all hover:bg-white"
+        className={btnBase}
       >
-        {muted ? <VolumeX className="h-3.5 w-3.5" /> : <Volume2 className="h-3.5 w-3.5" />}
+        {muted ? "✕" : "♪"}
       </button>
     </div>
   );
