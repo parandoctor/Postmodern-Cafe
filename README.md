@@ -1,9 +1,9 @@
-# <img src="public/images/cafe-logo-black.png" width="26" height="26" align="center" alt="后现代咖啡馆"> 后现代咖啡馆 (Postmodern Cafe) `v1.2.6`
+# <img src="public/images/cafe-logo-black.png" width="26" height="26" align="center" alt="后现代咖啡馆"> 后现代咖啡馆 (Postmodern Cafe) `v1.2.7`
 
 > 现代化综合服务平台 —— 管理你的生活记录、资料归档与事务处理，让一切井然有序。
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.2.6-blue" alt="Version" />
+  <img src="https://img.shields.io/badge/version-1.2.7-blue" alt="Version" />
   <img src="https://img.shields.io/badge/Next.js-15.1-black?logo=next.js" alt="Next.js" />
   <img src="https://img.shields.io/badge/React-19.0-61DAFB?logo=react" alt="React" />
   <img src="https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript" alt="TypeScript" />

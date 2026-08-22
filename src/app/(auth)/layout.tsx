@@ -1,4 +1,4 @@
-import { AuthEarthBackground } from "@/components/ui/auth-earth-background";
+import { AuthTdBackground } from "@/components/ui/auth-td-background";
 
 export default function AuthLayout({
   children,
@@ -7,7 +7,7 @@ export default function AuthLayout({
 }) {
   return (
     <div className="relative min-h-screen bg-black">
-      <AuthEarthBackground />
+      <AuthTdBackground />
       <main className="relative z-10">{children}</main>
     </div>
   );
