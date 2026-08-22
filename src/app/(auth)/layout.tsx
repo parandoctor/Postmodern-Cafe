@@ -1,4 +1,4 @@
-import { AuthEarthBackground } from "@/components/ui/auth-earth-background";
+import { AuthParticleBackground } from "@/components/ui/auth-particle-background";
 
 export default function AuthLayout({
   children,
@@ -7,7 +7,7 @@ export default function AuthLayout({
 }) {
   return (
     <div className="relative min-h-screen bg-black">
-      <AuthEarthBackground />
+      <AuthParticleBackground />
       <main className="relative z-10">{children}</main>
     </div>
   );
