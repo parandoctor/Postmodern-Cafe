@@ -64,4 +64,5 @@ agents.md
 dev-server.log
 
 # 内部开发文档（仅本地，不上传）
+.agents/
 docs/版本更新流程.md
