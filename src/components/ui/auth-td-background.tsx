@@ -99,10 +99,10 @@ export function AuthTdBackground() {
       <div
         className="absolute inset-0"
         style={{
-          background: "radial-gradient(ellipse at 50% 45%, transparent 34%, rgba(0,0,0,0.55) 100%)",
+          background: "radial-gradient(ellipse at 50% 45%, transparent 40%, rgba(0,0,0,0.4) 100%)",
         }}
       />
-      <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0.48) 0%, rgba(0,0,0,0.15) 46%, transparent 66%)" }} />
+      <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0.22) 0%, rgba(0,0,0,0.06) 46%, transparent 66%)" }} />
 
       <style>{`
         @keyframes tdZoom {
@@ -113,3 +113,4 @@ export function AuthTdBackground() {
     </div>
   );
 }
+

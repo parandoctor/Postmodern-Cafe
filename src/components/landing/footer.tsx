@@ -10,6 +10,7 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { Entrance } from "@/components/ui/entrance";
+import Link from "next/link";
 
 interface SocialLink {
   label: string;
@@ -129,12 +130,21 @@ export function Footer() {
             <ul className="mt-5 space-y-3">
               {quickLinks.map((item) => (
                 <li key={item.label}>
-                  <a
-                    href={item.href}
-                    className="font-mono text-[13px] text-[#8a8a86] transition-colors hover:text-white"
-                  >
-                    ▸ {item.label}
-                  </a>
+                  {item.href.startsWith("#") ? (
+                    <a
+                      href={item.href}
+                      className="font-mono text-[13px] text-[#8a8a86] transition-colors hover:text-white"
+                    >
+                      ▸ {item.label}
+                    </a>
+                  ) : (
+                    <Link
+                      href={item.href}
+                      className="font-mono text-[13px] text-[#8a8a86] transition-colors hover:text-white"
+                    >
+                      ▸ {item.label}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
@@ -171,3 +181,5 @@ export function Footer() {
     </footer>
   );
 }
+
+

@@ -62,7 +62,12 @@ export function Entrance({
     controls.start({ ...toRef.current, transition: transitionRef.current });
   }, [show, controls]);
 
-  const MotionComp = motion.create(as as never) as React.ElementType;
+  // 缓存组件类型：motion.create 每次调用返回新组件，导致父级重渲染时
+  // React 判定元素类型变化而卸载重建整棵子树（登录/注册输入框因此每敲一字就失焦）
+  const MotionComp = React.useMemo(
+    () => motion.create(as as never) as React.ElementType,
+    [as],
+  );
 
   return (
     <MotionComp
@@ -76,6 +81,7 @@ export function Entrance({
     </MotionComp>
   );
 }
+
 
 
 
