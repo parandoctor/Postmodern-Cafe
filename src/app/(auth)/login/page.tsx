@@ -29,10 +29,10 @@ export default function LoginPage() {
   };
 
   const inputCls =
-    "w-full border-0 border-b border-[#2a2a28] bg-transparent px-1 py-3.5 font-mono text-white outline-none placeholder:text-white/35 placeholder:uppercase placeholder:tracking-[0.14em] focus:border-white";
+    "w-full border-0 border-b border-white/25 bg-black/30 px-3 py-3.5 font-mono text-white outline-none transition-all placeholder:text-white/65 placeholder:uppercase placeholder:tracking-[0.14em] focus:border-white focus:bg-black/45 focus:shadow-[0_1px_0_rgba(255,255,255,0.5)]";
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
+    <div className="relative flex min-h-screen items-center overflow-hidden">
       {/* 巨型描边数字 */}
 
       <Entrance
@@ -40,11 +40,11 @@ export default function LoginPage() {
         from={{ opacity: 0, y: 20 }}
         to={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="absolute left-[8%] top-1/2 z-10 w-[min(400px,84vw)] -translate-y-1/2"
+        className="relative z-10 ml-[8vw] w-[min(400px,84vw)] max-h-[calc(100vh-3rem)] overflow-y-auto"
       >
         <div
-          className="border border-[#2a2a28] bg-black/60 px-8 py-10 backdrop-blur-sm"
-          style={{
+          className="border border-white/15 bg-black/10 px-8 py-10 shadow-[0_0_80px_rgba(0,0,0,0.55)]"
+          style={{ textShadow: "0 1px 3px rgba(0,0,0,0.9)",
             clipPath:
               "polygon(0 0,100% 0,100% calc(100% - 22px),calc(100% - 22px) 100%,0 100%)",
           }}
@@ -55,7 +55,7 @@ export default function LoginPage() {
 
           <h1
             className="mb-8 font-extrabold leading-[0.95] tracking-[-0.03em] text-white"
-            style={{
+            style={{ textShadow: "0 1px 3px rgba(0,0,0,0.9)",
               fontFamily: "Bahnschrift, Arial, sans-serif",
               fontSize: "clamp(46px, 6vw, 72px)",
             }}
@@ -111,7 +111,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="mt-2 w-full bg-white py-4 font-mono text-sm text-black transition-colors hover:bg-white/85 disabled:opacity-60"
+              className="mt-2 auth-btn font-mono text-sm disabled:opacity-60"
             >
               {loading ? "登录中..." : "进入 →"}
             </button>
@@ -128,3 +128,10 @@ export default function LoginPage() {
     </div>
   );
 }
+
+
+
+
+
+
+

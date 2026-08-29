@@ -267,3 +267,79 @@
   60% { clip-path: inset(80% 0 5% 0); }
   100% { clip-path: inset(40% 0 34% 0); }
 }
+
+/* ============================================================
+   Auth 登录/注册 —— 柔和玻璃按钮（鼠标靠近/远离动效）
+   ============================================================ */
+.auth-btn {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding: 16px;
+  font-family: ui-monospace, "Cascadia Code", Consolas, "Courier New", monospace;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition:
+    color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.auth-btn::before {
+  content: "";
+  position: absolute;
+  left: -35%;
+  top: 0;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+.auth-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 40%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+.auth-btn:hover {
+  color: #000;
+  background: rgba(255, 255, 255, 0.92);
+  border-color: transparent;
+  transform: translateY(-3px) scale(1.02);
+  box-shadow:
+    0 0 46px rgba(255, 255, 255, 0.5),
+    0 0 90px rgba(255, 255, 255, 0.18),
+    0 16px 40px rgba(0, 0, 0, 0.5);
+}
+.auth-btn:hover::before {
+  left: 120%;
+}
+.auth-btn:hover::after {
+  opacity: 1;
+}
+.auth-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.25);
+}
+.auth-btn:focus-visible {
+  outline: 1px solid #fff;
+  outline-offset: 3px;
+}
+.auth-btn:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
