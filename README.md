@@ -550,7 +550,7 @@ main        ← 稳定发布分支（受保护）
 ---
 
 <p align="center">
-  <sub>Made with Coronade (Gestalt Team) · v1.2.5</sub>
+  <sub>Made with Coronade (Gestalt Team) · v1.2.8</sub>
 </p>
 
 
