@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { motion } from "framer-motion";
-import type { RainbowColor } from "@/types";
 
 const categories: Array<{
   color: string;

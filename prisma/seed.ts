@@ -36,13 +36,13 @@ async function main() {
 
   // ---- 创建七彩分类 ----
   const categories = [
-    { name: "工作文档", color: "red",    icon: "file-text",   description: "工作相关的文档、表格、报告", sortOrder: 1 },
-    { name: "学习资料", color: "orange", icon: "book",        description: "教程、笔记、电子书",         sortOrder: 2 },
-    { name: "图片素材", color: "yellow", icon: "image",       description: "照片、设计稿、截图",         sortOrder: 3 },
-    { name: "个人文件", color: "green",  icon: "user",        description: "简历、证件、合同",           sortOrder: 4 },
-    { name: "代码仓库", color: "blue",   icon: "code",        description: "项目代码、脚本、配置文件",   sortOrder: 5 },
-    { name: "媒体娱乐", color: "blue",   icon: "music",       description: "音乐、视频、游戏",           sortOrder: 6 },
-    { name: "其他归档", color: "purple", icon: "archive",     description: "其他需要归档的文件",         sortOrder: 7 },
+    { name: "工作文档", importance: 3, icon: "file-text",   description: "工作相关的文档、表格、报告", sortOrder: 1 },
+    { name: "学习资料", importance: 2, icon: "book",        description: "教程、笔记、电子书",         sortOrder: 2 },
+    { name: "图片素材", importance: 2, icon: "image",       description: "照片、设计稿、截图",         sortOrder: 3 },
+    { name: "个人文件", importance: 1, icon: "user",        description: "简历、证件、合同",           sortOrder: 4 },
+    { name: "代码仓库", importance: 2, icon: "code",        description: "项目代码、脚本、配置文件",   sortOrder: 5 },
+    { name: "媒体娱乐", importance: 1, icon: "music",       description: "音乐、视频、游戏",           sortOrder: 6 },
+    { name: "其他归档", importance: 0, icon: "archive",     description: "其他需要归档的文件",         sortOrder: 7 },
   ];
 
   const createdCategories = await Promise.all(

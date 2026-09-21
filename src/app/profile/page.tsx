@@ -60,7 +60,7 @@ export default function ProfilePage() {
   return (
     <div className="mx-auto max-w-3xl space-y-8">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">个人中心</h1>
+        <h1 className="d5-title text-[26px] font-bold tracking-tight">个人中心</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           管理你的个人信息和账户设置
         </p>

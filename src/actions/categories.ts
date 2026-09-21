@@ -19,7 +19,7 @@ export async function getCategories(): Promise<ApiResponse<Category[]>> {
 
     const categories = await prisma.category.findMany({
       where: { userId },
-      orderBy: { sortOrder: "asc" },
+      orderBy: [{ importance: "desc" }, { sortOrder: "asc" }],
       include: {
         _count: { select: { files: true } },
       },
@@ -28,7 +28,7 @@ export async function getCategories(): Promise<ApiResponse<Category[]>> {
     const data: Category[] = categories.map((cat) => ({
       id: cat.id,
       name: cat.name,
-      color: cat.color as Category["color"],
+      importance: cat.importance as Category["importance"],
       icon: cat.icon,
       description: cat.description,
       sortOrder: cat.sortOrder,
@@ -65,7 +65,7 @@ export async function createCategory(
     const category = await prisma.category.create({
       data: {
         name: data.name,
-        color: data.color,
+        importance: data.importance,
         icon: data.icon,
         description: data.description ?? null,
         sortOrder: (maxOrder._max.sortOrder ?? -1) + 1,
@@ -89,7 +89,7 @@ export async function createCategory(
       data: {
         id: category.id,
         name: category.name,
-        color: category.color as Category["color"],
+        importance: category.importance as Category["importance"],
         icon: category.icon,
         description: category.description,
         sortOrder: category.sortOrder,
@@ -142,7 +142,7 @@ export async function updateCategory(
       data: {
         id: updated.id,
         name: updated.name,
-        color: updated.color as Category["color"],
+        importance: updated.importance as Category["importance"],
         icon: updated.icon,
         description: updated.description,
         sortOrder: updated.sortOrder,

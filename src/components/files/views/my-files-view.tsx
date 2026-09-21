@@ -19,7 +19,7 @@ import {
 } from "@/actions/files";
 import { getCategories } from "@/actions/categories";
 import type { FileItem } from "@/types";
-import { RAINBOW_COLORS } from "@/types";
+import { CATEGORY_IMPORTANCE } from "@/types";
 
 const FILE_ICON_MAP: Record<string, React.ElementType> = {
   image: Image, video: Video, audio: Music, pdf: FileText,
@@ -169,7 +169,7 @@ export function MyFilesView() {
     <div className="space-y-4">
       {/* Message toast */}
       {message && (
-        <div className="rounded-lg border border-whisper bg-white/70 px-4 py-2.5 text-sm">
+        <div className="border d5-line d5-panel px-4 py-2.5 text-sm">
           {message}
         </div>
       )}
@@ -287,7 +287,7 @@ export function MyFilesView() {
                   "group relative rounded-lg border p-4 transition-colors cursor-pointer",
                   isSelected
                     ? "border-foreground/30 bg-secondary"
-                    : "border-whisper bg-white/60 backdrop-blur-sm hover:border-foreground/25 hover:bg-white/80",
+                    : "border d5-line d5-panel backdrop-blur-sm hover:border-foreground/25 hover:bg-white/80",
                 )}
               >
                 {/* Checkbox */}
@@ -332,20 +332,14 @@ export function MyFilesView() {
                 )}
 
                 {/* Category badge */}
-                {file.category && (() => {
-                  const hex = RAINBOW_COLORS[file.category.color]?.hex ?? "#888";
-                  return (
-                    <span
-                      className="mt-2 inline-block rounded px-1.5 py-0.5 text-xs font-medium"
-                      style={{
-                        backgroundColor: `${hex}1a`,
-                        color: getContrastColor(hex),
-                      }}
-                    >
-                      {file.category.name}
-                    </span>
-                  );
-                })()}
+                {file.category && (
+                  <span className="mt-2 inline-flex items-center gap-1.5 border border-foreground/25 px-1.5 py-0.5 text-xs font-medium">
+                    <i className="font-mono not-italic text-[10px] text-muted-foreground">
+                      {CATEGORY_IMPORTANCE[file.category.importance].label}
+                    </i>
+                    {file.category.name}
+                  </span>
+                )}
 
                 {/* Actions */}
                 <div className="mt-3 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -409,10 +403,7 @@ export function MyFilesView() {
                                   onClick={() => handleMove(file.id, cat.id)}
                                   className="flex w-full items-center gap-2 px-3 py-1.5 text-sm hover:bg-secondary transition-colors"
                                 >
-                                  <span
-                                    className="h-3 w-3 rounded-full shrink-0"
-                                    style={{ backgroundColor: RAINBOW_COLORS[cat.color]?.hex ?? "#888" }}
-                                  />
+                                  <span className="shrink-0 border border-foreground/30 px-1 font-mono text-[9px] leading-4">{CATEGORY_IMPORTANCE[cat.importance].label}</span>
                                   {cat.name}
                                 </button>
                               ))}
@@ -474,20 +465,14 @@ export function MyFilesView() {
                       <span className="text-xs text-muted-foreground uppercase">{file.extension}</span>
                     </td>
                     <td className="px-4 py-2.5">
-                      {file.category ? (() => {
-                        const hex = RAINBOW_COLORS[file.category.color]?.hex ?? "#888";
-                        return (
-                          <span
-                            className="inline-block rounded px-1.5 py-0.5 text-xs font-medium"
-                            style={{
-                              backgroundColor: `${hex}1a`,
-                              color: getContrastColor(hex),
-                            }}
-                          >
-                            {file.category.name}
-                          </span>
-                        );
-                      })() : (
+                      {file.category ? (
+                        <span className="inline-flex items-center gap-1.5 border border-foreground/25 px-1.5 py-0.5 text-xs font-medium">
+                          <i className="font-mono not-italic text-[10px] text-muted-foreground">
+                            {CATEGORY_IMPORTANCE[file.category.importance].label}
+                          </i>
+                          {file.category.name}
+                        </span>
+                      ) : (
                         <span className="text-xs text-muted-foreground">-</span>
                       )}
                     </td>
@@ -553,10 +538,7 @@ export function MyFilesView() {
                                         onClick={() => handleMove(file.id, cat.id)}
                                         className="flex w-full items-center gap-2 px-3 py-1.5 text-sm hover:bg-secondary transition-colors"
                                       >
-                                        <span
-                                          className="h-3 w-3 rounded-full shrink-0"
-                                          style={{ backgroundColor: RAINBOW_COLORS[cat.color]?.hex ?? "#888" }}
-                                        />
+                                        <span className="shrink-0 border border-foreground/30 px-1 font-mono text-[9px] leading-4">{CATEGORY_IMPORTANCE[cat.importance].label}</span>
                                         {cat.name}
                                       </button>
                                     ))}

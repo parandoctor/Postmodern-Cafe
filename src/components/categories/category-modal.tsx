@@ -3,8 +3,10 @@
 import * as React from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { RAINBOW_COLORS, type RainbowColor } from "@/types";
-import { cn, getContrastColor } from "@/lib/utils";
+import {
+  CATEGORY_IMPORTANCE, CATEGORY_IMPORTANCE_ORDER, type CategoryImportance,
+} from "@/types";
+import { cn } from "@/lib/utils";
 import {
   FolderOpen, Image, FileText, Video, Music, Code, Archive,
   File, Book, User, Settings, Star, Heart, Camera, Globe,
@@ -36,7 +38,7 @@ const ICONS: { name: string; icon: React.ElementType }[] = [
 
 interface CategoryFormData {
   name: string;
-  color: RainbowColor;
+  importance: CategoryImportance;
   icon: string;
   description: string;
 }
@@ -49,6 +51,23 @@ interface CategoryModalProps {
   title: string;
 }
 
+function ImportanceSegments({ importance }: { importance: CategoryImportance }) {
+  const level = CATEGORY_IMPORTANCE[importance].level;
+  return (
+    <span className="flex gap-[2px]">
+      {[0, 1, 2, 3].map((i) => (
+        <i
+          key={i}
+          className={cn(
+            "block h-4 w-[7px] border border-foreground",
+            i < level ? "bg-foreground" : "bg-transparent",
+          )}
+        />
+      ))}
+    </span>
+  );
+}
+
 export function CategoryModal({
   open,
   onClose,
@@ -57,7 +76,9 @@ export function CategoryModal({
   title,
 }: CategoryModalProps) {
   const [name, setName] = React.useState(initialData?.name ?? "");
-  const [color, setColor] = React.useState<RainbowColor>(initialData?.color ?? "blue");
+  const [importance, setImportance] = React.useState<CategoryImportance>(
+    initialData?.importance ?? 1,
+  );
   const [icon, setIcon] = React.useState(initialData?.icon ?? "folder");
   const [description, setDescription] = React.useState(initialData?.description ?? "");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -66,7 +87,7 @@ export function CategoryModal({
   React.useEffect(() => {
     if (open) {
       setName(initialData?.name ?? "");
-      setColor(initialData?.color ?? "blue");
+      setImportance(initialData?.importance ?? 1);
       setIcon(initialData?.icon ?? "folder");
       setDescription(initialData?.description ?? "");
       setError("");
@@ -82,7 +103,7 @@ export function CategoryModal({
     setIsSubmitting(true);
     setError("");
     try {
-      await onSubmit({ name: name.trim(), color, icon, description: description.trim() });
+      await onSubmit({ name: name.trim(), importance, icon, description: description.trim() });
       onClose();
     } catch (err) {
       setError((err as Error).message || "操作失败");
@@ -91,114 +112,113 @@ export function CategoryModal({
     }
   };
 
-  const colorInfo = RAINBOW_COLORS[color];
-  const SelectedIcon = (ICONS.find((i) => i.name === icon)?.icon || FolderOpen) as React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
+  const SelectedIcon = (ICONS.find((i) => i.name === icon)?.icon || FolderOpen) as React.ComponentType<{ className?: string }>;
 
   return (
     <Dialog open={open} onClose={onClose} title={title} maxWidth="max-w-md">
-      <form onSubmit={handleSubmit} className="space-y-5">
-        {/* Preview */}
-        <div
-          className="flex flex-col items-center gap-3 rounded-xl p-6 transition-colors"
-          style={{ backgroundColor: `${colorInfo.hex}15` }}
-        >
-          <SelectedIcon className="h-10 w-10" style={{ color: getContrastColor(colorInfo.hex) }} />
-          <p className="text-sm font-medium">{name || "分类名称"}</p>
+      <form onSubmit={handleSubmit} className="space-y-5 font-mono text-[12px]">
+        <div className="flex items-center gap-3 border border-foreground/30 p-4">
+          <span className="flex h-10 w-10 items-center justify-center border border-foreground/40">
+            <SelectedIcon className="h-5 w-5" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block truncate font-sans text-[14px] font-semibold">
+              {name || "分类名称"}
+            </span>
+            <span className="mt-1 flex items-center gap-2 text-[10px] tracking-widest text-muted-foreground">
+              <ImportanceSegments importance={importance} />
+              {CATEGORY_IMPORTANCE[importance].label}
+            </span>
+          </span>
         </div>
 
-        {/* Name */}
         <div>
-          <label className="mb-1.5 block text-sm font-medium">分类名称</label>
+          <label className="mb-1.5 block text-[10px] tracking-[0.2em] text-muted-foreground">
+            分类名称 / NAME
+          </label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="例如：工作文档"
+            placeholder="例如：工作档案"
             maxLength={32}
-            className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all"
+            className="w-full border border-foreground/30 bg-transparent px-3 py-2.5 font-sans text-[13px] outline-none focus:border-foreground"
           />
         </div>
 
-        {/* Color */}
         <div>
-          <label className="mb-1.5 block text-sm font-medium">颜色绑定</label>
-          <div className="flex flex-wrap gap-2">
-            {(Object.entries(RAINBOW_COLORS) as [RainbowColor, typeof RAINBOW_COLORS[RainbowColor]][]).map(
-              ([key, value]) => (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => setColor(key)}
-                  className={cn(
-                    "h-9 w-9 rounded-full border-2 transition-all duration-200",
-                    color === key
-                      ? "border-foreground scale-110 shadow-lg"
-                      : "border-transparent hover:scale-105",
-                  )}
-                  style={{ backgroundColor: value.hex }}
-                  title={value.label}
-                />
-              ),
-            )}
+          <label className="mb-1.5 block text-[10px] tracking-[0.2em] text-muted-foreground">
+            重要性 / IMPORTANCE
+          </label>
+          <div className="grid grid-cols-4 gap-px border border-foreground/30 bg-foreground/30">
+            {CATEGORY_IMPORTANCE_ORDER.map((key) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setImportance(key)}
+                className={cn(
+                  "flex flex-col items-center gap-1.5 py-2.5 text-[11px] transition-colors",
+                  importance === key
+                    ? "bg-foreground text-background"
+                    : "bg-background text-muted-foreground hover:bg-foreground/5",
+                )}
+              >
+                <ImportanceSegments importance={key} />
+                {CATEGORY_IMPORTANCE[key].label}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Icon */}
         <div>
-          <label className="mb-1.5 block text-sm font-medium">图标绑定</label>
-          <div className="grid grid-cols-5 gap-2 max-h-32 overflow-y-auto rounded-xl border border-border/50 p-2">
+          <label className="mb-1.5 block text-[10px] tracking-[0.2em] text-muted-foreground">
+            图标 / ICON
+          </label>
+          <div className="grid max-h-32 grid-cols-6 gap-px overflow-y-auto border border-foreground/30 bg-foreground/30">
             {ICONS.map(({ name: iconName, icon: IconComp }) => {
               const IconEl = IconComp as React.ComponentType<{ className?: string }>;
               return (
-              <button
-                key={iconName}
-                type="button"
-                onClick={() => setIcon(iconName)}
-                className={cn(
-                  "flex items-center justify-center rounded-lg p-2 transition-all duration-200",
-                  icon === iconName
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                )}
-                title={iconName}
-              >
-                <IconEl className="h-5 w-5" />
-              </button>
+                <button
+                  key={iconName}
+                  type="button"
+                  onClick={() => setIcon(iconName)}
+                  className={cn(
+                    "flex h-9 items-center justify-center transition-colors",
+                    icon === iconName
+                      ? "bg-foreground text-background"
+                      : "bg-background text-muted-foreground hover:bg-foreground/5",
+                  )}
+                  title={iconName}
+                >
+                  <IconEl className="h-4 w-4" />
+                </button>
               );
             })}
           </div>
         </div>
 
-        {/* Description */}
         <div>
-          <label className="mb-1.5 block text-sm font-medium">描述（可选）</label>
+          <label className="mb-1.5 block text-[10px] tracking-[0.2em] text-muted-foreground">
+            描述 / DESCRIPTION
+          </label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="简短描述这个分类的用途..."
             maxLength={200}
             rows={2}
-            className="w-full rounded-xl border border-input bg-background px-4 py-2.5 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all resize-none"
+            className="w-full resize-none border border-foreground/30 bg-transparent px-3 py-2.5 font-sans text-[13px] outline-none focus:border-foreground"
           />
         </div>
 
-        {/* Error */}
-        {error && (
-          <p className="text-sm text-destructive">{error}</p>
-        )}
+        {error && <p className="text-[12px] text-destructive">{error}</p>}
 
-        {/* Actions */}
-        <div className="flex gap-3 pt-2">
-          <Button
-            type="button"
-            variant="outline"
-            className="flex-1"
-            onClick={onClose}
-          >
+        <div className="flex gap-2 pt-1">
+          <Button type="button" variant="outline" className="flex-1" onClick={onClose}>
             取消
           </Button>
           <Button type="submit" className="flex-1" disabled={isSubmitting}>
-            {isSubmitting ? "保存中..." : "保存"}
+            {isSubmitting ? "保存中..." : "保存分类"}
           </Button>
         </div>
       </form>
