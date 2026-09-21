@@ -8,7 +8,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth";
 import { renameFileSchema, deleteFilesSchema, AppError } from "@/lib/validations";
 import { logOperation, sanitizeFilename } from "@/lib/security";
-import type { ApiResponse, FileItem, PaginatedResult, RainbowColor } from "@/types";
+import type { ApiResponse, FileItem, PaginatedResult, CategoryImportance } from "@/types";
 import { getFileExtension } from "@/lib/utils";
 
 /**
@@ -71,7 +71,7 @@ export async function getFiles(params: {
         ? {
             id: f.category.id,
             name: f.category.name,
-            color: f.category.color as RainbowColor,
+            importance: f.category.importance as CategoryImportance,
             icon: f.category.icon,
             description: f.category.description,
             sortOrder: f.category.sortOrder,
@@ -179,7 +179,7 @@ export async function uploadFile(
           ? {
               id: created.category.id,
               name: created.category.name,
-              color: created.category.color as RainbowColor,
+              importance: created.category.importance as CategoryImportance,
               icon: created.category.icon,
               description: created.category.description,
               sortOrder: created.category.sortOrder,
@@ -349,7 +349,7 @@ export async function copyFile(
           ? {
               id: created.category.id,
               name: created.category.name,
-              color: created.category.color as RainbowColor,
+              importance: created.category.importance as CategoryImportance,
               icon: created.category.icon,
               description: created.category.description,
               sortOrder: created.category.sortOrder,
@@ -588,7 +588,7 @@ export async function getRecycleBin(): Promise<ApiResponse<FileItem[]>> {
       category: item.file.category ? {
         id: item.file.category.id,
         name: item.file.category.name,
-        color: item.file.category.color as RainbowColor,
+        importance: item.file.category.importance as CategoryImportance,
         icon: item.file.category.icon,
         description: item.file.category.description,
         sortOrder: item.file.category.sortOrder,
@@ -639,7 +639,7 @@ export async function getFavorites(): Promise<ApiResponse<FileItem[]>> {
       category: fav.file.category ? {
         id: fav.file.category.id,
         name: fav.file.category.name,
-        color: fav.file.category.color as RainbowColor,
+        importance: fav.file.category.importance as CategoryImportance,
         icon: fav.file.category.icon,
         description: fav.file.category.description,
         sortOrder: fav.file.category.sortOrder,
@@ -691,7 +691,7 @@ export async function getRecentFiles(
       category: f.category ? {
         id: f.category.id,
         name: f.category.name,
-        color: f.category.color as RainbowColor,
+        importance: f.category.importance as CategoryImportance,
         icon: f.category.icon,
         description: f.category.description,
         sortOrder: f.category.sortOrder,

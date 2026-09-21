@@ -63,7 +63,7 @@ export function RecycleView() {
   return (
     <div className="space-y-4">
       {message && (
-        <div className="rounded-lg border border-whisper bg-white/70 px-4 py-2.5 text-sm">{message}</div>
+        <div className="border d5-line d5-panel px-4 py-2.5 text-sm">{message}</div>
       )}
 
       <div className="flex items-center justify-between">

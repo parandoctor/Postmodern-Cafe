@@ -44,7 +44,7 @@ export default function NotesPage() {
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-[18px] font-semibold tracking-tight">随时记写</h1>
+          <h1 className="d5-title text-[26px] font-semibold tracking-tight">随时记写</h1>
           <p className="mt-0.5 text-[12px] text-muted-foreground">
             共 {notes.length} 条记录 · 点击卡片即可编辑
           </p>
@@ -52,8 +52,8 @@ export default function NotesPage() {
       </div>
 
       {/* 输入区 */}
-      <div className="rounded-xl border border-whisper bg-white/60 p-3 backdrop-blur-sm">
-        <div className="flex items-start gap-2 rounded-lg border border-whisper bg-white/70 p-3">
+      <div className="border d5-line d5-panel p-3 backdrop-blur-sm">
+        <div className="flex items-start gap-2 border d5-line d5-panel p-3">
           <textarea
             ref={inputRef}
             value={text}
@@ -81,7 +81,7 @@ export default function NotesPage() {
 
       {/* 记录列表 */}
       {notes.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-whisper bg-white/40 py-20 text-center">
+        <div className="flex flex-col items-center justify-center border border-dashed d5-line py-20 text-center">
           <StickyNote className="mb-3 h-10 w-10 text-muted-foreground/30" />
           <p className="text-[14px] text-muted-foreground/70">暂无记录</p>
           <p className="mt-1 text-[12px] text-muted-foreground/50">在上方输入框写下你的想法</p>
@@ -94,7 +94,7 @@ export default function NotesPage() {
               layout
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="group relative flex flex-col rounded-lg border border-whisper bg-white/60 p-4 hover:shadow-card transition-shadow"
+              className="group relative flex flex-col border d5-line d5-panel p-4 hover:shadow-card transition-shadow"
             >
               {editingId === note.id ? (
                 <textarea

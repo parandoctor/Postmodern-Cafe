@@ -2,22 +2,14 @@
 
 import * as React from "react";
 import NextImage from "next/image";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
 import {
-  HardDrive,
-  LogOut,
-  ChevronLeft,
-  ChevronRight,
-  ChevronDown,
-  Image,
-  X,
-  Check,
-  CalendarDays,
-  GripVertical,
-  Target,
+  LogOut, ChevronLeft, ChevronRight, ChevronDown, Image as ImageIcon, X, Check,
+  CalendarDays, Target, HardDrive, FolderOpen, Star, Clock, Trash2, Sun, Moon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { logoutUser } from "@/actions/auth";
@@ -29,22 +21,46 @@ import { SidebarMusic } from "@/components/layout/sidebar-music";
 import { CalendarWidget } from "@/components/layout/calendar-widget";
 import { TimerWidget } from "@/components/layout/timer-widget";
 
-const sidebarItems = [
-  { label: "任务管理", href: "/dashboard/tasks", icon: Target },
-  { label: "文件管理", href: "/dashboard/files", icon: HardDrive },
+const FILE_TABS = [
+  { key: "categories", label: "分类管理", href: "/dashboard/files?tab=categories", icon: FolderOpen },
+  { key: "files", label: "我的文件", href: "/dashboard/files?tab=files", icon: HardDrive },
+  { key: "favorites", label: "收藏夹", href: "/dashboard/files?tab=favorites", icon: Star },
+  { key: "recent", label: "最近使用", href: "/dashboard/files?tab=recent", icon: Clock },
+  { key: "recycle", label: "回收站", href: "/dashboard/files?tab=recycle", icon: Trash2 },
 ];
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const { sidebarOpen, sidebarWidth, setSidebarWidth, toggleSidebar, rightOpen, setRightOpen, toggleRight, wallpaper, setWallpaper } = useUIStore();
+  const { resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
+  const {
+    sidebarOpen, sidebarWidth, setSidebarWidth, toggleSidebar,
+    rightOpen, setRightOpen, toggleRight, wallpaper, setWallpaper,
+  } = useUIStore();
   const [wallpaperOpen, setWallpaperOpen] = React.useState(false);
   const [wallpaperProcessing, setWallpaperProcessing] = React.useState(false);
   const [workspaceCollapsed, setWorkspaceCollapsed] = React.useState(false);
   const [privateCollapsed, setPrivateCollapsed] = React.useState(false);
+  const [fileTab, setFileTab] = React.useState("categories");
   const fileInputRef = React.useRef<HTMLInputElement>(null);
-  const sidebarRef = React.useRef<HTMLDivElement>(null);
   const dragging = React.useRef(false);
+
+  React.useEffect(() => setMounted(true), []);
+
+  // 文件管理二级目录：从 URL query 读取当前子视图
+  React.useEffect(() => {
+    const read = () => {
+      const sp = new URLSearchParams(window.location.search);
+      setFileTab(sp.get("tab") ?? "categories");
+    };
+    read();
+    window.addEventListener("popstate", read);
+    return () => window.removeEventListener("popstate", read);
+  }, [pathname]);
+
+  const filesActive = pathname.startsWith("/dashboard/files") || pathname.startsWith("/dashboard/categories");
+  const tasksActive = pathname.startsWith("/dashboard/tasks");
 
   const handleLogout = async () => {
     await logoutUser();
@@ -54,18 +70,15 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const handleWallpaperUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    // 允许重复选择同一文件
     e.target.value = "";
     setWallpaperProcessing(true);
     try {
-      // canvas 智能重绘：EXIF 方向修正、低分图放大防模糊、超大图压缩体积
       const optimized = await processWallpaperImage(file);
       setWallpaper(optimized);
       setWallpaperOpen(false);
     } catch (err) {
       console.error("壁纸优化失败，回退原图", err);
       try {
-        // 优化失败时回退：直接使用原始文件
         const raw = await new Promise<string>((resolve, reject) => {
           const reader = new FileReader();
           reader.onload = () => resolve(reader.result as string);
@@ -75,14 +88,13 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         setWallpaper(raw);
         setWallpaperOpen(false);
       } catch {
-        // 完全失败，保持现状
+        /* 保持现状 */
       }
     } finally {
       setWallpaperProcessing(false);
     }
   };
 
-  // ---- Sidebar drag resize ----
   const onMouseDown = React.useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     dragging.current = true;
@@ -91,8 +103,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     const onMove = (ev: MouseEvent) => {
       if (!dragging.current) return;
       const delta = ev.clientX - startX;
-      const newW = Math.max(200, Math.min(480, startW + delta));
-      setSidebarWidth(newW);
+      setSidebarWidth(Math.max(220, Math.min(480, startW + delta)));
     };
     const onUp = () => {
       dragging.current = false;
@@ -107,317 +118,202 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     document.addEventListener("mouseup", onUp);
   }, [sidebarWidth, setSidebarWidth]);
 
-  const currentLabel = sidebarItems.find((s) => pathname === s.href || (s.href !== "/dashboard" && pathname.startsWith(s.href)) || (s.href === "/dashboard/files" && pathname.startsWith("/dashboard/categories")))?.label ?? "文件管理";
+  const navItem = "flex items-center justify-between px-2.5 py-2 d5-mono text-[11px] tracking-[0.08em] border-l-2 border-transparent d5-muted hover:text-foreground hover:bg-foreground/5 transition-colors";
+  const navItemOn = "border-l-2 d5-line d5-ink bg-foreground/[0.06] font-semibold";
 
   return (
-    <div className="relative flex min-h-screen">
-      {/* Wallpaper layer — sits above blueprint, below content */}
+    <div className="relative flex min-h-screen d5-bg d5-ink">
       {wallpaper && (
         <div
-          className="fixed inset-0 z-[1]"
-          style={{
-            backgroundImage: `url(${wallpaper})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundAttachment: "fixed",
-          }}
+          className="fixed inset-0 z-0"
+          style={{ backgroundImage: `url(${wallpaper})`, backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed" }}
         />
       )}
 
-      {/* Sidebar - Notion style + draggable */}
+      {/* 左栏：导航 + 私有空间 */}
       <aside
-        ref={sidebarRef}
-        className={cn(
-          "fixed left-0 top-0 z-40 flex h-full flex-col border-r border-whisper bg-white/75 backdrop-blur-md transition-[width] duration-150",
-        )}
+        className="sticky top-0 z-30 flex h-screen shrink-0 flex-col d5-bg border-r d5-line"
         style={{ width: sidebarOpen ? sidebarWidth : 64 }}
       >
-        {/* Logo */}
-        <div className="flex h-14 shrink-0 items-center border-b border-whisper px-4">
+        <div className="flex h-14 shrink-0 items-center border-b-2 d5-line px-3">
           {sidebarOpen ? (
-            <a href="/dashboard" className="flex items-center gap-2.5">
-              <div className="flex h-7 w-7 items-center justify-center rounded bg-foreground">
-                <NextImage src="/images/cafe-logo-white.png" alt="后现代咖啡馆" width={20} height={20} className="h-5 w-5 object-contain dark:invert" />
-              </div>
-              <span className="text-[15px] font-semibold tracking-tight">后现代咖啡馆</span>
-            </a>
+            <Link href="/dashboard" className="flex items-center gap-2.5">
+              <span className="flex h-7 w-7 items-center justify-center border d5-line">
+                <NextImage src="/images/cafe-logo-white.png" alt="后现代咖啡馆" width={20} height={20} className="h-5 w-5 object-contain invert dark:invert-0" />
+              </span>
+              <span className="d5-title text-[15px] font-semibold tracking-tight">后现代咖啡馆</span>
+            </Link>
           ) : (
-            <a href="/dashboard" className="mx-auto flex h-7 w-7 items-center justify-center rounded bg-foreground">
-              <NextImage src="/images/cafe-logo-white.png" alt="后现代咖啡馆" width={20} height={20} className="h-5 w-5 object-contain dark:invert" />
-            </a>
+            <Link href="/dashboard" className="mx-auto flex h-7 w-7 items-center justify-center border d5-line">
+              <NextImage src="/images/cafe-logo-white.png" alt="后现代咖啡馆" width={20} height={20} className="h-5 w-5 object-contain invert dark:invert-0" />
+            </Link>
           )}
         </div>
 
-        {/* Scroll area: nav + widgets */}
-        <div className="flex-1 space-y-2 overflow-y-auto p-2">
-          {/* 工作区 — 分组标题（与待办 widget 同格式） */}
+        <div className="flex-1 overflow-y-auto py-2">
           {sidebarOpen && (
-            <button
-              onClick={() => setWorkspaceCollapsed((c) => !c)}
-              className="flex w-full items-center gap-1.5 rounded px-2 py-1.5 text-left hover:bg-[rgba(0,0,0,0.05)] transition-colors"
-            >
-              <ChevronDown
-                className={cn(
-                  "h-3.5 w-3.5 text-muted-foreground transition-transform",
-                  workspaceCollapsed && "-rotate-90",
-                )}
-              />
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                工作区
-              </span>
+            <button onClick={() => setWorkspaceCollapsed((c) => !c)} className="flex w-full items-center gap-1.5 px-3 py-2 d5-mono text-[9px] tracking-[0.22em] d5-faint">
+              <ChevronDown className={cn("h-3 w-3 transition-transform", workspaceCollapsed && "-rotate-90")} />
+              WORKSPACE / 工作区
             </button>
           )}
           {!workspaceCollapsed && (
-            <nav className="space-y-0.5">
-              {sidebarItems.map((item) => {
-                const isActive = pathname === item.href || pathname.startsWith(item.href) || (item.href === "/dashboard/files" && pathname.startsWith("/dashboard/categories"));
-                return (
-                  <a
-                    key={item.href}
-                    href={item.href}
-                    className={cn(
-                      "flex items-center gap-1.5 rounded px-2 py-1.5 transition-colors",
-                      isActive
-                        ? "bg-[rgba(0,0,0,0.08)] text-foreground"
-                        : "text-muted-foreground hover:bg-[rgba(0,0,0,0.05)] hover:text-foreground",
-                    )}
-                  >
-                    <item.icon className="h-3.5 w-3.5 shrink-0" />
-                    {sidebarOpen && (
-                      <span className="text-[11px] font-semibold uppercase tracking-wider">
-                        {item.label}
-                      </span>
-                    )}
-                  </a>
-                );
-              })}
+            <nav>
+              <Link href="/dashboard/tasks" className={cn(navItem, tasksActive && navItemOn)}>
+                <span className="flex items-center gap-2"><Target className="h-3.5 w-3.5" />{sidebarOpen && "任务管理"}</span>
+                {sidebarOpen && <span className="d5-faint">F1</span>}
+              </Link>
+              <Link href="/dashboard/files" className={cn(navItem, filesActive && navItemOn)}>
+                <span className="flex items-center gap-2"><HardDrive className="h-3.5 w-3.5" />{sidebarOpen && "文件管理"}</span>
+                {sidebarOpen && <span className="d5-faint">F2</span>}
+              </Link>
+              {sidebarOpen && filesActive && (
+                <div className="ml-3 border-l d5-line">
+                  {FILE_TABS.map((tab) => (
+                    <Link
+                      key={tab.key}
+                      href={tab.href}
+                      className={cn(
+                        "flex items-center justify-between px-3 py-1.5 text-[11px] d5-muted hover:text-foreground",
+                        fileTab === tab.key && "d5-ink font-semibold bg-foreground/[0.05]",
+                      )}
+                    >
+                      <span>{tab.label}</span>
+                      <tab.icon className="h-3 w-3 opacity-60" />
+                    </Link>
+                  ))}
+                </div>
+              )}
             </nav>
           )}
 
-          {/* 私有空间 — 今日任务 / 随时记写 / 音乐盒（与工作区同级） */}
           {sidebarOpen && (
-            <button
-              onClick={() => setPrivateCollapsed((c) => !c)}
-              className="flex w-full items-center gap-1.5 rounded px-2 py-1.5 text-left hover:bg-[rgba(0,0,0,0.05)] transition-colors"
-            >
-              <ChevronDown
-                className={cn(
-                  "h-3.5 w-3.5 text-muted-foreground transition-transform",
-                  privateCollapsed && "-rotate-90",
-                )}
-              />
-              <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                私有空间
-              </span>
+            <button onClick={() => setPrivateCollapsed((c) => !c)} className="mt-3 flex w-full items-center gap-1.5 px-3 py-2 d5-mono text-[9px] tracking-[0.22em] d5-faint">
+              <ChevronDown className={cn("h-3 w-3 transition-transform", privateCollapsed && "-rotate-90")} />
+              PRIVATE / 私有空间
             </button>
           )}
           {!privateCollapsed && (
-            <nav className="space-y-0.5">
+            <div className="space-y-1 px-1">
               <SidebarTodo />
               <SidebarNotes />
               <SidebarMusic />
-            </nav>
+            </div>
           )}
         </div>
 
-        {/* Bottom */}
-        <div className="shrink-0 border-t border-whisper p-2">
-          <button
-            onClick={toggleSidebar}
-            className="flex w-full items-center rounded px-3 py-1.5 text-[14px] text-muted-foreground hover:bg-[rgba(0,0,0,0.05)] hover:text-foreground transition-colors"
-          >
-            {sidebarOpen ? (
-              <>
-                <ChevronLeft className="h-4 w-4 mr-2" />
-                <span>收起</span>
-              </>
-            ) : (
-              <ChevronRight className="h-4 w-4 mx-auto" />
-            )}
+        <div className="shrink-0 border-t d5-line px-2 py-2">
+          <div className="mb-1 flex items-center justify-between gap-1">
+            <button
+              onClick={() => mounted && setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+              className="flex h-7 w-7 items-center justify-center border d5-line d5-muted hover:text-foreground"
+              title="切换明暗"
+            >
+              {mounted && resolvedTheme === "dark" ? <Sun className="h-3.5 w-3.5" /> : <Moon className="h-3.5 w-3.5" />}
+            </button>
+            <button onClick={() => setWallpaperOpen(true)} className="flex h-7 w-7 items-center justify-center border d5-line d5-muted hover:text-foreground" title="更换背景">
+              <ImageIcon className="h-3.5 w-3.5" />
+            </button>
+            <Link href="/profile" className="flex h-7 w-7 items-center justify-center border d5-line" title="个人中心">
+              <Avatar className="h-5 w-5">
+                <AvatarImage src="" alt="用户" />
+                <AvatarFallback className="bg-foreground text-[9px] text-background">U</AvatarFallback>
+              </Avatar>
+            </Link>
+            <button onClick={handleLogout} className="flex h-7 w-7 items-center justify-center border d5-line d5-muted hover:text-foreground" title="退出登录">
+              <LogOut className="h-3.5 w-3.5" />
+            </button>
+          </div>
+          <button onClick={toggleSidebar} className="flex w-full items-center justify-center gap-2 border d5-line py-1.5 d5-mono text-[10px] d5-muted hover:text-foreground">
+            {sidebarOpen ? <><ChevronLeft className="h-3.5 w-3.5" />收起侧栏</> : <ChevronRight className="h-3.5 w-3.5" />}
           </button>
         </div>
 
-        {/* Drag handle */}
         {sidebarOpen && (
-          <div
-            className="absolute right-0 top-0 h-full w-1 cursor-col-resize hover:bg-notion-blue/20 transition-colors z-50"
-            onMouseDown={onMouseDown}
-            title="拖动调整侧边栏宽度"
-          />
+          <div className="absolute right-0 top-0 z-50 h-full w-1 cursor-col-resize hover:bg-foreground/10" onMouseDown={onMouseDown} title="拖动调整侧边栏宽度" />
         )}
       </aside>
 
-      {/* Main area */}
-      <div
-        className={cn(
-          "flex flex-1 flex-col transition-all duration-150",
-          rightOpen ? "lg:mr-[300px]" : "lg:mr-0",
-        )}
-        style={{ marginLeft: sidebarOpen ? sidebarWidth : 64 }}
-      >
-        {/* Top bar */}
-        <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-whisper bg-white/70 backdrop-blur-md px-5">
-          <div className="flex items-center gap-3">
-            <span className="text-[14px] font-medium text-muted-foreground">
-              {currentLabel}
-            </span>
+      {/* 中栏：顶部状态条 + 工作台 */}
+      <div className="relative z-10 flex min-w-0 flex-1 flex-col">
+        <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b-2 d5-line d5-bg px-5">
+          <div className="flex items-center gap-3 d5-mono text-[10px] tracking-[0.16em] d5-muted">
+            <span>POSTMODERN CAFE</span>
+            <span className="d5-faint">/</span>
+            <span className="d5-ink">{tasksActive ? "任务管理" : filesActive ? "文件管理" : "工作台"}</span>
           </div>
-
-          <div className="flex items-center gap-1">
-            <button
-              onClick={toggleRight}
-              className="flex h-8 w-8 items-center justify-center rounded text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors lg:hidden"
-              title="侧边面板"
-            >
-              <CalendarDays className="h-4 w-4" />
+          <div className="flex items-center gap-2">
+            <button onClick={toggleRight} className="hidden h-7 items-center gap-1.5 border d5-line px-2 d5-mono text-[10px] d5-muted hover:text-foreground lg:flex" title={rightOpen ? "收起面板" : "展开面板"}>
+              <CalendarDays className="h-3.5 w-3.5" />
+              {rightOpen ? "HIDE" : "SHOW"}
             </button>
-            <button
-              onClick={toggleRight}
-              className={cn(
-                "hidden h-8 w-8 items-center justify-center rounded text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors lg:flex",
-                rightOpen && "bg-secondary text-foreground",
-              )}
-              title={rightOpen ? "收起面板" : "展开面板"}
-            >
-              <CalendarDays className="h-4 w-4" />
-            </button>
-            <button
-              onClick={() => setWallpaperOpen(true)}
-              className="flex h-8 w-8 items-center justify-center rounded text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
-              title="更换背景"
-            >
-              <Image className="h-4 w-4" />
+            <button onClick={toggleRight} className="flex h-7 w-7 items-center justify-center border d5-line d5-muted lg:hidden">
+              <CalendarDays className="h-3.5 w-3.5" />
             </button>
             {wallpaper && (
-              <button
-                onClick={() => setWallpaper(null)}
-                className="flex h-8 w-8 items-center justify-center rounded text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
-                title="移除背景"
-              >
-                <X className="h-4 w-4" />
+              <button onClick={() => setWallpaper(null)} className="flex h-7 w-7 items-center justify-center border d5-line d5-muted hover:text-foreground" title="移除背景">
+                <X className="h-3.5 w-3.5" />
               </button>
             )}
-            <a
-              href="/profile"
-              className="flex h-8 w-8 items-center justify-center rounded hover:bg-secondary transition-colors"
-            >
-              <Avatar className="h-6 w-6">
-                <AvatarImage src="" alt="用户" />
-                <AvatarFallback className="bg-secondary text-xs text-foreground">
-                  U
-                </AvatarFallback>
-              </Avatar>
-            </a>
-            <button
-              onClick={handleLogout}
-              className="flex h-8 w-8 items-center justify-center rounded text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
-              title="退出登录"
-            >
-              <LogOut className="h-4 w-4" />
-            </button>
           </div>
         </header>
 
-        {/* Page content */}
-        <main className="relative z-[2] flex-1 p-5 lg:p-6">
-          {children}
-        </main>
+        <main className="relative flex-1 d5-panel p-5 lg:p-6">{children}</main>
       </div>
 
-      {/* Wallpaper Dialog */}
-      <Dialog
-        open={wallpaperOpen}
-        onClose={() => setWallpaperOpen(false)}
-        title="更换背景壁纸"
-        description="上传图片后自动优化清晰度并压缩体积"
-        maxWidth="max-w-md"
-      >
-        <div className="space-y-4">
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleWallpaperUpload}
-            className="hidden"
-          />
-          <button
-            onClick={() => {
-              setWallpaper(null);
-              setWallpaperOpen(false);
-            }}
-            className="flex w-full items-center gap-3 rounded-lg border border-whisper bg-white/60 px-4 py-3 text-sm hover:bg-black/[0.04] transition-colors"
-          >
-            <span
-              className={cn(
-                "flex h-10 w-10 items-center justify-center rounded",
-                !wallpaper ? "bg-foreground text-background" : "bg-secondary",
-              )}
-            >
-              <Check className="h-4 w-4" />
-            </span>
-            <span className="text-left">
-              <span className="block font-medium">默认浅色</span>
-              <span className="block text-xs text-muted-foreground">简洁的纯色背景</span>
-            </span>
-          </button>
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            disabled={wallpaperProcessing}
-            className="flex w-full items-center gap-3 rounded-lg border border-whisper bg-white/60 px-4 py-3 text-sm hover:bg-black/[0.04] transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            <span className="flex h-10 w-10 items-center justify-center rounded bg-secondary">
-              <Image className="h-4 w-4" />
-            </span>
-            <span className="text-left">
-              <span className="block font-medium">
-                {wallpaperProcessing ? "正在优化图片…" : "自定义壁纸"}
-              </span>
-              <span className="block text-xs text-muted-foreground">
-                {wallpaperProcessing
-                  ? "正在提升清晰度并压缩体积，请稍候"
-                  : "从本地选择一张图片，自动优化清晰度"}
-              </span>
-            </span>
-          </button>
-          {wallpaper && (
-            <button
-              onClick={() => {
-                setWallpaper(null);
-                setWallpaperOpen(false);
-              }}
-              className="w-full rounded border border-border px-4 py-2.5 text-sm text-destructive hover:bg-destructive/10 transition-colors"
-            >
-              移除壁纸
-            </button>
-          )}
-        </div>
-      </Dialog>
-
-      {/* Right panel: 日历 + 计时器 */}
+      {/* 右栏：日历 + 计时器 + 读数 */}
       <aside
         className={cn(
-          "fixed right-0 top-0 z-40 hidden h-full w-[300px] flex-col border-l border-whisper bg-white/45 backdrop-blur-md transition-transform duration-200 lg:flex",
-          rightOpen ? "translate-x-0" : "translate-x-full",
+          "sticky top-0 z-30 hidden h-screen shrink-0 flex-col overflow-hidden border-l-2 d5-line d5-bg transition-[width] duration-200 lg:flex",
+          rightOpen ? "w-[300px]" : "w-0",
         )}
       >
-        <div className="flex h-14 shrink-0 items-center justify-between border-b border-whisper px-4">
-          <span className="text-[14px] font-semibold tracking-tight">面板</span>
-          <button
-            onClick={() => setRightOpen(false)}
-            className="rounded p-1.5 text-muted-foreground hover:bg-[rgba(0,0,0,0.05)] hover:text-foreground transition-colors"
-            title="收起面板"
-          >
-            <X className="h-4 w-4" />
+        <div className="flex h-14 shrink-0 items-center justify-between border-b d5-line px-4">
+          <span className="d5-mono text-[9px] tracking-[0.22em] d5-faint">INSPECTOR / 读数</span>
+          <button onClick={() => setRightOpen(false)} className="flex h-6 w-6 items-center justify-center border d5-line d5-muted hover:text-foreground" title="收起面板">
+            <X className="h-3 w-3" />
           </button>
         </div>
         <div className="flex-1 space-y-4 overflow-y-auto p-3">
           <CalendarWidget />
           <TimerWidget />
+          <div className="border d5-line">
+            <div className="border-b d5-line px-3 py-2 d5-mono text-[9px] tracking-[0.2em] d5-faint">READOUT</div>
+            <div className="flex justify-between px-3 py-1.5 d5-mono text-[10px] d5-muted"><span>BGM</span><span>INDEPENDENT</span></div>
+            <div className="flex justify-between px-3 py-1.5 d5-mono text-[10px] d5-muted"><span>MUSIC</span><span>LOCAL</span></div>
+            <div className="flex justify-between px-3 py-1.5 d5-mono text-[10px] d5-muted"><span>FILES</span><span>INDEXED</span></div>
+          </div>
         </div>
       </aside>
+
+      <Dialog open={wallpaperOpen} onClose={() => setWallpaperOpen(false)} title="更换背景壁纸" description="上传图片后自动优化清晰度并压缩体积" maxWidth="max-w-md">
+        <div className="space-y-3 d5-mono text-[11px]">
+          <input ref={fileInputRef} type="file" accept="image/*" onChange={handleWallpaperUpload} className="hidden" />
+          <button
+            onClick={() => { setWallpaper(null); setWallpaperOpen(false); }}
+            className="flex w-full items-center gap-3 border d5-line px-4 py-3 text-left hover:bg-foreground/5"
+          >
+            <span className={cn("flex h-9 w-9 items-center justify-center border d5-line", !wallpaper && "bg-foreground text-background")}>
+              <Check className="h-4 w-4" />
+            </span>
+            <span>
+              <span className="block d5-ink">默认背景</span>
+              <span className="block text-[10px] d5-faint">简洁的纯色背景</span>
+            </span>
+          </button>
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={wallpaperProcessing}
+            className="flex w-full items-center gap-3 border d5-line px-4 py-3 text-left hover:bg-foreground/5 disabled:opacity-50"
+          >
+            <span className="flex h-9 w-9 items-center justify-center border d5-line"><ImageIcon className="h-4 w-4" /></span>
+            <span>
+              <span className="block d5-ink">{wallpaperProcessing ? "正在优化图片…" : "自定义壁纸"}</span>
+              <span className="block text-[10px] d5-faint">从本地选择一张图片，自动优化清晰度</span>
+            </span>
+          </button>
+        </div>
+      </Dialog>
     </div>
   );
 }
-
-
-

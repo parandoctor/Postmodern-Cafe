@@ -7,7 +7,7 @@ import { FilePreview } from "@/components/files/file-preview";
 import { formatFileSize, formatRelativeTime, getFileTypeIcon, cn, getContrastColor } from "@/lib/utils";
 import { getFavorites, toggleFavorite, deleteFiles } from "@/actions/files";
 import type { FileItem } from "@/types";
-import { RAINBOW_COLORS } from "@/types";
+import { CATEGORY_IMPORTANCE } from "@/types";
 
 const FILE_ICON_MAP: Record<string, React.ElementType> = {
   image: Image, video: Video, audio: Music, pdf: FileText,
@@ -77,7 +77,7 @@ export function FavoritesView() {
             return (
               <div
                 key={file.id}
-                className="group relative rounded-lg border border-whisper bg-white/60 backdrop-blur-sm p-4 hover:border-foreground/25 transition-colors"
+                className="group relative border d5-line d5-panel backdrop-blur-sm p-4 hover:border-foreground/25 transition-colors"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary">
@@ -91,20 +91,14 @@ export function FavoritesView() {
                 <p className="mt-0.5 text-xs text-muted-foreground">
                   {formatFileSize(file.size)} · {formatRelativeTime(file.updatedAt)}
                 </p>
-                {file.category && (() => {
-                  const hex = RAINBOW_COLORS[file.category.color]?.hex ?? "#888";
-                  return (
-                    <span
-                      className="mt-2 inline-block rounded px-1.5 py-0.5 text-xs font-medium"
-                      style={{
-                        backgroundColor: `${hex}1a`,
-                        color: getContrastColor(hex),
-                      }}
-                    >
-                      {file.category.name}
-                    </span>
-                  );
-                })()}
+                {file.category && (
+                  <span className="mt-2 inline-flex items-center gap-1.5 border border-foreground/25 px-1.5 py-0.5 text-xs font-medium">
+                    <i className="font-mono not-italic text-[10px] text-muted-foreground">
+                      {CATEGORY_IMPORTANCE[file.category.importance].label}
+                    </i>
+                    {file.category.name}
+                  </span>
+                )}
                 <div className="mt-3 flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button onClick={() => setPreviewFile(file)} className="p-1.5 rounded hover:bg-secondary text-muted-foreground" title="预览">
                     <Eye className="h-3.5 w-3.5" />

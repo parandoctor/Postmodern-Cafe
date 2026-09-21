@@ -72,11 +72,11 @@ model Session {
   @@index([expiresAt])
 }
 
-// ---- Category (七彩分类) ----
+// ---- Category (自定义分类 + 重要性) ----
 model Category {
   id          String   @id @default(cuid())
   name        String
-  color       String   @default("blue") // red, orange, yellow, green, cyan, blue, purple
+  importance  Int      @default(1) // 3=核心 2=重要 1=常规 0=归档
   icon        String   @default("folder")
   description String?
   sortOrder   Int      @default(0)
@@ -89,6 +89,7 @@ model Category {
 
   @@unique([name, userId])
   @@index([userId, sortOrder])
+  @@index([userId, importance])
 }
 
 // ---- File ----

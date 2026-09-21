@@ -1,16 +1,8 @@
 import type { Metadata } from "next";
-import { Noto_Sans_SC } from "next/font/google";
 import { BlueprintOverlay } from "@/components/ui/blueprint-overlay";
+import { ThemeProvider } from "@/components/ui/theme-provider";
 import { DefaultBgm } from "@/components/ui/default-bgm";
 import "./globals.css";
-
-// 思源黑体（Noto Sans SC / Source Han Sans）：全站默认字体，本地打包自托管
-const notoSansSC = Noto_Sans_SC({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-  variable: "--font-sans",
-});
 
 export const metadata: Metadata = {
   title: "后现代咖啡馆 | Rainbow-box - 一站式综合服务平台",
@@ -32,10 +24,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN" suppressHydrationWarning>
-      <body className={`${notoSansSC.variable} min-h-screen bg-background text-foreground antialiased`}>
-        <BlueprintOverlay />
-        {children}
-        <DefaultBgm />
+      <body className="min-h-screen bg-background text-foreground antialiased">
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
+          <BlueprintOverlay />
+          {children}
+          <DefaultBgm />
+        </ThemeProvider>
       </body>
     </html>
   );

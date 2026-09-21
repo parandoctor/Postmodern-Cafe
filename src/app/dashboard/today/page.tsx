@@ -77,14 +77,14 @@ export default function TodayPage() {
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-[18px] font-semibold tracking-tight">今日任务</h1>
+          <h1 className="d5-title text-[26px] font-semibold tracking-tight">今日任务</h1>
           <p className="mt-0.5 text-[12px] text-muted-foreground">
             {todayLabel} · {pendingCount} 项待完成 · 已完成 {doneCount} 项
           </p>
         </div>
         <Link
           href="/dashboard/tasks"
-          className="flex items-center gap-1.5 rounded-lg border border-whisper bg-white/60 px-3 py-1.5 text-[12px] text-muted-foreground hover:text-foreground hover:bg-white/80 transition-colors"
+          className="flex items-center gap-1.5 border d5-line d5-panel px-3 py-1.5 text-[12px] text-muted-foreground hover:text-foreground hover:bg-white/80 transition-colors"
         >
           全部任务管理
           <ArrowRight className="h-3.5 w-3.5" />
@@ -92,8 +92,8 @@ export default function TodayPage() {
       </div>
 
       {/* 添加今日任务 */}
-      <div className="rounded-xl border border-whisper bg-white/60 p-3 backdrop-blur-sm">
-        <div className="flex items-center gap-2 rounded-lg border border-whisper bg-white/70 px-3 py-2.5">
+      <div className="border d5-line d5-panel p-3 backdrop-blur-sm">
+        <div className="flex items-center gap-2 border d5-line d5-panel px-3 py-2.5">
           <Circle className="h-4 w-4 shrink-0 text-muted-foreground/60" />
           <input
             ref={inputRef}
@@ -119,7 +119,7 @@ export default function TodayPage() {
       {isLoading ? (
         <div className="py-16 text-center text-[13px] text-muted-foreground/60">加载中...</div>
       ) : todayTasks.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-whisper bg-white/40 py-20 text-center">
+        <div className="flex flex-col items-center justify-center border border-dashed d5-line py-20 text-center">
           <ListChecks className="mb-3 h-10 w-10 text-muted-foreground/30" />
           <p className="text-[14px] text-muted-foreground/70">今日暂无任务</p>
           <p className="mt-1 text-[12px] text-muted-foreground/50">在上方输入框写下今天的计划，回车即添加到今日任务</p>
@@ -132,7 +132,7 @@ export default function TodayPage() {
               layout
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="group flex items-center gap-2.5 rounded-xl border border-whisper bg-white/60 px-3.5 py-3 hover:shadow-card transition-shadow"
+              className="group flex items-center gap-2.5 border d5-line d5-panel px-3.5 py-3 hover:shadow-card transition-shadow"
             >
               <button
                 onClick={() => toggle(task)}

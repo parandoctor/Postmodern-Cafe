@@ -8,6 +8,8 @@
    ============================================================ */
 @layer base {
   :root {
+    --font-sans: "Noto Sans SC", "Source Han Sans SC", "Noto Sans CJK SC",
+      "PingFang SC", "Microsoft YaHei", "Segoe UI", system-ui, sans-serif;
     --background: 0 0% 97%;
     --foreground: 0 0% 5%;
     --card: 0 0% 100%;
@@ -343,3 +345,74 @@
   pointer-events: none;
 }
 
+
+
+/* ===== D5 Swiss Archive ===== */
+@layer base {
+  :root {
+    --d5-bg: 42 16% 92%;
+    --d5-panel: 44 22% 96%;
+    --d5-ink: 0 0% 7%;
+    --d5-muted: 0 0% 40%;
+    --d5-faint: 0 0% 58%;
+    --d5-line: 0 0% 7%;
+  }
+  .dark {
+    --background: 0 0% 4%;
+    --foreground: 0 0% 95%;
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 95%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 0 0% 95%;
+    --primary-foreground: 0 0% 4%;
+    --secondary: 0 0% 14%;
+    --secondary-foreground: 0 0% 95%;
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 62%;
+    --accent: 0 0% 16%;
+    --accent-foreground: 0 0% 95%;
+    --destructive: 0 0% 60%;
+    --destructive-foreground: 0 0% 4%;
+    --border: 0 0% 24%;
+    --input: 0 0% 24%;
+    --ring: 0 0% 95%;
+    --d5-bg: 0 0% 5%;
+    --d5-panel: 0 0% 8%;
+    --d5-ink: 0 0% 95%;
+    --d5-muted: 0 0% 62%;
+    --d5-faint: 0 0% 45%;
+    --d5-line: 0 0% 95%;
+  }
+}
+
+@layer utilities {
+  .d5-bg { background-color: hsl(var(--d5-bg)); }
+  .d5-panel { background-color: hsl(var(--d5-panel)); }
+  .d5-ink { color: hsl(var(--d5-ink)); }
+  .d5-muted { color: hsl(var(--d5-muted)); }
+  .d5-faint { color: hsl(var(--d5-faint)); }
+  .d5-line { border-color: hsl(var(--d5-line)); }
+  .d5-line-strong { border-color: hsl(var(--d5-line)); }
+  .d5-mono { font-family: "Cascadia Code", Consolas, ui-monospace, monospace; }
+  .d5-title { font-family: "Bahnschrift", "Noto Sans SC", sans-serif; }
+  .d5-hair { border: 1px solid hsl(var(--d5-line)); }
+  .d5-hair-t { border-top: 1px solid hsl(var(--d5-line)); }
+  .d5-hair-b { border-bottom: 1px solid hsl(var(--d5-line)); }
+  .d5-grid { display: grid; gap: 1px; background-color: hsl(var(--d5-line)); border: 1px solid hsl(var(--d5-line)); }
+  .d5-cell { background-color: hsl(var(--d5-panel)); }
+  .d5-seg { display: inline-block; width: 8px; height: 16px; border: 1px solid currentColor; }
+  .d5-seg-on { background-color: currentColor; }
+}
+
+
+/* D5 scoped overrides — 仅作用于后台工作台，不影响首页/登录 */
+main.d5-panel [class*="rounded-xl"],
+main.d5-panel [class*="rounded-2xl"],
+main.d5-panel [class*="rounded-lg"] { border-radius: 2px; }
+main.d5-panel .shadow-card,
+main.d5-panel .shadow-card-hover { box-shadow: none; }
+main.d5-panel [class*="border-whisper"] { border-color: hsl(var(--d5-line)); }
+.dark main.d5-panel [class*="bg-white/"] { background-color: hsl(var(--d5-panel)) !important; }
+.dark main.d5-panel [class*="bg-black/"] { background-color: hsl(var(--d5-panel)) !important; }
+.dark main.d5-panel .text-muted-foreground { color: hsl(var(--d5-muted)); }

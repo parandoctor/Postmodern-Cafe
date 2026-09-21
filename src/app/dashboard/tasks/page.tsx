@@ -166,14 +166,14 @@ export default function TasksPage() {
       {/* 顶栏 */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-[18px] font-semibold tracking-tight">任务管理</h1>
+          <h1 className="d5-title text-[26px] font-semibold tracking-tight">任务管理</h1>
           <p className="mt-0.5 text-[12px] text-muted-foreground">
             共 {tasks.length} 个顶层任务 · 已完成 {doneCount} 个 · 长期任务 {longTermCount} 个
           </p>
         </div>
         <div className="flex items-center gap-2">
           {/* 视图切换 */}
-          <div className="flex rounded-lg border border-whisper bg-white/60 p-0.5">
+          <div className="flex border d5-line d5-panel p-0.5">
             <button
               onClick={() => setViewMode("list")}
               className={cn(
@@ -203,7 +203,7 @@ export default function TasksPage() {
       </div>
 
       {message && (
-        <div className="rounded-lg border border-whisper bg-white/60 px-3 py-2 text-[12px] text-muted-foreground">
+        <div className="border d5-line d5-panel px-3 py-2 text-[12px] text-muted-foreground">
           {message}
         </div>
       )}
@@ -212,7 +212,7 @@ export default function TasksPage() {
         <div className="py-16 text-center text-[13px] text-muted-foreground/60">加载中...</div>
       ) : viewMode === "list" ? (
         tasks.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-whisper bg-white/40 py-20 text-center">
+          <div className="flex flex-col items-center justify-center border border-dashed d5-line py-20 text-center">
             <Flag className="mb-3 h-8 w-8 text-muted-foreground/30" />
             <p className="text-[14px] text-muted-foreground/70">暂无任务</p>
             <p className="mt-1 text-[12px] text-muted-foreground/50">
@@ -296,7 +296,7 @@ export default function TasksPage() {
                 ) : (
                 <div className="space-y-1.5">
                   {group.tasks.map((t) => (
-                    <div key={t.id} className="flex items-center gap-2 rounded-lg border border-whisper bg-white/60 px-3 py-2">
+                    <div key={t.id} className="flex items-center gap-2 border d5-line d5-panel px-3 py-2">
                       <button
                         onClick={() => toggleTimelineDone(t)}
                         className="shrink-0 transition-colors hover:opacity-70"

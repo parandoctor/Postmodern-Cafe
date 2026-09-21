@@ -20,7 +20,7 @@ import {
 } from "@/actions/files";
 import { getCategories } from "@/actions/categories";
 import type { FileItem } from "@/types";
-import { RAINBOW_COLORS, type RainbowColor } from "@/types";
+import { CATEGORY_IMPORTANCE } from "@/types";
 
 const FILE_ICON_MAP: Record<string, React.ElementType> = {
   image: Image, video: Video, audio: Music, pdf: FileText,
@@ -32,8 +32,7 @@ const FILE_ICON_MAP: Record<string, React.ElementType> = {
 export default function CategoryFilesPage() {
   const params = useParams();
   const router = useRouter();
-  const color = params.color as RainbowColor;
-  const colorInfo = RAINBOW_COLORS[color];
+  const categoryIdParam = params.id as string;
 
   const { files, selectedFiles, viewMode, setFiles, setViewMode, toggleSelect, clearSelection } = useFileStore();
   const { categories, setCategories, setActiveCategory } = useCategoryStore();
@@ -54,9 +53,8 @@ export default function CategoryFilesPage() {
   // Move category state
   const [moveMenuFileId, setMoveMenuFileId] = React.useState<string | null>(null);
 
-  // Get the category that matches this color
-  const matchedCategory = categories.find((c) => c.color === color);
-  const categoryId = matchedCategory?.id ?? null;
+  const matchedCategory = categories.find((c) => c.id === categoryIdParam);
+  const categoryId = categoryIdParam || null;
 
   const loadData = React.useCallback(async () => {
     try {
@@ -184,11 +182,11 @@ export default function CategoryFilesPage() {
 
   const selectedArray = Array.from(selectedFiles);
 
-  if (!colorInfo) {
+  if (!categoryIdParam) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
         <FolderOpen className="h-12 w-12 mb-4 opacity-30" />
-        <p className="text-sm">未知颜色分类</p>
+        <p className="text-sm">分类不存在</p>
         <button onClick={() => router.push("/dashboard/categories")} className="text-xs mt-2 text-foreground hover:underline">
           返回分类管理
         </button>
@@ -200,7 +198,7 @@ export default function CategoryFilesPage() {
     <div className="space-y-4">
       {/* Message toast */}
       {message && (
-        <div className="rounded-lg border border-whisper bg-white/70 px-4 py-2.5 text-sm">
+        <div className="border d5-line d5-panel px-4 py-2.5 text-sm">
           {message}
         </div>
       )}
@@ -216,12 +214,11 @@ export default function CategoryFilesPage() {
         </button>
         <ChevronRight className="h-4 w-4 text-muted-foreground" />
         <div className="flex items-center gap-2">
-          <div
-            className="h-5 w-5 rounded"
-            style={{ backgroundColor: colorInfo.hex }}
-          />
+          <span className="border border-foreground/30 px-1.5 py-0.5 font-mono text-[10px] tracking-widest">
+            {matchedCategory ? CATEGORY_IMPORTANCE[matchedCategory.importance].label : "—"}
+          </span>
           <h1 className="font-semibold">
-            {matchedCategory?.name ?? `${colorInfo.label}色`}
+            {matchedCategory?.name ?? "未分类"}
           </h1>
           {matchedCategory?.description && (
             <span className="text-xs text-muted-foreground">— {matchedCategory.description}</span>
@@ -335,7 +332,7 @@ export default function CategoryFilesPage() {
                   "group relative rounded-lg border p-4 transition-colors cursor-pointer",
                   isSelected
                     ? "border-foreground/30 bg-secondary"
-                    : "border-whisper bg-white/60 backdrop-blur-sm hover:border-foreground/25 hover:bg-white/80",
+                    : "border d5-line d5-panel backdrop-blur-sm hover:border-foreground/25 hover:bg-white/80",
                 )}
               >
                 {/* Checkbox */}
@@ -441,10 +438,9 @@ export default function CategoryFilesPage() {
                                   onClick={() => handleMove(file.id, cat.id)}
                                   className="flex w-full items-center gap-2 px-3 py-1.5 text-sm hover:bg-secondary transition-colors"
                                 >
-                                  <span
-                                    className="h-3 w-3 rounded-full shrink-0"
-                                    style={{ backgroundColor: RAINBOW_COLORS[cat.color]?.hex ?? "#888" }}
-                                  />
+                                  <span className="shrink-0 border border-foreground/25 px-1 font-mono text-[9px] leading-4">
+                                    {CATEGORY_IMPORTANCE[cat.importance].label}
+                                  </span>
                                   {cat.name}
                                 </button>
                               ))}
@@ -567,10 +563,9 @@ export default function CategoryFilesPage() {
                                         onClick={() => handleMove(file.id, cat.id)}
                                         className="flex w-full items-center gap-2 px-3 py-1.5 text-sm hover:bg-secondary transition-colors"
                                       >
-                                        <span
-                                          className="h-3 w-3 rounded-full shrink-0"
-                                          style={{ backgroundColor: RAINBOW_COLORS[cat.color]?.hex ?? "#888" }}
-                                        />
+                                        <span className="shrink-0 border border-foreground/25 px-1 font-mono text-[9px] leading-4">
+                                    {CATEGORY_IMPORTANCE[cat.importance].label}
+                                  </span>
                                         {cat.name}
                                       </button>
                                     ))}

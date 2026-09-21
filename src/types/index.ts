@@ -13,23 +13,25 @@ export interface UserProfile {
   updatedAt: Date;
 }
 
-// ---- Category (黑白灰阶配色) ----
-export type RainbowColor = "red" | "orange" | "yellow" | "green" | "blue" | "darkblue" | "purple";
+// ---- Category (自定义类名 + 重要性) ----
+export type CategoryImportance = 0 | 1 | 2 | 3;
 
-export const RAINBOW_COLORS: Record<RainbowColor, { hex: string; label: string; gradient: string }> = {
-  red:      { hex: "#f5f5f5", label: "白",     gradient: "from-neutral-100/40 to-neutral-200/20" },
-  orange:   { hex: "#e0e0e0", label: "浅灰",   gradient: "from-neutral-200/40 to-neutral-300/20" },
-  yellow:   { hex: "#c7c7c7", label: "中灰",   gradient: "from-neutral-300/40 to-neutral-400/20" },
-  green:    { hex: "#9e9e9e", label: "灰",     gradient: "from-neutral-400/40 to-neutral-500/20" },
-  blue:     { hex: "#6b6b6b", label: "深灰",   gradient: "from-neutral-500/40 to-neutral-600/20" },
-  darkblue: { hex: "#3b3b3b", label: "墨",     gradient: "from-neutral-700/40 to-neutral-800/20" },
-  purple:   { hex: "#141414", label: "黑",     gradient: "from-neutral-900/50 to-black/30" },
+export const CATEGORY_IMPORTANCE: Record<
+  CategoryImportance,
+  { label: string; short: string; level: number }
+> = {
+  3: { label: "核心", short: "CORE", level: 4 },
+  2: { label: "重要", short: "P1", level: 3 },
+  1: { label: "常规", short: "P2", level: 2 },
+  0: { label: "归档", short: "P3", level: 1 },
 };
+
+export const CATEGORY_IMPORTANCE_ORDER: CategoryImportance[] = [3, 2, 1, 0];
 
 export interface Category {
   id: string;
   name: string;
-  color: RainbowColor;
+  importance: CategoryImportance;
   icon: string;
   description: string | null;
   sortOrder: number;

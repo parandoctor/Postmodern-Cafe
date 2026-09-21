@@ -72,7 +72,7 @@ export const createCategorySchema = z.object({
     .string()
     .min(1, "分类名称不能为空")
     .max(32, "分类名称最长32个字符"),
-  color: z.enum(["red", "orange", "yellow", "green", "blue", "darkblue", "purple"]),
+  importance: z.number().int().min(0).max(3),
   icon: z
     .string()
     .min(1, "请选择图标")

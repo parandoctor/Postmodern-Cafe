@@ -131,7 +131,7 @@ export default function MusicPage() {
       {/* 头部 */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-[18px] font-semibold tracking-tight">音乐盒</h1>
+          <h1 className="d5-title text-[26px] font-semibold tracking-tight">音乐盒</h1>
           <p className="mt-0.5 text-[12px] text-muted-foreground">
             共 {tracks.length} 首音乐 · 千禧风 Y2K 复古播放器
           </p>
@@ -141,7 +141,7 @@ export default function MusicPage() {
             <button
               onClick={handleMigrate}
               disabled={migrating}
-              className="flex items-center gap-1.5 rounded-lg border border-whisper bg-white/60 px-3 py-1.5 text-[12px] text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
+              className="flex items-center gap-1.5 border d5-line d5-panel px-3 py-1.5 text-[12px] text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
               title="将旧版本地音乐迁移到云端存储"
             >
               <UploadCloud className="h-3.5 w-3.5" />
@@ -166,7 +166,7 @@ export default function MusicPage() {
       </div>
 
       {migrateMsg && (
-        <div className="rounded-lg border border-whisper bg-white/60 px-3 py-2 text-[12px] text-muted-foreground">
+        <div className="border d5-line d5-panel px-3 py-2 text-[12px] text-muted-foreground">
           {migrateMsg}
         </div>
       )}

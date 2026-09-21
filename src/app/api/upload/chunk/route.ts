@@ -287,7 +287,7 @@ async function handleComplete(formData: FormData, userId: string) {
         ? {
             id: created.category.id,
             name: created.category.name,
-            color: created.category.color,
+            importance: created.category.importance,
             icon: created.category.icon,
             description: created.category.description,
             sortOrder: created.category.sortOrder,
