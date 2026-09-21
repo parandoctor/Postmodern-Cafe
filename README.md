@@ -124,7 +124,7 @@ Rainbow-box/
 │   │   │   └── register/page.tsx      #   注册页
 │   │   │
 │   │   ├── (dashboard)/               #   仪表盘页面组
-│   │   │   ├── categories/            #   黑白灰阶分类管理
+│   │   │   ├── categories/            #   分类管理（自定义类名 + 重要性，v1.2.9）
 │   │   │   ├── favorites/             #   我的收藏
 │   │   │   ├── files/                 #   全部文件
 │   │   │   ├── recent/                #   最近使用
@@ -140,9 +140,9 @@ Rainbow-box/
 │   │   │   ├── today/page.tsx         #     今日任务工作台页（v1.2.2 新增）
 │   │   │   ├── notes/page.tsx         #     随时记写工作台页（v1.2.1 新增）
 │   │   │   ├── music/page.tsx         #     音乐盒工作台页（Y2K 复古播放器，v1.2.3 重做）
-│   │   │   ├── categories/            #     分类页 & [color] 筛选（天体蓝图；列表页 v1.2.4 起并入文件管理）
+│   │   │   ├── categories/            #     分类页 & [id] 按分类 id 筛选（v1.2.9 去 color，列表页并入文件管理）
 │   │   │   ├── favorites/page.tsx     #     收藏页（v1.2.4 起 307 重定向至 /dashboard/files）
-│   │   │   ├── files/page.tsx         #     文件管理页（五合一 + 分栏切换，v1.2.4 重写）
+│   │   │   ├── files/page.tsx         #     文件管理页（URL query 驱动五子视图，v1.2.9）
 │   │   │   ├── recent/page.tsx        #     最近访问页（v1.2.4 起 307 重定向至 /dashboard/files）
 │   │   │   └── recycle/page.tsx       #     回收站页（v1.2.4 起 307 重定向至 /dashboard/files）
 │   │   │
@@ -161,11 +161,13 @@ Rainbow-box/
 │   │   │   ├── upload-zone.tsx        #     上传区
 │   │   │   └── views/                 #     文件管理五视图（v1.2.4 新增）
 │   │   │       ├── my-files-view.tsx  #       我的文件视图
-│   │   │       ├── categories-view.tsx#       分类管理视图
+│   │   │       ├── categories-view.tsx#       分类管理视图（D5 分组列表 + 重要性四档 + 拖拽排序，v1.2.9）
 │   │   │       ├── favorites-view.tsx #       收藏夹视图
 │   │   │       ├── recent-view.tsx    #       最近使用视图
 │   │   │       └── recycle-view.tsx   #       回收站视图
-│   │   ├── music/                     #   音乐组件（Y2K 播放器，v1.2.3 新增）\n│   │   │   ├── y2k-player.tsx         #     Winamp 风格播放器机身（LCD 频谱 / CD / 控制键）\n│   │   │   └── y2k-playlist.tsx       #     Winamp 风格播放列表编辑器\n│   │   ├── tasks/                     #   任务组件（v1.2.0 新增）
+│   │   ├── music/                     #   音乐组件（Y2K 播放器，v1.2.3 新增）
+│   │   │   ├── y2k-player.tsx         #     Winamp 风格播放器机身（LCD 频谱 / CD / 控制键）
+│   │   │   └── y2k-playlist.tsx       #     Winamp 风格播放列表编辑器\n│   │   ├── tasks/                     #   任务组件（v1.2.0 新增）
 │   │   │   ├── task-modal.tsx         #     任务编辑弹窗
 │   │   │   └── task-card.tsx          #     任务卡片
 │   │   ├── landing/                   #   首页组件
@@ -210,7 +212,7 @@ Rainbow-box/
 │   │   └── bgm.ts                     #   Store 定义（默认背景音乐状态）
 │   ├── styles/                        # 🔹 额外样式表
 │   └── types/                         # 🔹 TypeScript 类型定义
-│       └── index.ts                   #   核心类型 & 接口
+│       └── index.ts                   #   核心类型 & 接口（含 CategoryImportance 重要性四档，v1.2.9）
 │
 ├── .env                               # 环境变量
 ├── .env.example                       # 环境变量模板
@@ -472,7 +474,7 @@ erDiagram
 | **User** | 用户 | 账户管理与身份标识 | email 唯一 |
 | **Account** | OAuth 账户 | 第三方登录凭据（预留） | provider+accountId 唯一 |
 | **Session** | 登录会话 | 7 天有效期认证令牌 | userId 索引、expiresAt 索引 |
-| **Category** | 分类 | 黑白灰阶分类体系 | name+userId 唯一、sortOrder 索引 |
+| **Category** | 分类 | 自定义分类名 + 重要性四档 | name+userId 唯一、importance+sortOrder 索引 |
 | **File** | 文件 | 文件元数据与存储映射 | 软删除 + 多维复合索引 |
 | **Favorite** | 收藏 | 用户-文件收藏关系 | userId+fileId 唯一 |
 | **RecycleBin** | 回收站 | 30 天可恢复的删除记录 | fileId 唯一、expiresAt 索引 |
