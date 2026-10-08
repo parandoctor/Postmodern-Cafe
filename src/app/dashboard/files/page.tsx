@@ -1,6 +1,3 @@
-"use client";
-
-import * as React from "react";
 import { MyFilesView } from "@/components/files/views/my-files-view";
 import { CategoriesView } from "@/components/files/views/categories-view";
 import { FavoritesView } from "@/components/files/views/favorites-view";
@@ -11,27 +8,29 @@ type FileTab = "files" | "categories" | "favorites" | "recent" | "recycle";
 
 const TAB_KEYS: FileTab[] = ["files", "categories", "favorites", "recent", "recycle"];
 
-export default function FileManagementPage() {
-  // 默认主页为分类管理；子视图由左侧栏二级目录的 ?tab= 决定
-  const [tab, setTab] = React.useState<FileTab>("categories");
+/**
+ * 文件管理主入口（默认「我的文件」）。
+ * 兼容旧链接 ?tab=files|categories|favorites|recent|recycle，
+ * 具体板块同时提供独立路由：/dashboard/categories、/favorites、/recent、/recycle
+ */
+export default async function FileManagementPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string }>;
+}) {
+  const params = await searchParams;
+  const tab = (TAB_KEYS.includes(params.tab as FileTab) ? params.tab : "files") as FileTab;
 
-  React.useEffect(() => {
-    const read = () => {
-      const value = new URLSearchParams(window.location.search).get("tab") as FileTab | null;
-      setTab(value && TAB_KEYS.includes(value) ? value : "categories");
-    };
-    read();
-    window.addEventListener("popstate", read);
-    return () => window.removeEventListener("popstate", read);
-  }, []);
-
-  return (
-    <div className="space-y-4">
-      {tab === "files" && <MyFilesView />}
-      {tab === "categories" && <CategoriesView />}
-      {tab === "favorites" && <FavoritesView />}
-      {tab === "recent" && <RecentView />}
-      {tab === "recycle" && <RecycleView />}
-    </div>
-  );
+  switch (tab) {
+    case "categories":
+      return <CategoriesView />;
+    case "favorites":
+      return <FavoritesView />;
+    case "recent":
+      return <RecentView />;
+    case "recycle":
+      return <RecycleView />;
+    default:
+      return <MyFilesView />;
+  }
 }

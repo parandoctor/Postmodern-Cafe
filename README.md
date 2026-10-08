@@ -1,9 +1,9 @@
-# <img src="public/images/cafe-logo-black.png" width="26" height="26" align="center" alt="后现代咖啡馆"> 后现代咖啡馆 (Postmodern Cafe) `v1.2.9`
+# <img src="public/images/cafe-logo-black.png" width="26" height="26" align="center" alt="后现代咖啡馆"> 后现代咖啡馆 (Postmodern Cafe) `v1.3.0`
 
 > 现代化综合服务平台 —— 管理你的生活记录、资料归档与事务处理，让一切井然有序。
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.2.9-blue" alt="Version" />
+  <img src="https://img.shields.io/badge/version-1.3.0-blue" alt="Version" />
   <img src="https://img.shields.io/badge/Next.js-15.1-black?logo=next.js" alt="Next.js" />
   <img src="https://img.shields.io/badge/React-19.0-61DAFB?logo=react" alt="React" />
   <img src="https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript" alt="TypeScript" />
@@ -17,7 +17,7 @@
 
 **后现代咖啡馆 (Postmodern-Cafe)** 是一个基于 Next.js 的综合服务平台，在个人文件收纳能力之上，进一步覆盖生活记录、资料归档与事务处理。它采用自定义类名与重要性四档（核心 / 重要 / 常规 / 归档）作为分类体系，以 D5 三栏档案工作台统一后台界面，让生活与事务管理变得直观、优雅且高效。支持拖拽上传、在线预览、智能搜索、收藏、回收站等文件能力，并提供任务管理（今日任务）、随手记、音乐盒、日历与计时器等效率面板。
 
-当前版本 **v1.2.9**：后台系统改为 D5 三栏结构，文件管理五个子视图迁移到左栏二级目录；分类管理取消颜色分配，改为自定义分类名 + 重要性四档；背景音乐与音乐盒完全独立、可同时播放，音乐盒保持空库。
+当前版本 **v1.3.0**：文件管理四个板块（我的文件 / 收藏夹 / 最近使用 / 回收站）补齐为独立路由，左栏二级目录点击即切换；背景壁纸自定义修复，上传后立即可见且刷新后保留；音乐盒本地音乐上传改走独立上传接口，修复大体积音频上传失败。
 
 ---
 
@@ -28,7 +28,7 @@
 | 功能 | 说明 |
 |------|------|
 | **拖拽上传** | 支持拖拽、点击、批量上传多种方式，大文件分块上传与断点续传，实时进度反馈，失败自动重试 |
-| **文件管理** | 左栏二级目录聚合分类管理 / 我的文件 / 收藏夹 / 最近使用 / 回收站，默认分类管理（v1.2.9） |
+| **文件管理** | 左栏五个板块各自独立路由：我的文件 / 分类管理 / 收藏夹 / 最近使用 / 回收站，默认我的文件，深链接与前进后退可用（v1.3.0） |
 | **分类管理** | 自定义分类名 + 重要性四档（核心 / 重要 / 常规 / 归档），同档内可拖拽排序，不再按颜色分配（v1.2.9） |
 | **在线预览** | 图片、视频、音频、PDF、Office 文档、Markdown 等常见格式无需下载，直接在线预览 |
 | **智能搜索** | 按文件名关键词快速检索，支持按分类、文件类型、日期范围多维筛选，分页懒加载流畅不卡顿 |
@@ -55,6 +55,7 @@
 - **可调侧边栏**：支持左右拖动调整宽度（200–480px），右侧面板可切换
 - **效率面板**：左侧今日任务、随时记写、音乐盒三列同级；右侧日历与计时器；三者标题点击均可进入中间操作台的全屏工作台页面（今日任务 / 随时记写 / 音乐盒）
 - **默认背景音乐**：主页 / 登录注册页 / 后台系统默认播放电机背景音乐，支持播放 / 暂停 / 静音，页面跳转不中断；v1.2.9 与音乐盒完全独立、可同时播放；v1.2.6 控件改为终端风（方形描边 + 字符图标 + BGM 状态标签）；v1.2.8 重构为模块级单例 Audio，进入页面自动尝试播放、切换页面不中断、整页刷新后从上次进度续播
+- **自定义壁纸**：上传图片自动优化（EXIF 方向修正、低分放大防模糊、超大压缩控体积），工作台面板半透明呈现背景图并加遮罩保证文字可读；v1.3.0 修复"上传后看不到效果 / 保存失败"
 - **账号数据隔离**：随手记、任务、壁纸等数据按账号隔离，切换账号互不干扰；v1.2.0 起随手记、音乐数据全面落库，旧 localStorage / IndexedDB 数据首次加载自动迁移
 - **暗黑 / 明亮**双主题，可跟随系统或手动切换
 - **Framer Motion** 驱动的流畅页面过渡与交互动画
@@ -111,7 +112,7 @@ Rainbow-box/
 │   │   ├── files.ts                   #   文件 CRUD / 搜索 / 移动
 │   │   ├── profile.ts                 #   用户资料更新
 │   │   ├── widgets.ts                 #   随手记（v1.2.1 起仅随手记，每日待办已合并入任务管理）
-│   │   ├── music.ts                   #   音乐盒（v1.2.0 落库）
+│   │   ├── music.ts                   #   音乐盒列表 / 删除（上传走 /api/music/upload，v1.3.0）
 │   │   └── tasks.ts                   #   任务 CRUD / 排序 / 关联（v1.2.0 新增）
 │   │
 │   ├── app/                           # 🔹 Next.js App Router
@@ -140,16 +141,17 @@ Rainbow-box/
 │   │   │   ├── today/page.tsx         #     今日任务工作台页（v1.2.2 新增）
 │   │   │   ├── notes/page.tsx         #     随时记写工作台页（v1.2.1 新增）
 │   │   │   ├── music/page.tsx         #     音乐盒工作台页（Y2K 复古播放器，v1.2.3 重做）
-│   │   │   ├── categories/            #     分类页 & [id] 按分类 id 筛选（v1.2.9 去 color，列表页并入文件管理）
-│   │   │   ├── favorites/page.tsx     #     收藏页（v1.2.4 起 307 重定向至 /dashboard/files）
-│   │   │   ├── files/page.tsx         #     文件管理页（URL query 驱动五子视图，v1.2.9）
-│   │   │   ├── recent/page.tsx        #     最近访问页（v1.2.4 起 307 重定向至 /dashboard/files）
-│   │   │   └── recycle/page.tsx       #     回收站页（v1.2.4 起 307 重定向至 /dashboard/files）
+│   │   │   ├── categories/            #     分类管理板块页 & [id] 按分类 id 筛选（v1.3.0 起独立页面）
+│   │   │   ├── favorites/page.tsx     #     收藏夹板块页（v1.3.0 起独立页面）
+│   │   │   ├── files/page.tsx         #     文件管理入口页（默认我的文件，兼容 ?tab=，v1.3.0）
+│   │   │   ├── recent/page.tsx        #     最近使用板块页（v1.3.0 起独立页面）
+│   │   │   └── recycle/page.tsx       #     回收站板块页（v1.3.0 起独立页面）
 │   │   │
 │   │   └── api/                       #   API 路由
 │   │       ├── auth/                  #     认证接口
 │   │       ├── categories/            #     分类接口
 │   │       ├── files/                 #     文件接口
+│   │       ├── music/                 #     音乐上传接口（Route Handler，v1.3.0）
 │   │       ├── upload/                #     上传接口（含 chunk 分块）
 │   │       └── user/                  #     用户接口
 │   │
@@ -167,7 +169,8 @@ Rainbow-box/
 │   │   │       └── recycle-view.tsx   #       回收站视图
 │   │   ├── music/                     #   音乐组件（Y2K 播放器，v1.2.3 新增）
 │   │   │   ├── y2k-player.tsx         #     Winamp 风格播放器机身（LCD 频谱 / CD / 控制键）
-│   │   │   └── y2k-playlist.tsx       #     Winamp 风格播放列表编辑器\n│   │   ├── tasks/                     #   任务组件（v1.2.0 新增）
+│   │   │   └── y2k-playlist.tsx       #     Winamp 风格播放列表编辑器
+│   │   ├── tasks/                     #   任务组件（v1.2.0 新增）
 │   │   │   ├── task-modal.tsx         #     任务编辑弹窗
 │   │   │   └── task-card.tsx          #     任务卡片
 │   │   ├── landing/                   #   首页组件
@@ -176,10 +179,10 @@ Rainbow-box/
 │   │   │   ├── features-section.tsx   #     终端档案表式功能展示（v1.2.6）
 │   │   │   └── footer.tsx             #     终端频道列表页脚（v1.2.6）
 │   │   ├── layout/                    #   布局组件
-│   │   │   ├── dashboard-layout.tsx   #     D5 三栏布局（左导航 + 工作台 + 右读数，v1.2.9）
+│   │   │   ├── dashboard-layout.tsx   #     D5 三栏布局（左导航 + 工作台 + 右读数，v1.2.9；二级目录真实路由 + 壁纸层，v1.3.0）
 │   │   │   ├── sidebar-todo.tsx       #     今日任务（标题跳转工作台 + 快速记录，v1.2.2）
 │   │   │   ├── sidebar-notes.tsx      #     随时记写（入口跳转工作台 + 快速记录）
-│   │   │   ├── sidebar-music.tsx      #     音乐盒（标题跳转工作台 + 快速播放）
+│   │   │   ├── sidebar-music.tsx      #     音乐盒（标题跳转工作台 + 快速播放 + 上传结果提示，v1.3.0）
 │   │   │   ├── calendar-widget.tsx    #     日历
 │   │   │   └── timer-widget.tsx       #     计时器
 │   │   └── ui/                        #   通用 UI 组件
@@ -203,7 +206,8 @@ Rainbow-box/
 │   │   ├── prisma.ts                  #   Prisma 单例客户端
 │   │   ├── security.ts                #   安全工具（限流、哈希）
 │   │   ├── utils.ts                   #   通用工具函数（cn、getContrastColor、账号隔离等）
-│   │   └── validations.ts             #   Zod Schema 校验定义
+│   │   ├── validations.ts             #   Zod Schema 校验定义
+│   │   └── wallpaper.ts               #   壁纸图片处理（EXIF 修正 + 重绘压缩，v1.3.0 收紧体积红线）
 │   │
 │   ├── services/                      # 🔹 业务服务层
 │   ├── store/                         # 🔹 Zustand 全局状态
@@ -552,7 +556,7 @@ main        ← 稳定发布分支（受保护）
 ---
 
 <p align="center">
-  <sub>Made with Coronade (Gestalt Team) · v1.2.9</sub>
+  <sub>Made with Coronade (Gestalt Team) · v1.3.0</sub>
 </p>
 
 

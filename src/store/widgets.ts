@@ -18,7 +18,6 @@ import {
 } from "@/actions/widgets";
 import {
   getMusicTracks,
-  uploadMusicTrack,
   removeMusicTrack as apiRemoveMusicTrack,
 } from "@/actions/music";
 import type { NoteItem, MusicTrackItem } from "@/types";
@@ -99,7 +98,7 @@ interface MusicState {
   currentId: string | null;
   hydrated: boolean;
   load: () => Promise<void>;
-  add: (name: string, size: number, file: File) => Promise<boolean>;
+  add: (name: string, size: number, file: File) => Promise<{ ok: boolean; error?: string }>;
   remove: (id: string) => Promise<void>;
   migrateLocal: () => Promise<{ migrated: number }>;
   setCurrent: (id: string | null) => void;
@@ -124,15 +123,27 @@ export const useMusicStore = create<MusicState>()((set, get) => ({
     }
   },
 
-  add: async (name, size, file) => {
+  // 上传走 /api/music/upload（Route Handler），不受 Server Action bodySizeLimit 限制
+  add: async (_name, _size, file) => {
     const formData = new FormData();
     formData.append("file", file);
-    const res = await uploadMusicTrack(formData);
-    if (res.success && res.data) {
-      set((state) => ({ tracks: [res.data!, ...state.tracks] }));
-      return true;
+    try {
+      const res = await fetch("/api/music/upload", { method: "POST", body: formData });
+      const json = (await res.json()) as {
+        success: boolean;
+        data?: MusicTrackItem;
+        error?: string;
+      };
+      if (json.success && json.data) {
+        const track = json.data;
+        set((state) => ({ tracks: [track, ...state.tracks] }));
+        return { ok: true };
+      }
+      return { ok: false, error: json.error ?? "音乐上传失败" };
+    } catch (err) {
+      console.error("[music] 上传请求失败:", err);
+      return { ok: false, error: "网络异常，音乐上传失败" };
     }
-    return false;
   },
 
   remove: async (id) => {
@@ -159,7 +170,7 @@ export const useMusicStore = create<MusicState>()((set, get) => ({
         try {
           const blob = await (await fetch(track.dataUrl)).blob();
           const file = new File([blob], track.name, { type: blob.type || "audio/mpeg" });
-          const ok = await get().add(track.name, file.size, file);
+          const { ok } = await get().add(track.name, file.size, file);
           if (ok) {
             migrated += 1;
             await idbDelete(track.id);

@@ -9,11 +9,11 @@
  */
 
 /** 最长边上限：超出则等比缩小（存储体积红线） */
-const MAX_TARGET = 2560;
+const MAX_TARGET = 1920;
 /** 最长边下限：低于则等比放大（保证 cover 放大后依然清晰） */
 const MIN_TARGET = 1600;
 /** data URL 字符数红线：超出则逐级降采样（localStorage 约 5MB UTF-16 配额） */
-const MAX_DATA_URL_CHARS = 2_000_000;
+const MAX_DATA_URL_CHARS = 1_100_000;
 /** JPEG 质量 */
 const JPEG_QUALITY = 0.92;
 

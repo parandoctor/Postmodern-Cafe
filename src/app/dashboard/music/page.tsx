@@ -20,6 +20,7 @@ export default function MusicPage() {
   const [repeat, setRepeat] = React.useState(false);
   const [migrating, setMigrating] = React.useState(false);
   const [migrateMsg, setMigrateMsg] = React.useState("");
+  const [uploadMsg, setUploadMsg] = React.useState("");
 
   const currentTrack = tracks.find((t) => t.id === currentId) ?? null;
   const currentIndex = currentTrack ? tracks.findIndex((t) => t.id === currentId) : -1;
@@ -30,11 +31,22 @@ export default function MusicPage() {
 
   const handleFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
+    if (files.length === 0) return;
+    setUploadMsg("");
+    let done = 0;
     for (const file of files) {
-      if (!file.type.startsWith("audio/")) continue;
-      const ok = await add(file.name, file.size, file);
-      if (!ok) console.error("[music] 上传音乐失败:", file.name);
+      if (file.type && !file.type.startsWith("audio/")) {
+        setUploadMsg(`「${file.name}」不是音频文件，已跳过`);
+        continue;
+      }
+      const res = await add(file.name, file.size, file);
+      if (res.ok) {
+        done += 1;
+      } else {
+        setUploadMsg(`${file.name} 上传失败：${res.error ?? "未知错误"}`);
+      }
     }
+    if (done > 0) setUploadMsg(`已上传 ${done} 首音乐`);
     e.target.value = "";
   };
 
@@ -135,6 +147,9 @@ export default function MusicPage() {
           <p className="mt-0.5 text-[12px] text-muted-foreground">
             共 {tracks.length} 首音乐 · 千禧风 Y2K 复古播放器
           </p>
+          {uploadMsg && (
+            <p className="mt-1 text-[12px] text-muted-foreground">{uploadMsg}</p>
+          )}
         </div>
         <div className="flex items-center gap-2">
           {!hydrated && (

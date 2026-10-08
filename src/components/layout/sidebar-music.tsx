@@ -11,6 +11,7 @@ export function SidebarMusic() {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const audioRef = React.useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = React.useState(false);
+  const [uploadMsg, setUploadMsg] = React.useState("");
   const [collapsed, setCollapsed] = React.useState(false);
   const [migrating, setMigrating] = React.useState(false);
   const [migrateMsg, setMigrateMsg] = React.useState("");
@@ -23,11 +24,22 @@ export function SidebarMusic() {
 
   const handleFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
+    if (files.length === 0) return;
+    setUploadMsg("");
+    let done = 0;
     for (const file of files) {
-      if (!file.type.startsWith("audio/")) continue;
-      const ok = await add(file.name, file.size, file);
-      if (!ok) console.error("[music] 上传音乐失败:", file.name);
+      if (file.type && !file.type.startsWith("audio/")) {
+        setUploadMsg(`「${file.name}」不是音频文件，已跳过`);
+        continue;
+      }
+      const res = await add(file.name, file.size, file);
+      if (res.ok) {
+        done += 1;
+      } else {
+        setUploadMsg(`${file.name} 上传失败：${res.error ?? "未知错误"}`);
+      }
     }
+    if (done > 0 && files.length === 1) setUploadMsg("上传成功");
     e.target.value = "";
   };
 
@@ -108,6 +120,10 @@ export function SidebarMusic() {
             onChange={handleFiles}
             className="hidden"
           />
+
+          {uploadMsg && (
+            <p className="px-1 text-[11px] text-muted-foreground">{uploadMsg}</p>
+          )}
 
           {migrateMsg && (
             <p className="px-1 text-[11px] text-muted-foreground/70">{migrateMsg}</p>

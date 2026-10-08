@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { CategoriesView } from "@/components/files/views/categories-view";
 
 export default function CategoriesPage() {
-  redirect("/dashboard/files");
+  return <CategoriesView />;
 }
