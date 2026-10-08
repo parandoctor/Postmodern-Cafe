@@ -22,11 +22,11 @@ import { CalendarWidget } from "@/components/layout/calendar-widget";
 import { TimerWidget } from "@/components/layout/timer-widget";
 
 const FILE_TABS = [
-  { key: "categories", label: "分类管理", href: "/dashboard/files?tab=categories", icon: FolderOpen },
-  { key: "files", label: "我的文件", href: "/dashboard/files?tab=files", icon: HardDrive },
-  { key: "favorites", label: "收藏夹", href: "/dashboard/files?tab=favorites", icon: Star },
-  { key: "recent", label: "最近使用", href: "/dashboard/files?tab=recent", icon: Clock },
-  { key: "recycle", label: "回收站", href: "/dashboard/files?tab=recycle", icon: Trash2 },
+  { key: "files", label: "我的文件", href: "/dashboard/files", icon: HardDrive },
+  { key: "categories", label: "分类管理", href: "/dashboard/categories", icon: FolderOpen },
+  { key: "favorites", label: "收藏夹", href: "/dashboard/favorites", icon: Star },
+  { key: "recent", label: "最近使用", href: "/dashboard/recent", icon: Clock },
+  { key: "recycle", label: "回收站", href: "/dashboard/recycle", icon: Trash2 },
 ];
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -42,24 +42,29 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [wallpaperProcessing, setWallpaperProcessing] = React.useState(false);
   const [workspaceCollapsed, setWorkspaceCollapsed] = React.useState(false);
   const [privateCollapsed, setPrivateCollapsed] = React.useState(false);
-  const [fileTab, setFileTab] = React.useState("categories");
+  const [wallpaperError, setWallpaperError] = React.useState("");
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const dragging = React.useRef(false);
 
   React.useEffect(() => setMounted(true), []);
 
-  // 文件管理二级目录：从 URL query 读取当前子视图
-  React.useEffect(() => {
-    const read = () => {
-      const sp = new URLSearchParams(window.location.search);
-      setFileTab(sp.get("tab") ?? "categories");
-    };
-    read();
-    window.addEventListener("popstate", read);
-    return () => window.removeEventListener("popstate", read);
-  }, [pathname]);
+  const filesActive =
+    pathname.startsWith("/dashboard/files") ||
+    pathname.startsWith("/dashboard/categories") ||
+    pathname.startsWith("/dashboard/favorites") ||
+    pathname.startsWith("/dashboard/recent") ||
+    pathname.startsWith("/dashboard/recycle");
 
-  const filesActive = pathname.startsWith("/dashboard/files") || pathname.startsWith("/dashboard/categories");
+  // 文件管理二级目录当前项：直接由路由推导，避免 query 切换不触发重渲染
+  const fileTab = pathname.startsWith("/dashboard/categories")
+    ? "categories"
+    : pathname.startsWith("/dashboard/favorites")
+      ? "favorites"
+      : pathname.startsWith("/dashboard/recent")
+        ? "recent"
+        : pathname.startsWith("/dashboard/recycle")
+          ? "recycle"
+          : "files";
   const tasksActive = pathname.startsWith("/dashboard/tasks");
 
   const handleLogout = async () => {
@@ -71,6 +76,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     const file = e.target.files?.[0];
     if (!file) return;
     e.target.value = "";
+    setWallpaperError("");
     setWallpaperProcessing(true);
     try {
       const optimized = await processWallpaperImage(file);
@@ -87,8 +93,9 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         });
         setWallpaper(raw);
         setWallpaperOpen(false);
-      } catch {
-        /* 保持现状 */
+      } catch (fallbackErr) {
+        console.error("壁纸回退失败", fallbackErr);
+        setWallpaperError("图片处理失败，请换一张体积更小的图片（建议 5MB 以内）重试");
       }
     } finally {
       setWallpaperProcessing(false);
@@ -122,12 +129,15 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const navItemOn = "border-l-2 d5-line d5-ink bg-foreground/[0.06] font-semibold";
 
   return (
-    <div className="relative flex min-h-screen d5-bg d5-ink">
+    <div className="relative flex min-h-screen d5-bg d5-ink" data-wallpaper={wallpaper ? "on" : undefined}>
       {wallpaper && (
         <div
           className="fixed inset-0 z-0"
           style={{ backgroundImage: `url(${wallpaper})`, backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed" }}
-        />
+        >
+          {/* 遮罩：面板转为半透明后，保证文字依旧清晰可读 */}
+          <div className="absolute inset-0 bg-white/25 dark:bg-black/40" />
+        </div>
       )}
 
       {/* 左栏：导航 + 私有空间 */}
@@ -289,8 +299,15 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       <Dialog open={wallpaperOpen} onClose={() => setWallpaperOpen(false)} title="更换背景壁纸" description="上传图片后自动优化清晰度并压缩体积" maxWidth="max-w-md">
         <div className="space-y-3 d5-mono text-[11px]">
           <input ref={fileInputRef} type="file" accept="image/*" onChange={handleWallpaperUpload} className="hidden" />
+          {wallpaper && (
+            <div
+              className="h-28 w-full border d5-line bg-cover bg-center"
+              style={{ backgroundImage: `url(${wallpaper})` }}
+            />
+          )}
+          {wallpaperError && <p className="text-[11px] text-destructive">{wallpaperError}</p>}
           <button
-            onClick={() => { setWallpaper(null); setWallpaperOpen(false); }}
+            onClick={() => { setWallpaperError(""); setWallpaper(null); setWallpaperOpen(false); }}
             className="flex w-full items-center gap-3 border d5-line px-4 py-3 text-left hover:bg-foreground/5"
           >
             <span className={cn("flex h-9 w-9 items-center justify-center border d5-line", !wallpaper && "bg-foreground text-background")}>
@@ -302,7 +319,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             </span>
           </button>
           <button
-            onClick={() => fileInputRef.current?.click()}
+            onClick={() => { setWallpaperError(""); fileInputRef.current?.click(); }}
             disabled={wallpaperProcessing}
             className="flex w-full items-center gap-3 border d5-line px-4 py-3 text-left hover:bg-foreground/5 disabled:opacity-50"
           >

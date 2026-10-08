@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { RecycleView } from "@/components/files/views/recycle-view";
 
 export default function RecyclePage() {
-  redirect("/dashboard/files");
+  return <RecycleView />;
 }

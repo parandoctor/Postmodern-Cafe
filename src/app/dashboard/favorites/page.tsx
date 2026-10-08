@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { FavoritesView } from "@/components/files/views/favorites-view";
 
 export default function FavoritesPage() {
-  redirect("/dashboard/files");
+  return <FavoritesView />;
 }

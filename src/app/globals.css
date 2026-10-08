@@ -416,3 +416,8 @@ main.d5-panel [class*="border-whisper"] { border-color: hsl(var(--d5-line)); }
 .dark main.d5-panel [class*="bg-white/"] { background-color: hsl(var(--d5-panel)) !important; }
 .dark main.d5-panel [class*="bg-black/"] { background-color: hsl(var(--d5-panel)) !important; }
 .dark main.d5-panel .text-muted-foreground { color: hsl(var(--d5-muted)); }
+
+/* 自定义壁纸模式 — 面板降为半透明，让背景图可见且不影响可读性 */
+[data-wallpaper="on"] .d5-bg { background-color: hsl(var(--d5-bg) / 0.72); }
+[data-wallpaper="on"] .d5-panel { background-color: hsl(var(--d5-panel) / 0.82); }
+[data-wallpaper="on"] .d5-cell { background-color: hsl(var(--d5-panel) / 0.82); }

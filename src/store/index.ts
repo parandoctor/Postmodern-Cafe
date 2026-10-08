@@ -49,7 +49,12 @@ export const useUIStore = create<UIState>()(
           set({ wallpaper: null });
           return;
         }
-        set({ wallpaper });
+        try {
+          set({ wallpaper });
+        } catch (err) {
+          // localStorage 配额不足时只影响下次刷新后的恢复，当前会话仍然生效
+          console.error("[ui] 壁纸持久化失败:", err);
+        }
       },
     }),
     {

@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { RecentView } from "@/components/files/views/recent-view";
 
 export default function RecentPage() {
-  redirect("/dashboard/files");
+  return <RecentView />;
 }
