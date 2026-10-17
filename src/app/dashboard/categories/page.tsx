@@ -1,5 +1,2 @@
-import { CategoriesView } from "@/components/files/views/categories-view";
-
-export default function CategoriesPage() {
-  return <CategoriesView />;
-}
+import { redirect } from "next/navigation";
+export default function LegacyPage() { redirect("/dashboard/notes"); }

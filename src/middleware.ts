@@ -14,7 +14,7 @@ export function middleware(request: NextRequest) {
 
   // Redirect authenticated users away from auth pages
   if (isAuth && sessionCookie) {
-    return NextResponse.redirect(new URL("/dashboard/files", request.url));
+    return NextResponse.redirect(new URL("/dashboard/notes", request.url));
   }
 
   // Redirect unauthenticated users to login
@@ -32,3 +32,4 @@ export const config = {
     "/((?!api|_next/static|_next/image|favicon.ico|uploads).*)",
   ],
 };
+

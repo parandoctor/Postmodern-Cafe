@@ -1,5 +1,2 @@
 import { redirect } from "next/navigation";
-
-export default function DashboardPage() {
-  redirect("/dashboard/files");
-}
+export default function LegacyPage() { redirect("/dashboard/notes"); }

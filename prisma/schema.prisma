@@ -1,5 +1,6 @@
 // ============================================================
-// Rainbow-box Database Schema
+// Rainbow-box Database Schema - v1.3.1
+// 三个模块只保留 User / File / Note / MusicTrack
 // ============================================================
 
 generator client {
@@ -11,34 +12,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ---- User ----
 model User {
-  id        String    @id @default(cuid())
-  name      String?
-  email     String?   @unique
-  password  String?
-  image     String?
-  bio       String?
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  password      String?
+  image         String?
+  bio           String?
   emailVerified DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
   accounts     Account[]
   sessions     Session[]
   files        File[]
-  categories   Category[]
-  favorites    Favorite[]
-  recycleItems RecycleBin[]
-  uploadRecords UploadRecord[]
-  operationLogs OperationLog[]
-  tags          Tag[]
   notes        Note[]
   musicTracks  MusicTrack[]
-  tasks        Task[]
-  taskLinks    TaskLink[]
 }
 
-// ---- Account (for future OAuth support) ----
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -59,7 +50,6 @@ model Account {
   @@index([userId])
 }
 
-// ---- Session ----
 model Session {
   id        String   @id @default(cuid())
   userId    String
@@ -72,145 +62,30 @@ model Session {
   @@index([expiresAt])
 }
 
-// ---- Category (自定义分类 + 重要性) ----
-model Category {
-  id          String   @id @default(cuid())
-  name        String
-  importance  Int      @default(1) // 3=核心 2=重要 1=常规 0=归档
-  icon        String   @default("folder")
-  description String?
-  sortOrder   Int      @default(0)
-  userId      String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  files File[]
-
-  @@unique([name, userId])
-  @@index([userId, sortOrder])
-  @@index([userId, importance])
-}
-
-// ---- File ----
 model File {
-  id            String    @id @default(cuid())
+  id            String   @id @default(cuid())
   name          String
   originalName  String
   extension     String
   mimeType      String
-  size          Int       // bytes
+  size          Int
   path          String
   thumbnailPath String?
-  hash          String?   // SHA-256 for deduplication
-  width         Int?      // for images
-  height        Int?      // for images
-  duration      Float?    // for audio/video
-  categoryId    String?
+  hash          String?
+  width         Int?
+  height        Int?
+  duration      Float?
   userId        String
-  isFavorite    Boolean   @default(false)
-  isDeleted     Boolean   @default(false)
-  deletedAt     DateTime?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  category     Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  favorites    Favorite[]
-  recycleItems RecycleBin[]
-  uploadRecords UploadRecord[]
-  taskLinks    TaskLink[]
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId, isDeleted])
-  @@index([userId, categoryId])
-  @@index([userId, isFavorite])
   @@index([userId, createdAt])
   @@index([userId, name])
   @@index([hash])
 }
 
-// ---- Favorite ----
-model Favorite {
-  id        String   @id @default(cuid())
-  userId    String
-  fileId    String
-  createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  file File @relation(fields: [fileId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, fileId])
-  @@index([userId])
-}
-
-// ---- Recycle Bin ----
-model RecycleBin {
-  id          String   @id @default(cuid())
-  fileId      String   @unique
-  userId      String
-  originalPath String
-  deletedAt   DateTime @default(now())
-  expiresAt   DateTime // auto-delete after 30 days
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  file File @relation(fields: [fileId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-  @@index([expiresAt])
-}
-
-// ---- Tag ----
-model Tag {
-  id        String   @id @default(cuid())
-  name      String
-  color     String?  @default("#6366f1")
-  userId    String
-  createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([name, userId])
-  @@index([userId])
-}
-
-// ---- Upload Record ----
-model UploadRecord {
-  id        String   @id @default(cuid())
-  fileId    String
-  userId    String
-  fileName  String
-  fileSize  Int
-  mimeType  String
-  status    String   @default("completed") // uploading, processing, completed, error
-  error     String?
-  createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  file File @relation(fields: [fileId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-  @@index([fileId])
-}
-
-// ---- Operation Log ----
-model OperationLog {
-  id         String   @id @default(cuid())
-  userId     String
-  operation  String   // UPLOAD, DOWNLOAD, DELETE, RESTORE, RENAME, MOVE, etc.
-  targetType String   // file, category, user
-  targetId   String
-  detail     String?
-  ipAddress  String?
-  createdAt  DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId, createdAt])
-  @@index([operation])
-  @@index([createdAt])
-}
-
-// ---- Note (随时记写 / 知识，1.2.0 由 localStorage 迁移至后端) ----
 model Note {
   id        String   @id @default(cuid())
   text      String
@@ -218,14 +93,12 @@ model Note {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tasks TaskLink[]
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId, updatedAt])
   @@index([userId, createdAt])
 }
 
-// ---- MusicTrack (音乐盒，1.2.0 由 IndexedDB 迁移至后端) ----
-// 音频文件本体写入 public/uploads/music/<userId>/ 目录，数据库仅存元数据与路径
 model MusicTrack {
   id      String   @id @default(cuid())
   name    String
@@ -236,54 +109,5 @@ model MusicTrack {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId])
-}
-
-// ---- TaskPriority (任务重要性三档) ----
-enum TaskPriority {
-  HIGH
-  MEDIUM
-  LOW
-}
-
-// ---- Task (任务管理：任务名 / 目的 / 优先级 / 完成状态 / 截止日期 / 父子拆分) ----
-model Task {
-  id          String       @id @default(cuid())
-  title       String       // 任务名
-  description String?      // 目的
-  priority    TaskPriority @default(MEDIUM)
-  done        Boolean      @default(false)
-  dueDate     DateTime?    // 时间线视图按此排序分组
-  sortOrder   Int          @default(0) // 同级自定义排序（拖拽调整）
-  parentId    String?      // 父任务（高级任务拆分出低级子任务）
-  userId      String
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-
-  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  parent   Task?      @relation("TaskHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
-  children Task[]     @relation("TaskHierarchy")
-  links    TaskLink[]
-
-  @@index([userId, createdAt])
-  @@index([userId, parentId])
-}
-
-// ---- TaskLink (任务关联知识/文件，点击任务后可直接显示目标) ----
-model TaskLink {
-  id        String   @id @default(cuid())
-  taskId    String
-  fileId    String?  // 关联项目文件
-  noteId    String?  // 关联知识（随手记）
-  userId    String
-  createdAt DateTime @default(now())
-
-  task Task  @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  file File? @relation(fields: [fileId], references: [id], onDelete: Cascade)
-  note Note? @relation(fields: [noteId], references: [id], onDelete: Cascade)
-  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([taskId])
-  @@index([fileId])
-  @@index([noteId])
+  @@index([userId, addedAt])
 }

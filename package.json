@@ -1,8 +1,8 @@
 {
   "name": "rainbow-box",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "private": true,
-  "description": "后现代咖啡馆 - 一站式综合服务平台（生活记录 / 资料归档 / 事务处理）",
+  "description": "后现代咖啡馆 - 笔记、音乐、图片与时间管理的个人数字空间",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -37,14 +37,16 @@
     "bcryptjs": "^3.0.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "fabric": "^7.4.0",
     "framer-motion": "^11.18.0",
     "lucide-react": "^0.468.0",
     "next": "^15.1.0",
-    "next-themes": "^0.4.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-dropzone": "^14.3.0",
     "react-hook-form": "^7.54.0",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
     "sharp": "^0.33.5",
     "tailwind-merge": "^2.6.0",
     "zod": "^3.24.0",
@@ -65,8 +67,4 @@
     "typescript": "^5.7.0"
   }
 }
-
-
-
-
 

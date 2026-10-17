@@ -1,148 +1,83 @@
-"use client";
+import { BookOpen, Image, Wrench, ArrowUpRight } from "lucide-react";
 
-import * as React from "react";
-import { Entrance } from "@/components/ui/entrance";
-
-const features = [
+const items = [
   {
     index: "01",
-    file: "upload.ts",
-    title: "极速上传",
-    description: "支持拖拽、点击、批量上传多种方式，大文件断点续传，上传进度实时显示。",
+    title: "笔记管理",
+    icon: BookOpen,
+    description: "用 Markdown 写下想法，自动保存；图片、视频和文档也收在同一个安静的抽屉里。",
+    detail: "写下来，留下来",
   },
   {
     index: "02",
-    file: "archive/",
-    title: "分类管理",
-    description: "多级分类体系，黑白灰阶哑光色系统一视觉规范，让文件管理更直观有序。",
+    title: "美学空间",
+    icon: Image,
+    description: "播放自己的音乐，或直接在浏览器里裁剪、调色、加文字与图层，完成一张图片。",
+    detail: "听一点，做一点",
   },
   {
     index: "03",
-    file: "search.sh",
-    title: "智能搜索",
-    description: "快速搜索文件名称，按分类、类型、日期筛选，大文件分页懒加载，性能优秀。",
-  },
-  {
-    index: "04",
-    file: "star.db",
-    title: "收藏与最近",
-    description: "收藏常用文件，自动记录最近访问和最近修改，让高频文件触手可及。",
-  },
-  {
-    index: "05",
-    file: "trash.bin",
-    title: "回收站",
-    description: "删除的文件进入回收站保护期，支持恢复和永久删除，不再担心误操作。",
-  },
-  {
-    index: "06",
-    file: "shield.enc",
-    title: "安全可靠",
-    description: "密码加密，Session 管理，CSRF 防护，文件类型白名单，全方位安全保障。",
+    title: "实用工具",
+    icon: Wrench,
+    description: "一个可以跨页面持续的倒计时，和一张不打扰你的月历。",
+    detail: "给时间一个位置",
   },
 ];
 
 export function FeaturesSection() {
   return (
-    <section
-      id="features"
-      className="term-bg term-scanlines term-noise relative overflow-hidden border-t border-black py-24 lg:py-32"
-    >
-      <div className="relative z-10 mx-auto max-w-6xl px-6 lg:px-8">
-        <div className="grid gap-14 lg:grid-cols-[1fr_320px]">
-          {/* Terminal archive table */}
-          <div>
-            <Entrance
-              as="div"
-              from={{ opacity: 0, y: 24 }}
-              to={{ opacity: 1, y: 0 }}
-              inView
-              viewportMargin="-60px"
-              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            >
-              <p className="font-mono text-[11px] tracking-[0.2em] text-[#8a8a86]">
-                $ cat ./core_modules --format=table
-              </p>
-              <h2
-                data-text="核心模块 / CORE MODULES"
-                className="term-glitch mt-4 font-mono text-[26px] font-bold tracking-[-0.01em] text-white sm:text-[34px]"
-              >
-                核心模块 / CORE MODULES
-              </h2>
-              <p className="mt-4 max-w-xl font-mono text-[13px] leading-relaxed text-[#8a8a86]">
-                从文件归档到生活规划，从待办事务到随手记录 ——
-                每一个细节都经过精心打磨，归档，是对时间的尊重。
-              </p>
-            </Entrance>
-
-            <Entrance
-              as="div"
-              from={{ opacity: 0, y: 24 }}
-              to={{ opacity: 1, y: 0 }}
-              inView
-              viewportMargin="-60px"
-              transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="mt-10"
-            >
-              <div className="grid grid-cols-[52px_1.1fr_1.3fr_96px] gap-4 border-b border-[#2a2a28] pb-3 font-mono text-[10px] tracking-[0.2em] text-[#8a8a86]">
-                <span>MODE</span>
-                <span>MODULE</span>
-                <span>DESC</span>
-                <span className="text-right">STATUS</span>
-              </div>
-              {features.map((f) => (
-                <div
-                  key={f.index}
-                  className="group grid grid-cols-[52px_1.1fr_1.3fr_96px] items-start gap-4 border-b border-[#1a1a18] py-[18px] font-mono transition-colors hover:bg-[#101010]"
-                >
-                  <span className="text-[11px] text-[#8a8a86]">{f.index}</span>
-                  <div>
-                    <div className="text-[15px] text-white transition-all group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.45)]">
-                      ▸ {f.title}
-                    </div>
-                    <div className="mt-1 text-[11px] text-[#4a4a48]">{f.file}</div>
-                  </div>
-                  <p className="text-[12px] leading-relaxed text-[#8a8a86]">{f.description}</p>
-                  <span className="text-right text-[10px] tracking-[0.18em] text-[#8a8a86]">
-                    ACTIVE
-                  </span>
-                </div>
-              ))}
-            </Entrance>
+    <>
+      <section id="features" className="border-t border-[#ececec] px-5 py-24 sm:px-8">
+        <div className="mx-auto max-w-5xl">
+          <div className="mb-14 flex items-end justify-between gap-6">
+            <div>
+              <p className="text-[11px] tracking-[0.24em] text-[#999]">THREE SPACES</p>
+              <h2 className="mt-4 font-editorial text-[32px] tracking-[-0.02em] sm:text-[40px]">只保留真正会用的三个空间</h2>
+            </div>
+            <span className="hidden text-[12px] text-[#aaa] sm:block">少一点，反而更清楚</span>
           </div>
 
-          {/* Constructivist geometry art (Fig.01) */}
-          <Entrance
-            as="aside"
-            from={{ opacity: 0, x: 24 }}
-            to={{ opacity: 1, x: 0 }}
-            inView
-            viewportMargin="-60px"
-            transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-            className="hidden lg:block"
-          >
-            <div className="sticky top-28">
-              <div className="relative border border-[#2a2a28] bg-[#0a0a0a] p-3">
-                <img
-                  src="/art/features-geometry.png"
-                  alt="构成主义几何 · GRAYSCALE.7"
-                  className="w-full grayscale"
-                  loading="lazy"
-                />
-                <div className="mt-3 flex items-center justify-between font-mono text-[10px] tracking-[0.2em] text-[#8a8a86]">
-                  <span>FIG.01 — GRAYSCALE.7</span>
-                  <span className="term-blink">▚</span>
+          <div className="border-t border-[#dedede]">
+            {items.map((item) => {
+              const Icon = item.icon;
+              return (
+                <div key={item.title} className="group grid gap-5 border-b border-[#dedede] py-8 sm:grid-cols-[64px_1fr_auto] sm:items-center sm:gap-8">
+                  <span className="text-[12px] tabular-nums text-[#aaa]">{item.index}</span>
+                  <div className="flex items-start gap-5">
+                    <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center border border-[#dedede] text-[#555] transition-colors group-hover:border-black group-hover:text-black">
+                      <Icon className="h-4 w-4" strokeWidth={1.5} />
+                    </span>
+                    <div>
+                      <h3 className="text-[20px] font-medium">{item.title}</h3>
+                      <p className="mt-2 max-w-xl text-[13px] leading-6 text-[#707070]">{item.description}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 text-[12px] text-[#999] sm:justify-end">
+                    {item.detail}
+                    <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                  </div>
                 </div>
-              </div>
-              <div className="mt-4 space-y-1 font-mono text-[10px] tracking-[0.16em] text-[#4a4a48]">
-                <p>AXIS: VERTICAL</p>
-                <p>NOISE: 0.85</p>
-                <p>STATE: ORDERED</p>
-              </div>
-            </div>
-          </Entrance>
+              );
+            })}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <section id="about" className="px-5 py-24 sm:px-8">
+        <div className="mx-auto grid max-w-5xl gap-10 border-t border-[#ececec] pt-16 md:grid-cols-[220px_1fr]">
+          <p className="text-[11px] tracking-[0.24em] text-[#999]">ABOUT</p>
+          <div>
+            <h2 className="font-editorial text-[30px] leading-snug tracking-[-0.02em] sm:text-[36px]">
+              不是更多的功能，
+              <br />
+              而是更少的打扰。
+            </h2>
+            <p className="mt-6 max-w-2xl text-[14px] leading-7 text-[#707070]">
+              后现代咖啡馆从一个文件管理工具，回到更朴素的目标：把日常里值得留下的东西放在一起，并且让它们看起来安静、清楚、可以长久使用。
+            </p>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

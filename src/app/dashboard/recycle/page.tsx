@@ -1,5 +1,2 @@
-import { RecycleView } from "@/components/files/views/recycle-view";
-
-export default function RecyclePage() {
-  return <RecycleView />;
-}
+import { redirect } from "next/navigation";
+export default function LegacyPage() { redirect("/dashboard/notes"); }
