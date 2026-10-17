@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
 import { registerUser } from "@/actions/auth";
+import { MotionButton } from "@/components/ui/motion-button";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -32,7 +33,7 @@ export default function RegisterPage() {
       <header className="border-b border-[#ececec]">
         <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-5 sm:px-8">
           <Link href="/" className="text-[15px] font-medium">后现代咖啡馆</Link>
-          <Link href="/" className="text-[12px] text-[#888] hover:text-black">返回首页</Link>
+          <MotionButton href="/" variant="ghost" size="sm">返回首页</MotionButton>
         </div>
       </header>
       <main className="flex flex-1 items-center justify-center px-5 py-16">
@@ -61,7 +62,7 @@ export default function RegisterPage() {
                 </button>
               </span>
             </label>
-            <button type="submit" disabled={loading} className="w-full bg-[#111] py-3 text-[13px] text-white transition-opacity hover:opacity-80 disabled:opacity-50">{loading ? "创建中..." : "创建并进入"}</button>
+            <MotionButton type="submit" disabled={loading} variant="primary" size="lg" floating arrow className="w-full">{loading ? "创建中..." : "创建并进入"}</MotionButton>
           </form>
 
           <p className="mt-6 text-[12px] text-[#888]">已有账户？ <Link href="/login" className="text-black underline underline-offset-4">直接登录</Link></p>
@@ -70,4 +71,5 @@ export default function RegisterPage() {
     </div>
   );
 }
+
 

@@ -1,9 +1,9 @@
-# <img src="public/images/cafe-logo-black.png" width="26" height="26" align="center" alt="后现代咖啡馆"> 后现代咖啡馆 (Postmodern Cafe) `v1.3.1`
+# <img src="public/images/cafe-logo-black.png" width="26" height="26" align="center" alt="后现代咖啡馆"> 后现代咖啡馆 (Postmodern Cafe) `v1.3.2`
 
 > 把记录，放在安静的地方。
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.3.1-black" alt="Version" />
+  <img src="https://img.shields.io/badge/version-1.3.2-black" alt="Version" />
   <img src="https://img.shields.io/badge/Next.js-15.5-black?logo=next.js" alt="Next.js" />
   <img src="https://img.shields.io/badge/React-19-61DAFB?logo=react" alt="React" />
   <img src="https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript" alt="TypeScript" />
@@ -15,7 +15,7 @@
 
 ## 项目简介
 
-**后现代咖啡馆 (Postmodern-Cafe)** 是一个白底、黑字、细线分隔的个人数字空间。1.3.1 起后台只保留三个模块：
+**后现代咖啡馆 (Postmodern-Cafe)** 是一个白底、黑字、细线分隔的个人数字空间。1.3.2 起后台只保留三个模块：
 
 - **笔记管理**：Markdown 编辑、自动保存、图片/视频/文档等文件抽屉
 - **美学空间**：单实例音乐播放与浏览器内进阶图片编辑
@@ -23,7 +23,7 @@
 
 首页为纯产品落地页；登录后进入由三根竖向细线、错位节点和动态半调点阵组成的空间图，再选择模块。后台不再使用左中右分栏。旧文件分类、收藏、回收站、任务与 Y2K 音乐盒已下线，旧地址会兼容跳转到对应新模块。
 
-当前版本 **v1.3.1**：单画布三节点空间图、极简黑白视觉重做、音乐单实例播放修复、Markdown 笔记、自研图片编辑器与跨页面倒计时。
+当前版本 **v1.3.2**：紧凑三节点空间图、鼠标响应半调阴影、全线悬浮交互、统一动效按钮、首页逐行滚动揭示，以及 1.3.1 的三模块与音乐修复。
 
 ---
 
@@ -73,9 +73,9 @@ src/
 ├── components/
 │   ├── aesthetic/              # 音乐播放器 / 图片编辑器
 │   ├── files/                  # 文件抽屉 / 上传组件
-│   ├── landing/                # 首页导航、Hero、功能、页脚
+│   ├── landing/                # 首页导航、Hero、逐行揭示、功能、页脚
 │   ├── layout/                 # 后台布局、音乐单例、倒计时指示、日历
-│   └── ui/                     # 基础对话框等
+│   ├── dashboard/             # 三节点空间图与动态半调阴影\n│   └── ui/                     # 动效按钮、基础对话框等
 ├── actions/                    # 文件 / 笔记 / 音乐 / 认证 / 个人资料
 ├── lib/                        # Prisma、认证、校验、安全、工具函数
 ├── store/                      # 用户、笔记/音乐、倒计时状态
@@ -148,4 +148,5 @@ npm run seed       # 写入演示数据
 - 代码与开发日志、版本文档、README、package.json 同批提交
 - 通过 Pull Request 交付，禁止直接向 main 推送
 - 1.3.1 仅创建 PR，不自动合并
+
 

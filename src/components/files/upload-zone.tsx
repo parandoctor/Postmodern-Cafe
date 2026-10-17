@@ -4,6 +4,7 @@ import * as React from "react";
 import { useDropzone } from "react-dropzone";
 import { Check, FileUp, Loader2, Upload, X } from "lucide-react";
 import { cn, formatFileSize } from "@/lib/utils";
+import { MotionButton } from "@/components/ui/motion-button";
 
 const CHUNK_SIZE = 2 * 1024 * 1024;
 const CHUNK_THRESHOLD = 2 * 1024 * 1024;
@@ -109,10 +110,11 @@ export function UploadZone({
           ))}
           <div className="flex items-center justify-between border-t border-[#ededed] px-3 py-2">
             <span className="text-[11px] text-[#999]">{uploading ? "正在上传" : done === files.length ? "上传完成" : "等待上传"}</span>
-            <button onClick={runUpload} disabled={uploading || !pending} className="bg-[#111] px-3 py-1.5 text-[11px] text-white disabled:opacity-40">{uploading ? "上传中..." : "开始上传"}</button>
+            <MotionButton onClick={runUpload} disabled={uploading || !pending} variant="primary" size="sm" floating>{uploading ? "上传中..." : "开始上传"}</MotionButton>
           </div>
         </div>
       )}
     </div>
   );
 }
+

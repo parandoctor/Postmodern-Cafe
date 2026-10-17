@@ -2,9 +2,9 @@
 
 import * as React from "react";
 import { Bell, Pause, Play, RotateCcw } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { countdownRemaining, formatCountdown, useCountdownStore } from "@/store/countdown";
 import { CalendarWidget } from "@/components/layout/calendar-widget";
+import { MotionButton } from "@/components/ui/motion-button";
 
 const PRESETS = [5, 10, 25, 45];
 
@@ -94,13 +94,13 @@ export default function ToolsPage() {
           </div>
 
           <div className="mt-5 flex flex-wrap justify-center gap-1.5">
-            {PRESETS.map((value) => <button key={value} onClick={() => applyPreset(value)} disabled={store.running} className="border border-[#dedede] px-3 py-1.5 text-[11px] text-[#777] hover:border-black hover:text-black disabled:opacity-40">{value} 分钟</button>)}
+            {PRESETS.map((value) => <MotionButton key={value} onClick={() => applyPreset(value)} disabled={store.running} variant="secondary" size="sm">{value} 分钟</MotionButton>)}
           </div>
 
           <div className="mt-8 flex items-center justify-center gap-3">
-            <button onClick={toggle} className="flex items-center gap-2 bg-[#111] px-5 py-2.5 text-[12px] text-white">{store.running ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}{store.running ? "暂停" : store.completed ? "重新开始" : "开始"}</button>
-            <button onClick={() => { store.reset(); setNow(Date.now()); }} className="flex items-center gap-1.5 border border-[#dedede] px-4 py-2.5 text-[12px] text-[#666] hover:border-black hover:text-black"><RotateCcw className="h-3.5 w-3.5" />重置</button>
-            <button onClick={() => void toggleNotify()} className={cn("flex items-center gap-1.5 border px-4 py-2.5 text-[12px]", store.notify ? "border-black text-black" : "border-[#dedede] text-[#888]")}><Bell className="h-3.5 w-3.5" />{store.notify ? "已开启提醒" : "完成提醒"}</button>
+            <MotionButton onClick={toggle} variant="primary" size="md" floating icon={store.running ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}>{store.running ? "暂停" : store.completed ? "重新开始" : "开始"}</MotionButton>
+            <MotionButton onClick={() => { store.reset(); setNow(Date.now()); }} variant="secondary" size="md" icon={<RotateCcw className="h-3.5 w-3.5" />}>重置</MotionButton>
+            <MotionButton onClick={() => void toggleNotify()} variant={store.notify ? "primary" : "secondary"} size="md" icon={<Bell className="h-3.5 w-3.5" />}>{store.notify ? "已开启提醒" : "完成提醒"}</MotionButton>
           </div>
           {(notice || store.completed) && <p className="mt-4 text-center text-[11px] text-[#888]">{notice || "倒计时结束，可以休息一下。"}</p>}
         </section>
@@ -110,3 +110,4 @@ export default function ToolsPage() {
     </div>
   );
 }
+

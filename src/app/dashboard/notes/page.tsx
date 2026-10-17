@@ -7,6 +7,7 @@ import remarkGfm from "remark-gfm";
 import { cn } from "@/lib/utils";
 import { useNotesStore } from "@/store/widgets";
 import { FileDrawer } from "@/components/files/file-drawer";
+import { MotionButton } from "@/components/ui/motion-button";
 
 function titleOf(text: string) {
   const line = text.split("\n").map((item) => item.trim()).find(Boolean) ?? "未命名笔记";
@@ -141,7 +142,7 @@ export default function NotesPage() {
             {status === "saving" ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : status === "saved" ? <Check className="h-3.5 w-3.5" /> : <FileText className="h-3.5 w-3.5" />}
             {status === "saving" ? "保存中" : status === "saved" ? "已保存" : status === "error" ? "保存失败" : "未修改"}
           </span>
-          <button onClick={() => void createNote()} className="flex items-center gap-1.5 bg-[#111] px-3 py-2 text-[12px] text-white"><Plus className="h-3.5 w-3.5" />新建</button>
+          <MotionButton onClick={() => void createNote()} variant="primary" size="sm" floating icon={<Plus className="h-3.5 w-3.5" />}>新建</MotionButton>
         </div>
       </div>
 
@@ -166,8 +167,8 @@ export default function NotesPage() {
           <div className="mb-3 flex items-center justify-between gap-3">
             <button onClick={() => setIndexOpen((value) => !value)} className="flex items-center gap-1.5 text-[11px] text-[#888] hover:text-black lg:hidden"><PanelLeft className="h-3.5 w-3.5" />笔记索引</button>
             <div className="ml-auto flex border border-[#dedede] p-0.5">
-              <button onClick={() => setMode("edit")} className={cn("flex items-center gap-1 px-3 py-1.5 text-[11px]", mode === "edit" ? "bg-[#111] text-white" : "text-[#777]")}><Pencil className="h-3 w-3" />编辑</button>
-              <button onClick={() => setMode("preview")} className={cn("flex items-center gap-1 px-3 py-1.5 text-[11px]", mode === "preview" ? "bg-[#111] text-white" : "text-[#777]")}><Eye className="h-3 w-3" />预览</button>
+              <MotionButton onClick={() => setMode("edit")} variant={mode === "edit" ? "primary" : "ghost"} size="sm" className="h-7 rounded-none px-3" icon={<Pencil className="h-3 w-3" />}>编辑</MotionButton>
+              <MotionButton onClick={() => setMode("preview")} variant={mode === "preview" ? "primary" : "ghost"} size="sm" className="h-7 rounded-none px-3" icon={<Eye className="h-3 w-3" />}>预览</MotionButton>
             </div>
           </div>
 
@@ -191,7 +192,7 @@ export default function NotesPage() {
             <div className="flex min-h-[56vh] flex-col items-center justify-center border border-dashed border-[#dedede] text-center">
               <FileText className="h-8 w-8 text-[#ccc]" strokeWidth={1.2} />
               <p className="mt-3 text-[13px] text-[#888]">新建一篇笔记，或者从左侧选择。</p>
-              <button onClick={() => void createNote()} className="mt-4 flex items-center gap-1.5 border border-[#111] px-4 py-2 text-[12px]"><Plus className="h-3.5 w-3.5" />新建笔记</button>
+              <MotionButton onClick={() => void createNote()} variant="secondary" size="md" icon={<Plus className="h-3.5 w-3.5" />} className="mt-4">新建笔记</MotionButton>
             </div>
           )}
         </section>
@@ -201,3 +202,4 @@ export default function NotesPage() {
     </div>
   );
 }
+

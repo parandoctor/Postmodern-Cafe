@@ -2,9 +2,9 @@
 
 import * as React from "react";
 import { Image as ImageIcon, Music2 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { MusicSection } from "@/components/aesthetic/music-section";
 import { ImageEditor } from "@/components/aesthetic/image-editor";
+import { MotionButton } from "@/components/ui/motion-button";
 
 type Tab = "music" | "image";
 
@@ -30,8 +30,8 @@ export default function AestheticPage() {
           <p className="mt-2 text-[12px] text-[#888]">音乐与图片，两件和感受有关的事。</p>
         </div>
         <div className="flex border border-[#dedede] p-0.5">
-          <button onClick={() => changeTab("music")} className={cn("flex items-center gap-1.5 px-4 py-2 text-[12px]", tab === "music" ? "bg-[#111] text-white" : "text-[#777] hover:text-black")}><Music2 className="h-3.5 w-3.5" />音乐</button>
-          <button onClick={() => changeTab("image")} className={cn("flex items-center gap-1.5 px-4 py-2 text-[12px]", tab === "image" ? "bg-[#111] text-white" : "text-[#777] hover:text-black")}><ImageIcon className="h-3.5 w-3.5" />图片</button>
+          <MotionButton onClick={() => changeTab("music")} variant={tab === "music" ? "primary" : "ghost"} size="sm" className="h-8 rounded-none px-4" icon={<Music2 className="h-3.5 w-3.5" />}>音乐</MotionButton>
+          <MotionButton onClick={() => changeTab("image")} variant={tab === "image" ? "primary" : "ghost"} size="sm" className="h-8 rounded-none px-4" icon={<ImageIcon className="h-3.5 w-3.5" />}>图片</MotionButton>
         </div>
       </div>
 
@@ -39,4 +39,5 @@ export default function AestheticPage() {
     </div>
   );
 }
+
 

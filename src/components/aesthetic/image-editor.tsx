@@ -6,6 +6,7 @@ import {
   Lock, Minus, Move, Redo2, RotateCw, Square, Sticker, Trash2, Type, Undo2, Unlock, Upload, X, ZoomIn, ZoomOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { MotionButton } from "@/components/ui/motion-button";
 
 const STICKERS = ["✦", "→", "○", "□", "×", "“”", "—", "01", "※", "△", "◌", "＋"];
 
@@ -408,23 +409,23 @@ export function ImageEditor() {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2 border-b border-[#dedede] pb-3">
-        <button onClick={() => fileRef.current?.click()} className="flex items-center gap-1.5 bg-[#111] px-3 py-2 text-[11px] text-white"><Upload className="h-3.5 w-3.5" />打开图片</button>
+        <MotionButton onClick={() => fileRef.current?.click()} variant="primary" size="sm" floating icon={<Upload className="h-3.5 w-3.5" />}>打开图片</MotionButton>
         <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(event) => { const file = event.target.files?.[0]; event.target.value = ""; if (file) void loadImage(file); }} />
         <input ref={layerFileRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(event) => { const file = event.target.files?.[0]; event.target.value = ""; if (file) void loadImage(file, true); }} />
-        <button onClick={() => void restore(historyIndexRef.current - 1)} disabled={!canUndo} className="p-2 text-[#666] hover:text-black disabled:opacity-30" title="撤销"><Undo2 className="h-4 w-4" /></button>
-        <button onClick={() => void restore(historyIndexRef.current + 1)} disabled={!canRedo} className="p-2 text-[#666] hover:text-black disabled:opacity-30" title="重做"><Redo2 className="h-4 w-4" /></button>
+        <MotionButton onClick={() => void restore(historyIndexRef.current - 1)} disabled={!canUndo} variant="ghost" size="icon" className="border-transparent" icon={<Undo2 className="h-4 w-4" />} title="撤销" />
+        <MotionButton onClick={() => void restore(historyIndexRef.current + 1)} disabled={!canRedo} variant="ghost" size="icon" className="border-transparent" icon={<Redo2 className="h-4 w-4" />} title="重做" />
         <span className="mx-1 h-5 w-px bg-[#dedede]" />
-        <button onClick={rotateObject} className="p-2 text-[#666] hover:text-black" title="旋转 90°"><RotateCw className="h-4 w-4" /></button>
-        <button onClick={() => flipObject("x")} className="p-2 text-[#666] hover:text-black" title="水平翻转"><FlipHorizontal2 className="h-4 w-4" /></button>
-        <button onClick={() => flipObject("y")} className="p-2 text-[#666] hover:text-black" title="垂直翻转"><FlipVertical2 className="h-4 w-4" /></button>
-        <button onClick={() => updateZoom(zoom - 0.1)} className="p-2 text-[#666] hover:text-black" title="缩小"><ZoomOut className="h-4 w-4" /></button>
+        <MotionButton onClick={rotateObject} variant="ghost" size="icon" className="border-transparent" icon={<RotateCw className="h-4 w-4" />} title="旋转 90°" />
+        <MotionButton onClick={() => flipObject("x")} variant="ghost" size="icon" className="border-transparent" icon={<FlipHorizontal2 className="h-4 w-4" />} title="水平翻转" />
+        <MotionButton onClick={() => flipObject("y")} variant="ghost" size="icon" className="border-transparent" icon={<FlipVertical2 className="h-4 w-4" />} title="垂直翻转" />
+        <MotionButton onClick={() => updateZoom(zoom - 0.1)} variant="ghost" size="icon" className="border-transparent" icon={<ZoomOut className="h-4 w-4" />} title="缩小" />
         <span className="w-10 text-center text-[10px] tabular-nums text-[#999]">{Math.round(zoom * 100)}%</span>
-        <button onClick={() => updateZoom(zoom + 0.1)} className="p-2 text-[#666] hover:text-black" title="放大"><ZoomIn className="h-4 w-4" /></button>
-        <button onClick={() => setPanMode((value) => !value)} className={cn("p-2", panMode ? "text-black" : "text-[#666] hover:text-black")} title="拖动画布"><Move className="h-4 w-4" /></button>
+        <MotionButton onClick={() => updateZoom(zoom + 0.1)} variant="ghost" size="icon" className="border-transparent" icon={<ZoomIn className="h-4 w-4" />} title="放大" />
+        <MotionButton onClick={() => setPanMode((value) => !value)} variant={panMode ? "primary" : "ghost"} size="icon" className={cn("border-transparent", panMode && "bg-black text-white")} icon={<Move className="h-4 w-4" />} title="拖动画布" />
         <span className="mx-1 h-5 w-px bg-[#dedede]" />
         <select value={format} onChange={(event) => setFormat(event.target.value as "png" | "jpeg")} className="h-8 border border-[#dedede] bg-white px-2 text-[11px]"><option value="png">PNG</option><option value="jpeg">JPEG</option></select>
         {format === "jpeg" && <input type="range" min={0.5} max={1} step={0.01} value={quality} onChange={(event) => setQuality(Number(event.target.value))} className="w-20 accent-black" title="JPEG 质量" />}
-        <button onClick={exportImage} disabled={!hasImage} className="ml-auto flex items-center gap-1.5 border border-[#111] px-3 py-2 text-[11px] disabled:opacity-30"><Download className="h-3.5 w-3.5" />导出</button>
+        <MotionButton onClick={exportImage} disabled={!hasImage} variant="secondary" size="sm" icon={<Download className="h-3.5 w-3.5" />} className="ml-auto">导出</MotionButton>
       </div>
 
       <div className="grid gap-4 xl:grid-cols-[52px_minmax(0,1fr)_220px]">
@@ -449,7 +450,7 @@ export function ImageEditor() {
                 if (item.id === "image") { layerFileRef.current?.click(); return; }
                 if (cropRectRef.current) { canvasRef.current?.remove(cropRectRef.current); cropRectRef.current = null; refreshLayers(); }
                 setTool("select");
-              }} className={cn("flex h-10 w-10 items-center justify-center border text-[#666] hover:border-black hover:text-black", tool === item.id ? "border-black text-black" : "border-transparent")} title={item.label}>
+              }} className={cn("flex h-10 w-10 items-center justify-center border text-[#666] transition-all duration-200 hover:-translate-y-1 hover:border-black hover:text-black", tool === item.id ? "border-black text-black shadow-[0_7px_16px_rgba(0,0,0,0.08)]" : "border-transparent")} title={item.label}>
                 <Icon className="h-4 w-4" strokeWidth={1.5} />
               </button>
             );
@@ -500,3 +501,4 @@ export function ImageEditor() {
     </div>
   );
 }
+

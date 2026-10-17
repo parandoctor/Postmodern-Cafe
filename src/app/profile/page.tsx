@@ -4,6 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { getProfile, updateProfile, updatePassword } from "@/actions/profile";
+import { MotionButton } from "@/components/ui/motion-button";
 
 export default function ProfilePage() {
   const [name, setName] = React.useState("");
@@ -51,7 +52,7 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-white">
       <header className="border-b border-[#ececec]">
         <div className="mx-auto flex h-16 max-w-3xl items-center justify-between px-5 sm:px-8">
-          <Link href="/dashboard" className="flex items-center gap-2 text-[13px] text-[#666] hover:text-black"><ArrowLeft className="h-4 w-4" />返回空间</Link>
+          <MotionButton href="/dashboard" variant="ghost" size="sm" icon={<ArrowLeft className="h-4 w-4" />}>返回空间</MotionButton>
           <span className="text-[13px] text-[#999]">个人中心</span>
         </div>
       </header>
@@ -69,7 +70,7 @@ export default function ProfilePage() {
             <label><span className="mb-2 block text-[12px] text-[#777]">邮箱</span><input value={email} readOnly className={`${inputCls} bg-[#fafafa] text-[#888]`} /></label>
           </div>
           <label className="mt-5 block"><span className="mb-2 block text-[12px] text-[#777]">个人简介</span><textarea value={bio} onChange={(event) => setBio(event.target.value)} maxLength={200} rows={3} className="w-full resize-none border border-[#d8d8d8] bg-white px-3 py-2 text-[14px] outline-none focus:border-black" /></label>
-          <button onClick={saveProfile} disabled={saving} className="mt-5 bg-[#111] px-5 py-2.5 text-[13px] text-white disabled:opacity-50">{saving ? "保存中..." : "保存资料"}</button>
+          <MotionButton onClick={saveProfile} disabled={saving} variant="primary" size="md" floating arrow className="mt-5">{saving ? "保存中..." : "保存资料"}</MotionButton>
         </section>
 
         <section className="mt-12 border-t border-[#dedede] pt-8">
@@ -78,10 +79,11 @@ export default function ProfilePage() {
             <label><span className="mb-2 block text-[12px] text-[#777]">当前密码</span><input type="password" value={currentPassword} onChange={(event) => setCurrentPassword(event.target.value)} className={inputCls} /></label>
             <label><span className="mb-2 block text-[12px] text-[#777]">新密码</span><input type="password" value={newPassword} onChange={(event) => setNewPassword(event.target.value)} className={inputCls} /></label>
           </div>
-          <button onClick={changePassword} disabled={saving || !currentPassword || !newPassword} className="mt-5 border border-[#111] px-5 py-2.5 text-[13px] disabled:opacity-40">更新密码</button>
+          <MotionButton onClick={changePassword} disabled={saving || !currentPassword || !newPassword} variant="secondary" size="md" className="mt-5">更新密码</MotionButton>
         </section>
       </main>
     </div>
   );
 }
+
 

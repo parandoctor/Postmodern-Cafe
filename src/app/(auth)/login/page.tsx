@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff } from "lucide-react";
 import { loginUser } from "@/actions/auth";
+import { MotionButton } from "@/components/ui/motion-button";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -31,7 +32,7 @@ export default function LoginPage() {
       <header className="border-b border-[#ececec]">
         <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-5 sm:px-8">
           <Link href="/" className="text-[15px] font-medium">后现代咖啡馆</Link>
-          <Link href="/" className="text-[12px] text-[#888] hover:text-black">返回首页</Link>
+          <MotionButton href="/" variant="ghost" size="sm">返回首页</MotionButton>
         </div>
       </header>
       <main className="flex flex-1 items-center justify-center px-5 py-16">
@@ -56,7 +57,7 @@ export default function LoginPage() {
                 </button>
               </span>
             </label>
-            <button type="submit" disabled={loading} className="w-full bg-[#111] py-3 text-[13px] text-white transition-opacity hover:opacity-80 disabled:opacity-50">{loading ? "登录中..." : "进入空间"}</button>
+            <MotionButton type="submit" disabled={loading} variant="primary" size="lg" floating arrow className="w-full">{loading ? "登录中..." : "进入空间"}</MotionButton>
           </form>
 
           <p className="mt-6 text-[12px] text-[#888]">还没有账户？ <Link href="/register" className="text-black underline underline-offset-4">立即注册</Link></p>
@@ -65,4 +66,5 @@ export default function LoginPage() {
     </div>
   );
 }
+
 

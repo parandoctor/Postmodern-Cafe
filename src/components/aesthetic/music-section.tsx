@@ -4,6 +4,7 @@ import * as React from "react";
 import { ListMusic, Music, Pause, Play, Plus, Repeat, Shuffle, SkipBack, SkipForward, Square, Trash2, Volume2 } from "lucide-react";
 import { cn, formatFileSize } from "@/lib/utils";
 import { useMusicStore } from "@/store/widgets";
+import { MotionButton } from "@/components/ui/motion-button";
 
 function time(value: number) {
   if (!Number.isFinite(value) || value < 0) return "0:00";
@@ -63,18 +64,18 @@ export function MusicSection() {
         </div>
 
         <div className="mt-7 flex items-center justify-center gap-2">
-          <button onClick={() => void store.prev()} className="p-2 text-[#666] hover:text-black" aria-label="上一首"><SkipBack className="h-4 w-4" /></button>
-          <button onClick={() => void store.togglePlay()} className="flex h-12 w-12 items-center justify-center rounded-full bg-[#111] text-white" aria-label={store.isPlaying ? "暂停" : "播放"}>{store.isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}</button>
-          <button onClick={store.stop} className="p-2 text-[#666] hover:text-black" aria-label="停止"><Square className="h-4 w-4" /></button>
-          <button onClick={() => void store.next()} className="p-2 text-[#666] hover:text-black" aria-label="下一首"><SkipForward className="h-4 w-4" /></button>
-          <button onClick={store.toggleShuffle} className={cn("p-2 hover:text-black", store.shuffle ? "text-black" : "text-[#999]")} aria-label="随机播放"><Shuffle className="h-4 w-4" /></button>
-          <button onClick={store.toggleRepeat} className={cn("p-2 hover:text-black", store.repeat ? "text-black" : "text-[#999]")} aria-label="单曲循环"><Repeat className="h-4 w-4" /></button>
+          <MotionButton onClick={() => void store.prev()} variant="ghost" size="icon" className="h-8 w-8 border-transparent" icon={<SkipBack className="h-4 w-4" />} ariaLabel="上一首" />
+          <MotionButton onClick={() => void store.togglePlay()} variant="primary" size="icon" className="h-12 w-12 p-0" icon={store.isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />} ariaLabel={store.isPlaying ? "暂停" : "播放"} floating />
+          <MotionButton onClick={store.stop} variant="ghost" size="icon" className="h-8 w-8 border-transparent" icon={<Square className="h-4 w-4" />} ariaLabel="停止" />
+          <MotionButton onClick={() => void store.next()} variant="ghost" size="icon" className="h-8 w-8 border-transparent" icon={<SkipForward className="h-4 w-4" />} ariaLabel="下一首" />
+          <MotionButton onClick={store.toggleShuffle} variant="ghost" size="icon" className={cn("h-8 w-8 border-transparent", store.shuffle && "bg-black text-white hover:bg-black hover:text-white")} icon={<Shuffle className="h-4 w-4" />} ariaLabel="随机播放" />
+          <MotionButton onClick={store.toggleRepeat} variant="ghost" size="icon" className={cn("h-8 w-8 border-transparent", store.repeat && "bg-black text-white hover:bg-black hover:text-white")} icon={<Repeat className="h-4 w-4" />} ariaLabel="单曲循环" />
         </div>
 
         <div className="mt-7 flex items-center gap-3 border-t border-[#ededed] pt-4">
           <Volume2 className="h-3.5 w-3.5 text-[#777]" />
           <input type="range" min={0} max={1} step={0.01} value={store.volume} onChange={(event) => store.setVolume(Number(event.target.value))} className="flex-1 accent-black" />
-          <button onClick={() => inputRef.current?.click()} disabled={uploading} className="flex items-center gap-1.5 border border-[#dedede] px-3 py-1.5 text-[11px] hover:border-black disabled:opacity-50"><Plus className="h-3 w-3" />{uploading ? "上传中" : "添加音乐"}</button>
+          <MotionButton onClick={() => inputRef.current?.click()} disabled={uploading} variant="secondary" size="sm" icon={<Plus className="h-3 w-3" />}>{uploading ? "上传中" : "添加音乐"}</MotionButton>
           <input ref={inputRef} type="file" accept="audio/*" multiple onChange={upload} className="hidden" />
         </div>
         {message && <p className="mt-3 text-[11px] text-[#888]">{message}</p>}
@@ -113,5 +114,6 @@ export function MusicSection() {
     </div>
   );
 }
+
 
 

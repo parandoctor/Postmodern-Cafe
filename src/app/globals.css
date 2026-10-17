@@ -92,3 +92,14 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+@keyframes module-line-flow {
+  0% { transform: translate(-50%, -110%); opacity: 0; }
+  18% { opacity: 1; }
+  78% { opacity: 1; }
+  100% { transform: translate(-50%, 620%); opacity: 0; }
+}
+
+.module-line-flow {
+  animation: module-line-flow 2.1s linear infinite;
+}
