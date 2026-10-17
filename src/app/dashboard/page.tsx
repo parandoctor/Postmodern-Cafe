@@ -1,2 +1,5 @@
-import { redirect } from "next/navigation";
-export default function LegacyPage() { redirect("/dashboard/notes"); }
+import { ModuleConstellation } from "@/components/dashboard/module-constellation";
+
+export default function DashboardPage() {
+  return <ModuleConstellation />;
+}

@@ -19,7 +19,7 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
     const result = await loginUser({ email, password });
-    if (result.success) router.push("/dashboard/notes");
+    if (result.success) router.push("/dashboard");
     else {
       setError(result.error ?? "登录失败");
       setLoading(false);
@@ -65,3 +65,4 @@ export default function LoginPage() {
     </div>
   );
 }
+

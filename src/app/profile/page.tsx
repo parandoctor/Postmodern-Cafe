@@ -51,7 +51,7 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-white">
       <header className="border-b border-[#ececec]">
         <div className="mx-auto flex h-16 max-w-3xl items-center justify-between px-5 sm:px-8">
-          <Link href="/dashboard/notes" className="flex items-center gap-2 text-[13px] text-[#666] hover:text-black"><ArrowLeft className="h-4 w-4" />返回空间</Link>
+          <Link href="/dashboard" className="flex items-center gap-2 text-[13px] text-[#666] hover:text-black"><ArrowLeft className="h-4 w-4" />返回空间</Link>
           <span className="text-[13px] text-[#999]">个人中心</span>
         </div>
       </header>
@@ -84,3 +84,4 @@ export default function ProfilePage() {
     </div>
   );
 }
+

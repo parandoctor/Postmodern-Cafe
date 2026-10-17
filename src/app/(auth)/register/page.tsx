@@ -20,7 +20,7 @@ export default function RegisterPage() {
     setError("");
     setLoading(true);
     const result = await registerUser({ name, email, password });
-    if (result.success) router.push("/dashboard/notes");
+    if (result.success) router.push("/dashboard");
     else {
       setError(result.error ?? "注册失败");
       setLoading(false);
@@ -70,3 +70,4 @@ export default function RegisterPage() {
     </div>
   );
 }
+
