@@ -1,155 +1,205 @@
-﻿"use client";
+"use client";
 
 import * as React from "react";
-import { motion } from "framer-motion";
-import { Plus, StickyNote, Trash2 } from "lucide-react";
-import { useNotesStore } from "@/store/widgets";
+import { Check, ChevronLeft, Eye, FileText, Loader2, PanelLeft, Pencil, Plus, Trash2 } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { cn } from "@/lib/utils";
+import { useNotesStore } from "@/store/widgets";
+import { FileDrawer } from "@/components/files/file-drawer";
+import { MotionButton } from "@/components/ui/motion-button";
+
+function titleOf(text: string) {
+  const line = text.split("\n").map((item) => item.trim()).find(Boolean) ?? "未命名笔记";
+  return line.replace(/^#{1,6}\s*/, "").replace(/^[-*+]\s+/, "").slice(0, 46) || "未命名笔记";
+}
 
 export default function NotesPage() {
-  const { notes, load, addNote, updateNote, removeNote } = useNotesStore();
-  const [text, setText] = React.useState("");
-  const [editingId, setEditingId] = React.useState<string | null>(null);
-  const [editingText, setEditingText] = React.useState("");
-  const inputRef = React.useRef<HTMLTextAreaElement>(null);
+  const { notes, hydrated, load, addNote, updateNote, removeNote } = useNotesStore();
+  const [selectedId, setSelectedId] = React.useState<string | null>(null);
+  const [draft, setDraft] = React.useState("");
+  const [mode, setMode] = React.useState<"edit" | "preview">("edit");
+  const [indexOpen, setIndexOpen] = React.useState(true);
+  const [status, setStatus] = React.useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [error, setError] = React.useState("");
+  const selectedRef = React.useRef<string | null>(null);
+  const draftRef = React.useRef("");
+  const lastSavedRef = React.useRef("");
+  const saveQueueRef = React.useRef<Promise<void>>(Promise.resolve());
+  const timerRef = React.useRef<number | null>(null);
+
+  const selected = notes.find((note) => note.id === selectedId) ?? null;
+  selectedRef.current = selectedId;
+  draftRef.current = draft;
+
+  React.useEffect(() => { void load(); }, [load]);
 
   React.useEffect(() => {
-    load();
-  }, [load]);
-
-  const submit = () => {
-    const value = text.trim();
-    if (!value) return;
-    addNote(value);
-    setText("");
-    inputRef.current?.focus();
-  };
-
-  const startEdit = (noteId: string, noteText: string) => {
-    setEditingId(noteId);
-    setEditingText(noteText);
-  };
-
-  const commitEdit = () => {
-    if (editingId) {
-      const value = editingText.trim();
-      if (value) updateNote(editingId, value);
-      else removeNote(editingId);
+    if (!hydrated) return;
+    if (selectedId && notes.some((note) => note.id === selectedId)) return;
+    const first = notes[0];
+    if (first) {
+      setSelectedId(first.id);
+      setDraft(first.text);
+      lastSavedRef.current = first.text;
+      setStatus("saved");
+    } else {
+      setSelectedId(null);
+      setDraft("");
     }
-    setEditingId(null);
-    setEditingText("");
+  }, [hydrated, notes, selectedId]);
+
+  const queueSave = React.useCallback((id: string, text: string) => {
+    if (!text.trim() || text === lastSavedRef.current) return;
+    setStatus("saving");
+    setError("");
+    saveQueueRef.current = saveQueueRef.current.then(async () => {
+      const result = await updateNote(id, text);
+      if (result) {
+        if (selectedRef.current === id && draftRef.current === text) {
+          lastSavedRef.current = text;
+          setStatus("saved");
+        }
+      } else {
+        setStatus("error");
+        setError("保存失败，请重试");
+      }
+    });
+  }, [updateNote]);
+
+  const saveNow = React.useCallback(() => {
+    if (timerRef.current) window.clearTimeout(timerRef.current);
+    if (selectedRef.current) queueSave(selectedRef.current, draftRef.current);
+  }, [queueSave]);
+
+  React.useEffect(() => {
+    if (!selectedId || draft === lastSavedRef.current) return;
+    if (timerRef.current) window.clearTimeout(timerRef.current);
+    timerRef.current = window.setTimeout(() => queueSave(selectedId, draft), 800);
+    return () => { if (timerRef.current) window.clearTimeout(timerRef.current); };
+  }, [draft, selectedId, queueSave]);
+
+  React.useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "s") {
+        event.preventDefault();
+        saveNow();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [saveNow]);
+
+  const selectNote = (id: string) => {
+    if (id === selectedId) return;
+    saveNow();
+    const note = notes.find((item) => item.id === id);
+    if (!note) return;
+    setSelectedId(id);
+    setDraft(note.text);
+    lastSavedRef.current = note.text;
+    setStatus("saved");
+    setMode("edit");
+    if (window.innerWidth < 1024) setIndexOpen(false);
+  };
+
+  const createNote = async () => {
+    saveNow();
+    const text = "# 新笔记\n\n";
+    const note = await addNote(text);
+    if (!note) return;
+    setSelectedId(note.id);
+    setDraft(note.text);
+    lastSavedRef.current = "";
+    setStatus("idle");
+    setMode("edit");
+    if (window.innerWidth < 1024) setIndexOpen(false);
+  };
+
+  const deleteNote = async (id: string) => {
+    if (!window.confirm("确定删除这篇笔记？")) return;
+    const ok = await removeNote(id);
+    if (!ok) return;
+    const next = notes.find((note) => note.id !== id);
+    if (selectedId === id) {
+      setSelectedId(next?.id ?? null);
+      setDraft(next?.text ?? "");
+      lastSavedRef.current = next?.text ?? "";
+      setStatus("idle");
+    }
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <div className="mx-auto max-w-6xl">
+      <div className="mb-7 flex flex-wrap items-end justify-between gap-4 border-b border-[#dedede] pb-5">
         <div>
-          <h1 className="d5-title text-[26px] font-semibold tracking-tight">随时记写</h1>
-          <p className="mt-0.5 text-[12px] text-muted-foreground">
-            共 {notes.length} 条记录 · 点击卡片即可编辑
-          </p>
+          <p className="text-[11px] tracking-[0.2em] text-[#999]">NOTES</p>
+          <h1 className="mt-2 font-editorial text-[32px] tracking-[-0.03em]">笔记管理</h1>
+          <p className="mt-2 text-[12px] text-[#888]">Markdown 自动保存，文件收在下方抽屉里。</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="flex items-center gap-1.5 text-[11px] text-[#999]">
+            {status === "saving" ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : status === "saved" ? <Check className="h-3.5 w-3.5" /> : <FileText className="h-3.5 w-3.5" />}
+            {status === "saving" ? "保存中" : status === "saved" ? "已保存" : status === "error" ? "保存失败" : "未修改"}
+          </span>
+          <MotionButton onClick={() => void createNote()} variant="primary" size="sm" floating icon={<Plus className="h-3.5 w-3.5" />}>新建</MotionButton>
         </div>
       </div>
 
-      {/* 输入区 */}
-      <div className="border d5-line d5-panel p-3 backdrop-blur-sm">
-        <div className="flex items-start gap-2 border d5-line d5-panel p-3">
-          <textarea
-            ref={inputRef}
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                submit();
-              }
-            }}
-            placeholder="写下点什么... (Enter 提交，Shift+Enter 换行)"
-            rows={3}
-            className="min-h-[60px] w-full resize-none bg-transparent text-[14px] leading-relaxed placeholder:text-muted-foreground/50 focus:outline-none"
-          />
-          <button
-            onClick={submit}
-            disabled={!text.trim()}
-            className="flex shrink-0 items-center gap-1 rounded px-3 py-1.5 text-[13px] font-medium text-background bg-foreground hover:bg-foreground/90 disabled:opacity-30 transition-opacity"
-          >
-            <Plus className="h-3.5 w-3.5" />
-            添加
-          </button>
-        </div>
+      <div className="grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)]">
+        <aside className={cn("min-w-0 lg:block", !indexOpen && "hidden")}>
+          <div className="flex items-center justify-between border-b border-[#dedede] pb-2">
+            <span className="text-[11px] tracking-[0.16em] text-[#999]">INDEX</span>
+            <button onClick={() => setIndexOpen(false)} className="lg:hidden text-[11px] text-[#999]">收起</button>
+          </div>
+          <div className="mt-2 max-h-[60vh] overflow-y-auto">
+            {notes.length === 0 ? <p className="py-8 text-[12px] text-[#aaa]">还没有笔记。</p> : notes.map((note) => (
+              <button key={note.id} onClick={() => selectNote(note.id)} className={cn("group flex w-full items-start gap-2 border-b border-[#f0f0f0] px-1 py-3 text-left", selectedId === note.id ? "text-black" : "text-[#777] hover:text-black")}>
+                <span className={cn("mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full", selectedId === note.id ? "bg-black" : "bg-[#d6d6d6]")} />
+                <span className="min-w-0 flex-1"><span className="block truncate text-[12px]">{titleOf(note.text)}</span><span className="mt-1 block text-[10px] text-[#aaa]">{new Date(note.updatedAt).toLocaleDateString("zh-CN")}</span></span>
+                <span onClick={(event) => { event.stopPropagation(); void deleteNote(note.id); }} className="mt-0.5 hidden p-1 text-[#aaa] hover:text-black group-hover:block"><Trash2 className="h-3 w-3" /></span>
+              </button>
+            ))}
+          </div>
+        </aside>
+
+        <section className="min-w-0">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <button onClick={() => setIndexOpen((value) => !value)} className="flex items-center gap-1.5 text-[11px] text-[#888] hover:text-black lg:hidden"><PanelLeft className="h-3.5 w-3.5" />笔记索引</button>
+            <div className="ml-auto flex border border-[#dedede] p-0.5">
+              <MotionButton onClick={() => setMode("edit")} variant={mode === "edit" ? "primary" : "ghost"} size="sm" className="h-7 rounded-none px-3" icon={<Pencil className="h-3 w-3" />}>编辑</MotionButton>
+              <MotionButton onClick={() => setMode("preview")} variant={mode === "preview" ? "primary" : "ghost"} size="sm" className="h-7 rounded-none px-3" icon={<Eye className="h-3 w-3" />}>预览</MotionButton>
+            </div>
+          </div>
+
+          {error && <div className="mb-3 border border-[#d8d8d8] bg-[#fafafa] px-3 py-2 text-[12px] text-[#555]">{error}</div>}
+
+          {selected ? (
+            mode === "edit" ? (
+              <textarea
+                value={draft}
+                onChange={(event) => { setDraft(event.target.value); setStatus("idle"); }}
+                onBlur={saveNow}
+                className="min-h-[56vh] w-full resize-y border-0 bg-white px-0 py-2 font-sans text-[15px] leading-8 text-[#222] outline-none placeholder:text-[#bbb]"
+                placeholder="从一个标题开始..."
+              />
+            ) : (
+              <article className="note-prose min-h-[56vh] border-t border-[#f0f0f0] py-5">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{draft || "*还没有内容。*"}</ReactMarkdown>
+              </article>
+            )
+          ) : (
+            <div className="flex min-h-[56vh] flex-col items-center justify-center border border-dashed border-[#dedede] text-center">
+              <FileText className="h-8 w-8 text-[#ccc]" strokeWidth={1.2} />
+              <p className="mt-3 text-[13px] text-[#888]">新建一篇笔记，或者从左侧选择。</p>
+              <MotionButton onClick={() => void createNote()} variant="secondary" size="md" icon={<Plus className="h-3.5 w-3.5" />} className="mt-4">新建笔记</MotionButton>
+            </div>
+          )}
+        </section>
       </div>
 
-      {/* 记录列表 */}
-      {notes.length === 0 ? (
-        <div className="flex flex-col items-center justify-center border border-dashed d5-line py-20 text-center">
-          <StickyNote className="mb-3 h-10 w-10 text-muted-foreground/30" />
-          <p className="text-[14px] text-muted-foreground/70">暂无记录</p>
-          <p className="mt-1 text-[12px] text-muted-foreground/50">在上方输入框写下你的想法</p>
-        </div>
-      ) : (
-        <div className="grid gap-3 sm:grid-cols-2">
-          {notes.map((note) => (
-            <motion.div
-              key={note.id}
-              layout
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="group relative flex flex-col border d5-line d5-panel p-4 hover:shadow-card transition-shadow"
-            >
-              {editingId === note.id ? (
-                <textarea
-                  autoFocus
-                  value={editingText}
-                  onChange={(e) => setEditingText(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      commitEdit();
-                    }
-                    if (e.key === "Escape") {
-                      setEditingId(null);
-                      setEditingText("");
-                    }
-                  }}
-                  onBlur={commitEdit}
-                  rows={3}
-                  className="w-full resize-none rounded border border-whisper bg-white/70 px-2 py-1.5 text-[13px] leading-relaxed focus:outline-none"
-                />
-              ) : (
-                <>
-                  <p
-                    onClick={() => startEdit(note.id, note.text)}
-                    className={cn(
-                      "min-h-[40px] cursor-text break-words whitespace-pre-wrap text-[13px] leading-relaxed text-foreground/90 hover:text-foreground",
-                    )}
-                    title="点击编辑"
-                  >
-                    {note.text}
-                  </p>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeNote(note.id);
-                    }}
-                    className="absolute top-2 right-2 rounded p-1 text-muted-foreground opacity-0 group-hover:opacity-100 hover:text-destructive transition-opacity"
-                    title="删除"
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </button>
-                  <span className="mt-2 text-[10px] text-muted-foreground/50">
-                    {new Date(note.createdAt).toLocaleString("zh-CN", {
-                      month: "short",
-                      day: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </span>
-                </>
-              )}
-            </motion.div>
-          ))}
-        </div>
-      )}
+      <FileDrawer />
     </div>
   );
 }
+

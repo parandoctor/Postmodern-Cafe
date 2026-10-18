@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { ModuleConstellation } from "@/components/dashboard/module-constellation";
 
 export default function DashboardPage() {
-  redirect("/dashboard/files");
+  return <ModuleConstellation />;
 }

@@ -1,5 +1,2 @@
-import { RecentView } from "@/components/files/views/recent-view";
-
-export default function RecentPage() {
-  return <RecentView />;
-}
+import { redirect } from "next/navigation";
+export default function LegacyPage() { redirect("/dashboard/notes"); }

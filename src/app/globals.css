@@ -2,422 +2,104 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ============================================================
-   Monochrome Blueprint — 白底黑线 // 卡片白底半透明
-   背景黑白相间 · 天体轨道蓝图铺满全站 · 内容透明融合
-   ============================================================ */
 @layer base {
   :root {
-    --font-sans: "Noto Sans SC", "Source Han Sans SC", "Noto Sans CJK SC",
-      "PingFang SC", "Microsoft YaHei", "Segoe UI", system-ui, sans-serif;
-    --background: 0 0% 97%;
-    --foreground: 0 0% 5%;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 7%;
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 5%;
+    --card-foreground: 0 0% 7%;
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 5%;
-    --primary: 0 0% 5%;
-    --primary-foreground: 0 0% 97%;
-    --secondary: 0 0% 93%;
-    --secondary-foreground: 0 0% 5%;
-    --muted: 0 0% 93%;
-    --muted-foreground: 0 0% 42%;
-    --accent: 0 0% 90%;
-    --accent-foreground: 0 0% 5%;
-    --destructive: 0 0% 40%;
-    --destructive-foreground: 0 0% 97%;
-    --border: 0 0% 82%;
-    --input: 0 0% 82%;
-    --ring: 0 0% 5%;
-    --radius: 0.375rem;
+    --popover-foreground: 0 0% 7%;
+    --primary: 0 0% 7%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 7%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 43%;
+    --accent: 0 0% 94%;
+    --accent-foreground: 0 0% 7%;
+    --destructive: 0 0% 35%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 87%;
+    --input: 0 0% 87%;
+    --ring: 0 0% 7%;
+    --radius: 0.25rem;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
+
   html {
     scroll-behavior: smooth;
   }
+
   body {
     @apply bg-background text-foreground antialiased;
-    font-family:
-      var(--font-sans),
-      "思源黑体", "Source Han Sans SC", "Noto Sans SC", "Noto Sans CJK SC",
-      "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-family: "Noto Sans SC", "Source Han Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
     font-feature-settings: "lnum", "locl";
+  }
+
+  h1, h2, h3, .font-editorial {
+    font-family: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
+  }
+
+  :focus-visible {
+    outline: 2px solid #111;
+    outline-offset: 3px;
   }
 }
 
 ::selection {
-  background-color: rgba(0, 0, 0, 0.85);
-  color: #ffffff;
+  background: #111;
+  color: #fff;
 }
 
-/* ---- Utility Classes ---- */
-@layer utilities {
-  .border-whisper {
-    border: 1px solid rgba(0, 0, 0, 0.12);
-  }
-  .shadow-card {
-    box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.08);
-  }
-  .shadow-card-hover {
-    box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 8px 28px rgba(0,0,0,0.12);
-  }
-  .badge-pill {
-    border-radius: 9999px;
-    padding: 4px 8px;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.125px;
-  }
-}
-
-/* Scrollbar */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.22); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.38); }
+::-webkit-scrollbar-thumb { background: #d5d5d5; border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: #adadad; }
 
-/* ============================================================
-   Blueprint Overlay 动画 — 3D 动态天体系统
-   ============================================================ */
-@keyframes bp-spin {
-  to { transform: rotate(360deg); }
+.note-prose {
+  color: #222;
+  font-size: 15px;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
 }
-@keyframes bp-dash {
-  to { stroke-dashoffset: var(--dash-to, -240); }
-}
-@keyframes bp-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-14px); }
-}
-@keyframes bp-twinkle {
-  0%, 100% { opacity: 0.25; }
-  50% { opacity: 1; }
-}
-.bp-spin-slow { animation: bp-spin linear infinite; }
-.bp-spin-rev { animation: bp-spin linear infinite reverse; }
-.bp-dash-flow { animation: bp-dash linear infinite; }
-.bp-float { animation: bp-float ease-in-out infinite; }
-.bp-twinkle { animation: bp-twinkle ease-in-out infinite; }
+.note-prose > * + * { margin-top: 1em; }
+.note-prose h1 { font-size: 30px; line-height: 1.25; margin-top: 0; font-weight: 600; }
+.note-prose h2 { font-size: 23px; line-height: 1.35; font-weight: 600; }
+.note-prose h3 { font-size: 18px; line-height: 1.45; font-weight: 600; }
+.note-prose p, .note-prose ul, .note-prose ol, .note-prose blockquote { margin-top: 0.9em; }
+.note-prose ul { list-style: disc; padding-left: 1.4em; }
+.note-prose ol { list-style: decimal; padding-left: 1.4em; }
+.note-prose li + li { margin-top: 0.35em; }
+.note-prose a { color: #111; text-decoration: underline; text-underline-offset: 3px; }
+.note-prose blockquote { border-left: 2px solid #d8d8d8; padding-left: 1em; color: #666; }
+.note-prose code { background: #f4f4f4; padding: 0.12em 0.35em; font-size: 0.9em; border-radius: 2px; }
+.note-prose pre { background: #f5f5f5; border: 1px solid #e2e2e2; padding: 1em; overflow-x: auto; border-radius: 3px; }
+.note-prose pre code { background: transparent; padding: 0; }
+.note-prose hr { border: 0; border-top: 1px solid #dedede; margin: 1.5em 0; }
+.note-prose table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.note-prose th, .note-prose td { border: 1px solid #e2e2e2; padding: 0.5em 0.65em; text-align: left; }
+.note-prose input[type="checkbox"] { margin-right: 0.45em; accent-color: #111; }
 
-/* ============================================================
-   Y2K 千禧风音乐播放器 — Winamp / iPod 复古数码质感
-   (参考小红书素材包风格，纯 CSS 实现，无版权素材)
-   ============================================================ */
-@keyframes y2k-scan {
-  0% { transform: translateY(-120%); }
-  100% { transform: translateY(520%); }
-}
-@keyframes y2k-led {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.35; }
-}
-@keyframes y2k-marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-@keyframes y2k-flicker {
-  0%, 100% { opacity: 1; }
-  90% { opacity: 1; }
-  91% { opacity: 0.55; }
-  92% { opacity: 1; }
-  96% { opacity: 0.75; }
-}
-
-/* 银色拉丝金属机身 */
-.y2k-metal {
-  background:
-    linear-gradient(180deg, #f4f4f4 0%, #e2e2e2 28%, #c8c8c8 52%, #ababab 78%, #b8b8b8 100%);
-}
-.y2k-metal-dark {
-  background: linear-gradient(180deg, #4a4a4a 0%, #333333 50%, #242424 100%);
-}
-/* 黑白灰标题栏（无彩色，契合蓝图单色风） */
-.y2k-titlebar {
-  background: linear-gradient(180deg, #4a4a4a 0%, #2c2c2c 45%, #131313 100%);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
-}
-/* 黑白灰 LCD 屏 */
-.y2k-lcd {
-  background:
-    radial-gradient(ellipse at 50% 130%, rgba(255,255,255,0.06), transparent 62%),
-    linear-gradient(180deg, #0b0b0b 0%, #111111 55%, #181818 100%);
-  box-shadow: inset 0 0 16px rgba(0,0,0,0.9), inset 0 0 1px rgba(255,255,255,0.12);
-}
-.y2k-lcd-text {
-  color: #ececec;
-  text-shadow: 0 0 3px rgba(255,255,255,0.35), 0 0 10px rgba(255,255,255,0.12);
-}
-/* 拟物按钮 */
-.y2k-btn {
-  background: linear-gradient(180deg, #f7f7f7 0%, #d6d6d6 45%, #b7b7b7 100%);
-  border: 1px solid #4c4c4c;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 1px 2px rgba(0,0,0,0.4);
-  transition: filter 0.1s ease, transform 0.05s ease;
-}
-.y2k-btn:hover { filter: brightness(1.06); }
-.y2k-btn:active {
-  background: linear-gradient(180deg, #a8a8a8 0%, #c8c8c8 60%, #dcdcdc 100%);
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
-  transform: translateY(1px);
-}
-.y2k-led { animation: y2k-led 2s ease-in-out infinite; }
-.y2k-flicker { animation: y2k-flicker 5s linear infinite; }
-.y2k-marquee-track { animation: y2k-marquee 14s linear infinite; }
-.y2k-scanline { animation: y2k-scan 7s linear infinite; }
-
-/* Winamp 播放列表斑马纹 */
-.y2k-pl-row:nth-child(even) { background: rgba(230, 230, 230, 0.5); }
-.y2k-pl-row:hover { background: rgba(180, 180, 180, 0.35); }
-
-/* ============================================================
-   Terminal / Postmodern Café — 终端档案风（V3 方案）
-   ============================================================ */
-@layer utilities {
-  .term-bg {
-    background-color: #050505;
-    color: #e8e8e5;
-  }
-  .term-dim {
-    color: #8a8a86;
-  }
-  .term-line {
-    border-color: #2a2a28;
-  }
-  .term-scanlines {
-    position: relative;
-  }
-  .term-scanlines::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 1;
-    background: repeating-linear-gradient(
-      0deg,
-      rgba(255, 255, 255, 0.045) 0 1px,
-      transparent 1px 3px
-    );
-  }
-  .term-noise {
-    position: relative;
-  }
-  .term-noise::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 1;
-    opacity: 0.055;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
-  .term-blink {
-    animation: termBlink 1s step-end infinite;
-  }
-  .term-glitch {
-    position: relative;
-    display: inline-block;
-  }
-  .term-glitch::before,
-  .term-glitch::after {
-    content: attr(data-text);
-    position: absolute;
-    inset: 0;
-    opacity: 0.75;
-    pointer-events: none;
-  }
-  .term-glitch::before {
-    color: #ffffff;
-    transform: translate(-2px, -1px);
-    clip-path: inset(10% 0 60% 0);
-    animation: termGlitchA 2.8s infinite linear alternate;
-  }
-  .term-glitch::after {
-    color: #000;
-    text-shadow: 0 0 6px #fff;
-    transform: translate(2px, 1px);
-    clip-path: inset(60% 0 8% 0);
-    animation: termGlitchB 2.4s infinite linear alternate;
-  }
-  .term-caret {
-    display: inline-block;
-    width: 9px;
-    height: 15px;
-    background: #fff;
-    vertical-align: -2px;
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
-@keyframes termBlink {
-  50% {
-    opacity: 0;
-  }
-}
-@keyframes termGlitchA {
-  0% { clip-path: inset(10% 0 60% 0); }
-  30% { clip-path: inset(40% 0 30% 0); }
-  60% { clip-path: inset(70% 0 12% 0); }
-  100% { clip-path: inset(20% 0 50% 0); }
-}
-@keyframes termGlitchB {
-  0% { clip-path: inset(60% 0 8% 0); }
-  30% { clip-path: inset(18% 0 64% 0); }
-  60% { clip-path: inset(80% 0 5% 0); }
-  100% { clip-path: inset(40% 0 34% 0); }
+@keyframes module-line-flow {
+  0% { transform: translate(-50%, -110%); opacity: 0; }
+  18% { opacity: 1; }
+  78% { opacity: 1; }
+  100% { transform: translate(-50%, 620%); opacity: 0; }
 }
 
-/* ============================================================
-   Auth 登录/注册 —— 柔和玻璃按钮（鼠标靠近/远离动效）
-   ============================================================ */
-.auth-btn {
-  position: relative;
-  overflow: hidden;
-  width: 100%;
-  padding: 16px;
-  font-family: ui-monospace, "Cascadia Code", Consolas, "Courier New", monospace;
-  font-size: 13px;
-  letter-spacing: 0.2em;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.92);
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  cursor: pointer;
-  transition:
-    color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-    background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+.module-line-flow {
+  animation: module-line-flow 2.1s linear infinite;
 }
-.auth-btn::before {
-  content: "";
-  position: absolute;
-  left: -35%;
-  top: 0;
-  width: 40%;
-  height: 100%;
-  background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.55), transparent);
-  transform: skewX(-20deg);
-  transition: left 0.65s cubic-bezier(0.16, 1, 0.3, 1);
-  pointer-events: none;
-}
-.auth-btn::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 40%);
-  opacity: 0;
-  transition: opacity 0.35s ease;
-  pointer-events: none;
-}
-.auth-btn:hover {
-  color: #000;
-  background: rgba(255, 255, 255, 0.92);
-  border-color: transparent;
-  transform: translateY(-3px) scale(1.02);
-  box-shadow:
-    0 0 46px rgba(255, 255, 255, 0.5),
-    0 0 90px rgba(255, 255, 255, 0.18),
-    0 16px 40px rgba(0, 0, 0, 0.5);
-}
-.auth-btn:hover::before {
-  left: 120%;
-}
-.auth-btn:hover::after {
-  opacity: 1;
-}
-.auth-btn:active {
-  transform: translateY(0);
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.25);
-}
-.auth-btn:focus-visible {
-  outline: 1px solid #fff;
-  outline-offset: 3px;
-}
-.auth-btn:disabled {
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-
-
-/* ===== D5 Swiss Archive ===== */
-@layer base {
-  :root {
-    --d5-bg: 42 16% 92%;
-    --d5-panel: 44 22% 96%;
-    --d5-ink: 0 0% 7%;
-    --d5-muted: 0 0% 40%;
-    --d5-faint: 0 0% 58%;
-    --d5-line: 0 0% 7%;
-  }
-  .dark {
-    --background: 0 0% 4%;
-    --foreground: 0 0% 95%;
-    --card: 0 0% 8%;
-    --card-foreground: 0 0% 95%;
-    --popover: 0 0% 8%;
-    --popover-foreground: 0 0% 95%;
-    --primary: 0 0% 95%;
-    --primary-foreground: 0 0% 4%;
-    --secondary: 0 0% 14%;
-    --secondary-foreground: 0 0% 95%;
-    --muted: 0 0% 14%;
-    --muted-foreground: 0 0% 62%;
-    --accent: 0 0% 16%;
-    --accent-foreground: 0 0% 95%;
-    --destructive: 0 0% 60%;
-    --destructive-foreground: 0 0% 4%;
-    --border: 0 0% 24%;
-    --input: 0 0% 24%;
-    --ring: 0 0% 95%;
-    --d5-bg: 0 0% 5%;
-    --d5-panel: 0 0% 8%;
-    --d5-ink: 0 0% 95%;
-    --d5-muted: 0 0% 62%;
-    --d5-faint: 0 0% 45%;
-    --d5-line: 0 0% 95%;
-  }
-}
-
-@layer utilities {
-  .d5-bg { background-color: hsl(var(--d5-bg)); }
-  .d5-panel { background-color: hsl(var(--d5-panel)); }
-  .d5-ink { color: hsl(var(--d5-ink)); }
-  .d5-muted { color: hsl(var(--d5-muted)); }
-  .d5-faint { color: hsl(var(--d5-faint)); }
-  .d5-line { border-color: hsl(var(--d5-line)); }
-  .d5-line-strong { border-color: hsl(var(--d5-line)); }
-  .d5-mono { font-family: "Cascadia Code", Consolas, ui-monospace, monospace; }
-  .d5-title { font-family: "Bahnschrift", "Noto Sans SC", sans-serif; }
-  .d5-hair { border: 1px solid hsl(var(--d5-line)); }
-  .d5-hair-t { border-top: 1px solid hsl(var(--d5-line)); }
-  .d5-hair-b { border-bottom: 1px solid hsl(var(--d5-line)); }
-  .d5-grid { display: grid; gap: 1px; background-color: hsl(var(--d5-line)); border: 1px solid hsl(var(--d5-line)); }
-  .d5-cell { background-color: hsl(var(--d5-panel)); }
-  .d5-seg { display: inline-block; width: 8px; height: 16px; border: 1px solid currentColor; }
-  .d5-seg-on { background-color: currentColor; }
-}
-
-
-/* D5 scoped overrides — 仅作用于后台工作台，不影响首页/登录 */
-main.d5-panel [class*="rounded-xl"],
-main.d5-panel [class*="rounded-2xl"],
-main.d5-panel [class*="rounded-lg"] { border-radius: 2px; }
-main.d5-panel .shadow-card,
-main.d5-panel .shadow-card-hover { box-shadow: none; }
-main.d5-panel [class*="border-whisper"] { border-color: hsl(var(--d5-line)); }
-.dark main.d5-panel [class*="bg-white/"] { background-color: hsl(var(--d5-panel)) !important; }
-.dark main.d5-panel [class*="bg-black/"] { background-color: hsl(var(--d5-panel)) !important; }
-.dark main.d5-panel .text-muted-foreground { color: hsl(var(--d5-muted)); }
-
-/* 自定义壁纸模式 — 面板降为半透明，让背景图可见且不影响可读性 */
-[data-wallpaper="on"] .d5-bg { background-color: hsl(var(--d5-bg) / 0.72); }
-[data-wallpaper="on"] .d5-panel { background-color: hsl(var(--d5-panel) / 0.82); }
-[data-wallpaper="on"] .d5-cell { background-color: hsl(var(--d5-panel) / 0.82); }
